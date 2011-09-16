@@ -1,0 +1,86 @@
+# offlineimap configuration file
+#
+# es@ethanschoonover.com
+
+##################################################
+# General definitions
+##################################################
+
+[general]
+metadata = ~/.offlineimap       # metadata dir, autocreated
+accounts = gmail                # account names, comma separated
+maxsyncaccounts = 1             # simultaneous sync accts; 
+                                # must be >= # of accts IF autorefresh is on
+ui = Noninteractive.Basic       # run as quiet with -q
+ignore-readonly = no            # write to read-only folder throws error
+pythonfile = ~/conf/mail/offlineimap.py
+# socket only; actual sync can take longer
+socktimeout = 60
+fsync = true                    # can set to "no" to reduce writes (for SSD, eg)
+
+##################################################
+# Mailbox name recorder
+##################################################
+
+# Writes all mailbox names to a file that we will then source from mutt
+[mbnames]
+enabled = yes
+filename = ~/data/mail/mailboxes
+header = "mailboxes "
+peritem = "+%(accountname)s/%(foldername)s"
+sep = " "
+footer = "\n"
+
+##################################################
+# Accounts
+##################################################
+
+[Account gmail]
+localrepository = gmail_local   # matches repository section below
+remoterepository = gmail_remote # matches repository section below
+autorefresh = 5                 # auto sync in minutes
+quick = 10                      # num quick updates between full syncs
+# presynchook = imapfilter      # must complete before offlineimap runs
+# postsynchook = notifysync.sh  # post sync hook
+# maxsize = 2000000             # max attachment size (if > mssg will not sync)
+maxage = 2                    # sync back this many days of messages
+
+[Repository gmail_local]
+type = Maildir                  # either Maildir or IMAP
+localfolders = ~/data/mail/gmail # IMAP folders will sync to maildirs here
+sep = /                         # default "."; for nested folders use "/"
+restoreatime = no               # should offlineimap restore accesstime values
+
+[Repository gmail_remote]
+type = Gmail                    # either IMAP or Gmail
+remoteuser = es@ethanschoonover.com # for gmail, full address
+remotepassfile = ~/conf/passwords/offlineimap.pass # single line with password
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt # check that OS X is set up!
+maxconnections = 5              # Gmail has a limit of 10 per acct
+holdconnectionopen = no         # uses more server memory; gmail?
+# keepalive = 60                # secs; req autorefresh and holdconnection on
+# expunge = no                  # mark delete but don't expunge... danger
+subscribedonly = no             # sync all server folders or just 'subscribed'
+realdelete = no                 # gmail only: simply remove the mssg from inbox
+trashfolder = [Gmail]/Trash     # may be localized
+spamfolder = [Gmail]/Spam       # may be localized
+#
+# Filter for specific folders; applied *BEFORE* nametrans.
+#folderfilter = lambda foldername: foldername in [
+#                                'INBOX', 
+#                                '[Gmail]/Starred'
+#                                ]
+#
+# Translate folder names
+# This removes the [Gmail] prefix, converts everything to lowercase (good?)
+# and renames some gmail folders to alternates
+nametrans = lambda foldername:  re.sub ('^\[gmail\].',  '_',
+                                re.sub ('sent_mail',    'sent',
+                                re.sub ('starred',      'flagged',
+                                re.sub ('all_mail',     'archive',
+                                re.sub (' ', '_', foldername.lower()
+                                )))))
+#
+# Sort folders; applied *AFTER* nametrans, if any.
+# We'll use a python helper function from offlineimap.py (sourced above)
+foldersort = lambda x, y: mycmp(x, y)

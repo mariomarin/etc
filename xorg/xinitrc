@@ -1,0 +1,58 @@
+# xrdb and dbus need to be handled here since we're not using a
+# desktop environment
+
+sysmodmap=/etc/X11/xinit/Xmodmap
+if [ -f $sysmodmap ]; then xmodmap $sysmodmap; fi
+xrdb -merge ~/.Xresources
+xsetroot -cursor_name left_ptr
+xsetroot -solid "#002b36"
+hsetroot -solid "#002b36"
+unclutter &
+urxvtd -q -f -o &
+
+#following is duplicate of above... why did I stick it in here?
+#xmodmap /etc/X11/xinit/Xmodmap
+
+# cairo-compmgr seems to cause some occasional problem if started before 
+# xmonad? could also just be the fact that I switch to cairo-compmgr-git
+#cairo-compmgr &
+xcompmgr -f -D 6 &
+#xcompmgr -cC -f -D 6 &
+gromit-mpx &
+#xbindkeys -f /etc/X11/xinit/xbindkeysrc
+#xbindkeys -f $HOME/.xbindkeysrc -X :0
+
+#setxkbmap -option ctrl:swapcaps
+setxkbmap -option ctrl:nocaps
+
+# turn off pc-speaker
+xset -b
+
+# work on tight loops and flashing when changing windows manually in xmonad
+# export SAL_USE_VCLPLUGIN=gen
+
+# D-Bus
+dbuslaunch="`which dbus-launch 2>/dev/null`"
+if [ -n "$dbuslaunch" ] && [ -x "$dbuslaunch" ] && [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+  eval `$dbuslaunch --sh-syntax --exit-with-session`
+fi
+
+# xsetwacom set "Wacom ISDv4 E6 Finger touch" Mode "Absolute"
+# Following are experimental values to improve two finger scroll response
+# taptime needs to be higher than 25, 250 worked to detect two finger press/tap 
+# for doubleclick
+#xsetwacom set "Wacom ISDv4 E6 Finger touch" TapTime 25
+xsetwacom set "Wacom ISDv4 E6 Finger touch" Suppress 1
+xsetwacom set "Wacom ISDv4 E6 Finger touch" RawSample 20
+xsetwacom set "Wacom ISDv4 E6 Finger touch" ScrollDistance 40
+
+# see https://wiki.archlinux.org/index.php/ConsoleKit
+# and https://bbs.archlinux.org/viewtopic.php?pid=905725#p905725
+#/home/es/bin/xbindkeys-slowstart &
+
+# must source environment for xbindkeys mouse bindings to function
+# TODO: figure out why
+. $HOME/.profile
+xbindkeys
+
+xmonad

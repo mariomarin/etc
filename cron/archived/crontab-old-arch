@@ -1,0 +1,6 @@
+*/5 * * * * /home/es/bin/mail-send-queue
+*/5 * * * * /home/es/bin/mailrun
+@daily      ID=update-contacts	/home/es/bin/goobook-dump-static &>/dev/null &
+@hourly     ID=cal-week-dump	/home/es/bin/cal-week-dump &>/dev/null &
+@hourly     ID=cal-month-dump	/home/es/bin/cal-month-dump &>/dev/null &
+

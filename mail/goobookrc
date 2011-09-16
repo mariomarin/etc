@@ -1,0 +1,11 @@
+# "#" or ";" at the start of a line makes it a comment.
+[DEFAULT]
+# If not given here, email and password is taken from .netrc using
+# machine google.com
+# email: es@ethanschoonover.com
+# password: passwordgoeshere
+# The following are optional, defaults are shown
+cache_filename: ~/.cache/goobook_cache
+cache_expiry_hours: 24
+filter_groupless_contacts: yes
+

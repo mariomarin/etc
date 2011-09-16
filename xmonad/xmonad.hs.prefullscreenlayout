@@ -1,0 +1,91 @@
+import XMonad                       -- I am the MCP, tron
+import XMonad.Actions.WithAll       -- act on all windows (killall)
+import XMonad.Hooks.DynamicLog      -- simplifies xmobar use
+import XMonad.Actions.CycleWS       -- cycle on / shift to workspaces
+import XMonad.Hooks.EwmhDesktops    -- ewmh is a terrible acronym
+import XMonad.Hooks.ManageDocks     -- status bar awareness
+import XMonad.Hooks.ManageHelpers   -- isFullscreen, doFullFloat
+import XMonad.Layout.NoBorders      -- get smart about borders
+import XMonad.Layout.Fullscreen
+import XMonad.Util.EZConfig         -- easier key mapping
+
+--MAIN
+------------------------------------------------------------------------
+main            = xmonad =<<
+                  statusBar myBar myPP toggleStrutsKey (ewmh myConfig)
+
+--XMOBAR
+------------------------------------------------------------------------
+myBar           = "xmobar"
+myPP            = xmobarPP
+                { ppCurrent = xmobarColor "#93a1a1" "" . wrap "[" "]" 
+                , ppTitle   = xmobarColor "#859900" ""
+                . shorten 40
+                , ppVisible = wrap "((" "))"
+                , ppUrgent  = xmobarColor "#dc322f" "#b58900" }
+toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
+
+--APPS
+------------------------------------------------------------------------
+myTerminal      = "urxvtc"
+
+--THEME
+------------------------------------------------------------------------
+myModMask       = mod1Mask
+myBorderWidth   = 3
+myBorder        = "#073642"
+myBorderFocus   = "#586e75"
+
+--MANAGEHOOK
+------------------------------------------------------------------------
+myManageHook    = composeAll
+                [ isFullscreen                  --> doFullFloat
+                , className =? "MPlayer"        --> doFloat
+                , className =? "Gimp"           --> doFloat
+                , className =? "Skype"          --> doFloat
+                , className =? "Cellwriter"     --> doIgnore
+                , resource  =? "desktop_window" --> doIgnore ]
+                <+> manageDocks
+
+--LAYOUT
+------------------------------------------------------------------------
+myLayout        = avoidStruts $ smartBorders $
+                  (tiled ||| Mirror tiled ||| Full)
+                  where
+                    tiled   = Tall nmaster delta ratio
+                    nmaster = 1
+                    ratio   = 1/2
+                    delta   = 3/100
+
+--BINDINGS
+------------------------------------------------------------------------
+myKeys          = myKeymap myConfig
+myKeymap conf   = [ ("S-M-c",               killAll                 )
+                  , ("M-<Right>",           moveTo Next NonEmptyWS  )
+                  , ("M-<Left>",            moveTo Prev NonEmptyWS  )
+                  , ("M4-b",                spawn "chrome"          )
+                  , ("M4-x",                spawn "~/tmp/testbash"          )
+                  , ("M-c",                 kill                    ) ]
+--TODO: break out apps as separate concatenated list
+--myMouseBindings = [ ((0,button1), (\w -> nextWS)) ]
+
+--STARTUP
+------------------------------------------------------------------------
+myStartupHook   = do
+                  ewmhDesktopsStartup
+                  return () >> checkKeymap myConfig myKeys
+
+--CONFIG
+------------------------------------------------------------------------
+myConfig        = defaultConfig
+                  { borderWidth         = myBorderWidth
+                  , normalBorderColor   = myBorder
+                  , focusedBorderColor  = myBorderFocus
+                  , handleEventHook     = fullscreenEventHook
+                  , layoutHook          = myLayout
+                  , manageHook          = myManageHook
+                  , modMask             = myModMask
+                  , startupHook         = myStartupHook
+                  , terminal            = myTerminal }
+                  `additionalKeysP`     (myKeys)
+--                `additionalMouseBindings` (myMouseBindings)

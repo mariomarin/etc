@@ -1,0 +1,17 @@
+# use glob syntax.
+syntax: glob
+.DS_Store
+*.swp
+*.pass
+#.swo
+.netrwhist
+vim/tmp
+*.un~
+*.git
+netrc
+pass
+xmonad**history
+xmonad**xmonad-*
+xmonad**.hi
+xmonad**.errors
+xmonad**.o

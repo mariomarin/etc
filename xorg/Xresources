@@ -1,0 +1,238 @@
+!!--------------------------
+!! Xresources
+!!--------------------------
+
+!! its possible that some of these settings should be prefixed by urxvt
+!! and not left wildcarded to match all X apps that happen upon them
+!! but im using urxvt with different class names in a couple instances
+!! and I wanted to ensure that they took the same settings
+
+!!--------------------------------------------------------
+!! keys, primarily for urxvt
+!!--------------------------------------------------------
+
+!! quick change between three nice font sizes...
+!! covers pretty much all my needs
+!!*keysym.C-0:command:    \033]710;-*-terminus-medium-*-*-*-20-*-*-*-*-*-*-*\007\
+!!                        \033]711;-*-terminus-medium-*-*-*-20-*-*-*-*-*-*-*\007
+!!*keysym.C-minus:command:\033]710;-*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*\007\
+!!                        \033]711;-*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*\007
+!!*keysym.C-equal:command:\033]710;-*-terminus-bold-*-*-*-28-*-*-*-*-*-*-*\007\
+!!                        \033]711;-*-terminus-bold-*-*-*-28-*-*-*-*-*-*-*\007
+
+!! following recorded for reference as alternate font name method
+!! not used, however, as the 28 pixel size font didnt bold properly
+!! in all other respects identical to font names above
+!!*keysym.C-0:command:  \033]710;xft:terminus-medium:pixelsize=20\007\
+!!                      \033]711;xft:terminus-medium:pixelsize=20\007
+!!*keysym.C-minus:command:\033]710;xft:terminus-medium:pixelsize=16\007\
+!!                      \033]711;xft:terminus-medium:pixelsize=16\007
+!!*keysym.C-equal:command:\033]710;xft:terminus-bold:pixelsize=28\007\
+!!                      \033]711;xft:terminus-bold:pixelsize=28\007
+
+!! 18 is also a nice normal size
+*keysym.C-0:command:\033]710;xft:LetterGothicMono-Light:pixelsize=16\007\
+                        \033]711;xft:LetterGothicMono:pixelsize=16\007
+*keysym.C-minus:command:\033]710;xft:lettergothicmono-light:pixelsize=14\007\
+                        \033]711;xft:lettergothicmono:pixelsize=14\007
+*keysym.C-equal:command:\033]710;xft:lettergothicmono-light:pixelsize=28\007\
+                        \033]711;xft:lettergothicmono:pixelsize=28\007
+
+!! for reference/testing
+!! printf '\33]50;%s%d\007' "xft:Terminus:pixelsize=16"
+
+!! these are recorded here for reference. couldnt get big/small to work
+!!urxvt*modifier: super
+!!urxvt*bigfont_key: greater
+!!urxvt*smallfont_key: less
+
+!!--------------------------------------------------------
+!! Fonts
+!!--------------------------------------------------------
+
+!!-- font: valid values for terminus include 12,14,16,20,22,28,32
+!!-- these could also be defined as in the shortcut keys above
+!!#define FONT            xft:terminus-medium:pixelsize=20
+
+!!#define FONT            xft:terminus-medium:pixelsize=20, \
+!!                        xft:DejaVuSansMono:pixelsize=18
+!!#define BFONT           xft:terminus-bold:pixelsize=20
+
+!!#define FONT            xft:LetterGothicMono-Light:pixelsize=18
+!!#define BFONT           xft:LetterGothicMono:pixelsize=18
+#define FONT            xft:LetterGothicMono-Light:pixelsize=16
+#define BFONT           xft:LetterGothicMono:pixelsize=16
+
+!!#define FONT            xft:DejaVuSansMono:pixelsize=18
+!!#define BFONT           xft:DejaVuSansMono:pixelsize=18:style=bold
+!! Xft resources
+!!Xft.antialias:true
+!!Xft.antialias:rgba
+!!Xft.dpi:                126
+!!Xft.hinting:true
+! hintslight | hintmedium | hintsfull
+!!Xft.hintstyle:hintfull
+! rgba subpixel hinting ( for lcds) - unknown, rgb, bgr, vrgb, vbgr, none
+!!Xft.rgba:rgb
+!!Xft.lcdfilter: lcddefault
+!!
+!! infinality font suggested settings
+Xft.autohint: 0
+Xft.lcdfilter:  lcddefault
+Xft.hintstyle:  hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+!Xft.dpi: 96
+Xft.dpi:                126
+Xft.rgba: rgb
+
+*font:                  FONT
+*boldFont:              FONT
+*italicFont:            FONT
+*boldItalicFont:        FONT
+
+!! following used in the font size select menu with the big/small
+!! shortcuts (see above) but I couldnt get it working correctly, so
+!! skipped for now. I actually prefer the 0/-/+ three tier font size
+!! so chose not to pursue this route, but keep it here for reference
+!!*mfont:-*-terminus-medium-*-*-*-20-*-*-*-*-*-*-*
+!!*font1:-*-terminus-medium-*-*-*-14-*-*-*-*-*-*-*
+!!*font2:-*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*
+!!*font3:-*-terminus-medium-*-*-*-20-*-*-*-*-*-*-*
+!!*font4:-*-terminus-medium-*-*-*-28-*-*-*-*-*-*-*
+
+!!--------------------------------------------------------
+!! Colors
+!!--------------------------------------------------------
+
+!!SOLARIZED HEX     16/8 TERMCOL  XTERM/HEX   L*A*B      RGB         HSB
+!!--------- ------- ---- -------  ----------- ---------- ----------- -----------
+!!base03    #002a32  8/4 brblack  234 #1c1c1c 15 -12 -09   0  42  50 190 100  20
+!!base02    #17353d  0/4 black    235 #262626 20 -10 -09  23  53  61 193  62  24
+!!base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
+!!base00    #617c82 11/7 bryellow 241 #626262 50 -09 -07  97 124 130 191  25  51
+!!base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
+!!base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
+!!base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
+!!base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
+!!yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
+!!orange    #c45221  9/3 brred    166 #d75f00 50  45  50 196  82  33  18  83  77
+!!red       #cd1e1a  1/1 red      124 #af0000 45  65  50 205  30  26   1  87  80
+!!magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
+!!violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
+!!blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
+!!cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
+!!green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+
+#define S_base03        #002b36
+#define S_base02        #073642
+#define S_base01        #586e75
+#define S_base00        #657b83
+#define S_base0         #839496
+#define S_base1         #93a1a1
+#define S_base2         #eee8d5
+#define S_base3         #fdf6e3
+#define S_yellow        #b58900
+#define S_orange        #cb4b16
+#define S_red           #dc322f
+#define S_magenta       #d33682
+#define S_violet        #6c71c4
+#define S_blue          #268bd2
+#define S_cyan          #2aa198
+#define S_green         #719e07
+
+!!*background:            S_base03
+*background:            #002b36
+*foreground:            S_base0
+!!*fading:                20
+!!*fadeColor:             S_base03
+*cursorColor:           S_base1
+*pointerColorBackground:S_base01
+*pointerColorForeground:S_base1
+
+!! black dark/light
+*color0:                S_base02
+*color8:                S_base03
+
+!! red dark/light
+*color1:                S_red
+*color9:                S_orange
+
+!! green dark/light
+*color2:                S_green
+*color10:               S_base01
+
+!! yellow dark/light
+*color3:                S_yellow
+*color11:               S_base00
+
+!! blue dark/light
+*color4:                S_blue
+*color12:               S_base0
+
+!! magenta dark/light[
+*color5:                S_magenta
+*color13:               S_violet
+
+!! cyan dark/light
+*color6:                S_cyan
+*color14:               S_base1
+
+!! white dark/light
+*color7:                S_base2
+*color15:               S_base3
+
+
+!!--------------------------------------------------------
+!! basic urxvt settings
+!!--------------------------------------------------------
+
+*termName:              rxvt-unicode-256color
+*saveLines:             8192
+
+!!urxvt.perl-ext-common:		default,tabbed
+urxvt.perl-ext-common:       default,matcher
+
+!!urxvt.perl-ext-common:  default,tabbed
+*urgentOnBell:          true
+!!*urlLauncher:           chromium
+!!urxvt.urlLauncher:      uzbl-browser
+urxvt.urlLauncher:      chromium
+
+urxvt.matcher.button:   1
+
+*scrollBar:             true
+*scrollBar_right:       true
+*scrollBar_floating:    true
+*scrollstyle:           plain
+*scrollColor:           S_green
+
+
+!! transparent is for faux transparency, so i turn it off here
+!! and we use true alpha values instead, below
+!!
+!! set bit depth to 32 for true alpha transparency
+!!
+!! background can be specified as rgba or as a hex value with alpha value prefix
+!! I prefer the latter as its more familiar
+!! for examples: urxvt*background: rgba:1300/1300/1300/cccc
+!! or: urxvt*background: [70]#1c1c1c	
+!!
+!! fading dims the window by a percentage and color
+!! (e.g. 40% black in this case)
+
+urxvt*cursorUnderline:  true
+
+!!urxvt*transparent:      false
+
+!! depth 32 should be specified on the command line for scratchpad terms
+!!urxvt*depth:            32
+urxvt*background:       [95]#002b36
+!!*fading:                20
+!!*fadeColor:             S_base03
+!!urxvt*background:       #002b36
+
+!!urxvt*externalBorder:   2
+!!urxvt*borderColor:      #FF0000
+
+

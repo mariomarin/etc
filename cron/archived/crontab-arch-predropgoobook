@@ -1,0 +1,6 @@
+*/5 * * * * /home/es/bin/mail-send-queue
+*/5 * * * * /home/es/bin/mailrun
+@daily      /home/es/bin/goobook-dump-static &>/dev/null &
+@hourly     /home/es/bin/gcal update week &>/dev/null &
+@hourly     /home/es/bin/gcal update month &>/dev/null &
+

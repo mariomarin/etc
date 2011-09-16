@@ -1,0 +1,18 @@
+# for sidebar patch only ----------------------------------------------
+
+# note that the "mailboxes" value determines list of mailboxes show in sidebar
+
+# unused; for reference
+# sidebar-scroll-up
+# sidebar-scroll-down
+
+# set up the sidebar, default not visible
+set sidebar_delim       = '│'
+set sidebar_width=30
+set sidebar_visible=yes
+color sidebar_new green default
+
+bind index,pager  \CP sidebar-prev
+bind index,pager  \CN sidebar-next
+bind index,pager  \CO sidebar-open
+macro index,pager \Ci '<enter-command>toggle sidebar_visible<enter>'

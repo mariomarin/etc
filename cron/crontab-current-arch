@@ -1,0 +1,6 @@
+*/5 * * * * /home/es/bin/mail-send-queue
+*/5 * * * * /home/es/bin/mailrun
+@daily      /home/es/bin/google2mutt.pl 1>/home/es/var/mail/contacts/aliases 2>/dev/null &
+@hourly     /home/es/bin/gcal update week &>/dev/null &
+@hourly     /home/es/bin/gcal update month &>/dev/null &
+

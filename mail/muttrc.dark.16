@@ -1,0 +1,2 @@
+source $HOME/etc/mail/muttrc
+source $HOME/etc/mail/muttrc.colors.solarized-dark-16

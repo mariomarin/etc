@@ -1,0 +1,10 @@
+Config  { font     = "xft:lettergothicmono:style=bold:pixelsize=12"
+        , bgColor       = "#073642"
+        , fgColor       = "#657b83"
+        , position      = Bottom
+        , lowerOnStart  = False
+        , commands      = [ Run StdinReader ]
+        , sepChar       = "%"
+        , alignSep      = "}{"
+        , template      = " %StdinReader%"
+        }

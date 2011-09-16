@@ -1,0 +1,25 @@
+# vim: set ft=muttrc:
+# sourced for gmail direct IMAP
+
+# gmail imap settings 
+set imap_user 	= ""					# gmail user@gmail.com
+set imap_pass 	= ""					# gmail password
+set folder 	= "imaps://imap.gmail.com:993"		# don't forget the :993
+set spoolfile 	= "+INBOX"				# Inbox
+set postponed 	= "+[Gmail]/Drafts"			# Drafts
+
+# fixes spotty connectivity etc
+set imap_keepalive = 240				# prevent imap from closing
+set imap_idle						# prevent imap from closing
+set imap_check_subscribed				# check all imap folders
+unset imap_passive 					# mutt will open new imap connections
+unset imap_servernoise 					# suppresses imap warnings
+unset suspend						# don't suspend
+
+# check inbox first
+mailboxes = +INBOX					# check inbox first and foremost
+
+# bindings specific to imap
+macro index "K" "<save-message>+Keep<enter>" 		"Mark message as keep"
+macro index "D" "<save-message>+[Gmail]/Trash<enter>" 	"Trash"
+macro index "S" "<save-message>+[Gmail]/Spam<enter>" 	"Mark message as spam"

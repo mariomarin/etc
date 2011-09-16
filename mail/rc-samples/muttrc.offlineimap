@@ -1,0 +1,20 @@
+# vim: set ft=muttrc:
+# sourced for offlineimap use
+# use in conjuction with .offlineimaprc
+
+# main options
+set         mbox_type           = Maildir                           # mailbox type
+set         mask                = ""                                # "!^\.[^.]"
+set         folder              = ~/data/mail/gmail                 # root folder
+set         spoolfile           = "+inbox"                         # inbox
+set         mbox                = "+_archive"                       # [Gmail]/All Mail
+set         postponed           = "+_drafts"                        # [Gmail]/Drafts
+
+# mailboxes
+mailboxes +gmail/inbox +gmail/archive gmail/+spam		# makes a short list for switching
+#source      $HOME/$MAIL_DATA/mailboxes                              # mailbox list from offlineimap
+
+# bindings specific to offline
+#macro index "K" "<save-message>+keep<enter>" 	"Mark message as keep"
+macro index "D" "<save-message>+_trash<enter>" 	"Move message to the trash"
+macro index "S" "<save-message>+_spam<enter>" 	"Mark message as spam"

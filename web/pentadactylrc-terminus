@@ -1,0 +1,16 @@
+"1.0b3 (created: 2010/11/06 12:31:35)
+
+highlight StatusModeMsg color: inherit !important; background: inherit !important; padding-right: 1em; font-family: Terminus !important; font-family: Terminus !important
+highlight Normal color: black   !important; background: white   !important; font-weight: normal !important; font-family: Terminus !important;
+highlight ErrorMsg color: white   !important; background: red     !important; font-weight: bold !important; font-family: Terminus !important;
+highlight Message white-space: pre-wrap !important; min-width: 100%; width: 100%; padding-left: 4em; text-indent: -4em; display: block; font-family: Terminus !important;
+highlight CmdLine font-family: Terminus !important; padding: 1px !important; font-weight: normal !important
+highlight CmdOutput white-space: pre; font-family: Terminus !important; font-family: Terminus !important;
+highlight CompGroup font-family: Terminus !important;
+highlight StatusLine font-family: Terminus !important; color: white !important; background: black !important; font-weight: normal !important;
+highlight StatusLineBroken color: black !important; background: #FFa0a0 !important /* light-red */; font-family: Terminus !important;
+highlight StatusLineSecure color: black !important; background: #a0a0FF !important /* light-blue */; font-family: Terminus !important;
+highlight StatusLineExtended color: black !important; background: #a0FFa0 !important /* light-green */; font-family: Terminus !important;
+set runtimepath=/home/es/.pentadactyl
+
+" vim: set ft=pentadactyl:

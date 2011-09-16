@@ -1,0 +1,158 @@
+# universal zsh/bash environment & initialization script
+# es@ethanschoonover.com
+
+
+# ---------------------------------------------------------------------
+# PLATFORM SPECIFIC ENVIRONMENT CONFIG
+# ---------------------------------------------------------------------
+case $(uname) in
+        Linux)
+            # following requires a chrome script. using this as the chrome
+            # script can start chromium differently on different systems,
+            # for intance, forcing webgl to start
+            # export BROWSER=uzbl
+            export BROWSER=chrome
+            export PLATFORM=linux
+        ;;
+        Darwin)
+            export HOME=$HOME/home
+            cd $HOME
+            export PATH="$PATH:/opt/local/bin:/opt/local/sbin"
+            export PATH="$HOME/Library/Haskell/bin:$PATH"
+            # following because brew install zsh misses its functions
+            fpath=( /usr/local/share/zsh/functions $fpath )
+            export BROWSER="open /Applications/Google\ Chrome.app"
+            export PLATFORM=osx
+        ;;
+        *)
+            logger "WARNING: Unknown platform detected (~/etc/bin/shell/profile)" 
+        ;;
+esac
+
+# ---------------------------------------------------------------------
+# ENVIRONMENT VARIABLES
+# ---------------------------------------------------------------------
+# The following conf files use the bin or conf directories in hardcoded 
+# declarations due to config file limitations:
+# ../mail/offlineimaprc
+# ../web/newsbeuter-config  -- may support path variable, need to test
+# ../crontab/crontab-current*
+
+export BIN_DIR=bin
+export CONF_DIR=etc
+export SEC_DIR=sec
+export DATA_DIR=var
+
+export BIN_PATH=$HOME/$BIN_DIR
+export CONF_PATH=$HOME/$CONF_DIR
+export SEC_PATH=$HOME/$SEC_DIR
+export DATA_PATH=$HOME/$DATA_DIR
+
+export MAILCONF=$CONF_PATH/mail # used in muttrc, offlineimaprc, msmtprc
+export MAILDATA=$DATA_PATH/mail # used in muttrc, offlineimaprc, msmtprc
+
+# ---------------------------------------------------------------------
+# PATH
+# ---------------------------------------------------------------------
+# initial bin relative to current directory
+export PATH="bin:/usr/local/bin:/usr/local/sbin:$PATH:$BIN_PATH:$CONF_PATH/bin:$SEC_PATH/bin"
+
+# ---------------------------------------------------------------------
+# APPS
+# ---------------------------------------------------------------------
+export EDITOR=vim
+export BROWSER=chrome
+export MUTTJUMP_INDEXER=notmuch
+
+# ---------------------------------------------------------------------
+# ALIASES
+# ---------------------------------------------------------------------
+alias uzbl='uzbl-browser &>/dev/null &'
+alias netcfg='sudo netcfg'
+alias shutdown='sudo pm-powersave false && sudo poweroff'
+alias reboot='sudo pm-powersave false && sudo reboot'
+alias weechat='weechat-curses'
+
+# ---------------------------------------------------------------------
+# SHELL TYPE SPECIFIC FUNCTIONS
+# ---------------------------------------------------------------------
+function omz()
+{
+# for interactive zsh shells
+
+# Path to your oh-my-zsh configuration.
+export ZSH=$HOME/.oh-my-zsh
+
+# Set to the name theme to load.
+export ZSH_THEME="../../$CONF_DIR/shell/brute"
+
+# export DISABLE_AUTO_UPDATE="true"
+
+# oh-my-zsh plugins
+plugins=(vi-mode)
+
+# source oh-my-zsh
+source $ZSH/oh-my-zsh.sh
+bindkey -v
+
+# the following addresses problems with the oh-my-zsh vim plugin eating the
+# line above the prompt with resetting it. I've had no negative impact from
+# nullifying the function of zle-line-init
+#function zle-line-init {
+#}
+}
+
+# ---------------------------------------------------------------------
+# DETECT SHELL TYPE (ZSH/BASH), MODE (NON)INTERACTIVE, STATE (NON)LOGIN
+# ---------------------------------------------------------------------
+if [[ -n $PS1 ]]; then SHELLSTATE=interactive; else SHELLSTATE=noninteractive; fi
+
+if ( `shopt &>/dev/null` ); then
+    SHELLTYPE=bash
+    if shopt -q login_shell; then SHELLMODE=login; else SHELLMODE=nonlogin; fi
+else
+    SHELLTYPE=zsh
+    if [[ -o login ]]; then SHELLMODE=login; else SHELLMODE=nonlogin; fi
+fi
+
+# ---------------------------------------------------------------------
+# EXECUTE BASED ON SHELL MODE
+# ---------------------------------------------------------------------
+case $SHELLMODE in
+    login)
+        # this is typically going to be either straight from a virtual terminal 
+        # (tty1-n) or through ssh. Possible to include some SSH specific logic 
+        # here.  
+
+        # start x if we're not root and on tty1 (e.g. default boot condition)
+        # who needs a display manager?
+        if [[ $USER != "root" ]] && [[ `tty` = /dev/tty1 ]] && [[ -z "$DISPLAY" ]]; then
+            eval `keychain --quiet --eval id_rsa`
+            # .Xauthority causes X startup failure every other login. I know 
+            # how that sounds. .Xauthority, I do not like you.
+            rm .Xauthority* &>/dev/null || true
+            startx
+            logout
+        fi
+    ;;
+    nonlogin)
+        # normal shell & shell script state
+        logger ">>>>>>>>>> SHELL MODE: nonlogin ($SHELLTYPE)"
+    ;;
+    *)  logger ">>>>>>>>>> SHELL MODE: NOT DETECTED ($SHELLTYPE)" ;;
+esac
+
+# ---------------------------------------------------------------------
+# EXECUTE BASED ON SHELL STATE
+# ---------------------------------------------------------------------
+case $SHELLSTATE in
+    interactive)
+        logger ">>>>>>>>>> SHELL STATE: interactive ($SHELLTYPE)"
+        if [[ $SHELLTYPE = "zsh" ]]; then omz; fi
+    ;;
+    noninteractive)
+        logger ">>>>>>>>>> SHELL STATE: noninteractive ($SHELLTYPE)"
+    ;;
+    *)  logger ">>>>>>>>>> SHELL STATE: NOT DETECTED" ;;
+esac
+

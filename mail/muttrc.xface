@@ -1,0 +1,3 @@
+# for xface patch only
+set             xface
+set             xface_w3mimgdisplay=/usr/lib/w3m/w3mimgdisplay

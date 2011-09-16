@@ -1,0 +1,9 @@
+[gcalcli]
+user: es@ethanschoonover.com
+pw: passwordgoeshere
+cals: all
+details: false
+ignore-started: false
+cal-owner-color: brightblue
+cal-read-color: red
+cal-editor-color: yellow

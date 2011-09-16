@@ -1,0 +1,19 @@
+[ui]
+username = Ethan Schoonover <e@ejas.net>
+merge = vimdiff
+# CONF_PATH set in zshenv/profile
+ignore = $CONF_PATH/vcs/hgignore
+
+[merge-tools]
+vimdiff.executable = vim
+vimdiff.args = -d $base $local $output $other +close +close
+
+[extensions]
+mq =
+#prompt = ~/conf/vcs/hg-extensions/prompt.py
+
+[hooks]
+post-commit = hg summary >/dev/null
+
+# CONF_PATH set in zshenv/profile
+%include $CONF_PATH/vcs/hgrc-$PLATFORM

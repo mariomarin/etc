@@ -1,0 +1,106 @@
+# offlineimap configuration file
+#
+# es@ethanschoonover.com
+
+##################################################
+# General definitions
+##################################################
+
+[general]
+metadata = ~/var/mail/offlineimap
+accounts = gmail
+maxsyncaccounts = 1
+# ui is one of machineui, blinkenlights, quiet, ttyui, basic
+ui = basic
+ignore-readonly = no
+pythonfile = ~/etc/mail/offlineimap.py
+socktimeout = 60
+fsync = true
+
+##################################################
+# Mailbox name recorder
+##################################################
+
+[mbnames]
+enabled = yes
+filename = ~/var/mail/mailboxes
+header = "mailboxes "
+#peritem = "+%(accountname)s/%(foldername)s"
+peritem = "+%(foldername)s"
+sep = " "
+footer = "\n"
+
+##################################################
+# Accounts
+##################################################
+
+[Account gmail]
+localrepository = gmail_local
+remoterepository = gmail_remote
+#postsynchook = notmuch new
+
+#following settings if we use continuous autorefresh; unfortunately offlineimap
+#isn't so stable on it's own, so we instead run it via cron as a full sync each
+#time. auto sync settings commented out here for reference.
+#autorefresh = 1
+#quick = 10
+# presynchook = imapfilter
+# postsynchook = notifysync.sh
+# maxsize = 2000000
+#
+# consider limiting age to reduce storage on laptop
+# maxage = 5
+
+[Repository gmail_local]
+type = Maildir
+localfolders = ~/var/mail/accounts/gmail
+sep = /
+restoreatime = no
+
+[Repository gmail_remote]
+type = Gmail
+remoteuser = es@ethanschoonover.com
+remotepassfile = ~/etc/sec/offlineimap.pass
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+maxconnections = 3
+
+# specific to desktop if we are using autorefresh above
+#holdconnectionopen = yes
+#keepalive = 30
+
+# expunge = no
+subscribedonly = no
+realdelete = no
+trashfolder = [Gmail]/Trash
+spamfolder = [Gmail]/Spam
+#
+# Filter for specific folders; applied *BEFORE* nametrans.
+#folderfilter = lambda foldername:  foldername in [
+#                                   'INBOX', 
+#                                   '[Gmail]/Starred']
+#the following filter will prevent gmail from properly trashing messages that
+#have been "truly" deleted in mutt by moving them to the trash (if Trash folder
+#is filtered out).
+folderfilter = lambda foldername:  foldername not in [
+                                   '[Gmail]/Spam',
+                                   '[Gmail]/All Mail']
+#folderfilter = lambda foldername:  foldername not in [
+#                                   '[Gmail]/Trash',
+#                                   '[Gmail]/Spam']
+#
+# Translate folder names
+# This removes the [Gmail] prefix, converts everything to lowercase (good?)
+# and renames some gmail folders to alternates
+nametrans = lambda foldername:  re.sub ('^\[gmail\].',  '',
+                                re.sub ('inbox',        'INBOX',
+                                re.sub ('sent_mail',    'sent',
+                                re.sub ('all_mail',     'archive',
+                                re.sub ('starred',      'flagged',
+                                re.sub (' ',            '_',        foldername.lower()
+                                ))))))
+
+# Sort folders; applied *AFTER* nametrans, if any.
+# We'll use a python helper function from offlineimap.py (sourced above)
+#foldersort = lambda x, y: mycmp(x, y)
+#determines which folders get synchronized first
+foldersort = mycmp

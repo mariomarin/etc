@@ -1,0 +1,131 @@
+# mutt configuration : bindings : gmail
+# ethan schoonover / es@ethanschoonover.com
+
+# general/unfiled/reference -------------------------------------------
+#macro index "D" "<save-message>+gmail/trash<enter>" "Move message to the trash"
+#macro index "S" "<save-message>+gmail/spam<enter>"  "Mark message as spam"
+#macro index "P" "<next-unread-mailbox>" "Jump to next mailbox with unread messages"
+#macro index "K" "<save-message>+gmail/keep<enter>" "Mark message as keep"
+#macro index "P" "<save-message>+gmail/important<enter><undelete-message>" 	"Mark message as spam"
+#macro index "P" "<copy-message>+gmail/important<enter>" 	"Mark message as spam"
+#macro index,pager           y "<enter-command>unset trash\n <delete-message>" "Gmail archive message"
+#macro index,pager           d "<enter-command>set trash=\"imaps://imap.googlemail.com/[GMail]/Bin\"\n <delete-message>" "Gmail delete message"
+
+# changing folders ----------------------------------------------------
+macro index,pager           gi  "<change-folder>!<enter>"           "Go to inbox"
+macro index,pager           gl  "<change-folder>^<enter>"           "Go to last"
+macro index,pager           gp  "<change-folder>=important<enter>"  "Go to priority inbox"      # [Gmail]/Important (p=priority)
+macro index,pager           ga  "<change-folder>=archived<enter>"   "Go to all mail"            # [Gmail]/All
+macro index,pager           gs  "<change-folder>=flagged<enter>"    "Go to starred messages"    # [Gmail]/Starred
+macro index,pager           gf  "<change-folder>=flagged<enter>"    "Go to starred messages"    # [Gmail]/Starred
+macro index,pager           gd  "<change-folder>=drafts<enter>"     "Go to drafts"              # [Gmail]/Drafts
+macro index,pager           gt  "<change-folder>=sent<enter>"       "Go to sent"                # [Gmail]/Drafts
+bind  index,pager           gu  next-unread-mailbox
+bind  index,pager           o   change-folder                                                   # like vim "open"
+
+# show/hide things ----------------------------------------------------
+bind  index                 zA  collapse-thread                                                 # toggle thread, similar to vim folding (though inverted)
+bind  index                 za  collapse-all                                                    # toggle all thread, similar to vim folding
+bind  pager                 zA  toggle-quoted                                                   # toggle quote section, similar to vim folding
+bind  pager                 za  toggle-quoted                                                   # toggle quote section, similar to vim folding
+bind  index,pager           H   display-toggle-weed                                             # show raw header
+
+# deleting/editing/flagging -------------------------------------------
+macro index,pager           "#" "<save-message>+trash<enter>"       "Move message to trash"     # [Gmail]/Trash
+macro index,pager           "!" "<save-message>+spam<enter>"        "Mark message as spam"      # [Gmail]/Spam
+macro index,pager           "s" "<save-message>?\r<enter>"          "Save message in folder"    # "r"  would be more vim like, perhaps
+macro index,pager           "c" "<copy-message>?<enter>"          "Copy message to folder"    # "yy" would be more vim like, perhaps
+#bind generic,index,pager   d   noop
+bind  index,pager           e   delete-message                                                  # like gmails archive
+#bind index,pager dd delete-message
+bind  index,pager           x   delete-message # think "small delete" like delete character in vim
+bind  index,pager           X   undelete-message
+#macro index y "[tag-pattern]~A[enter][tag-prefix-cond][clear-flag]N[untag-pattern]~T[enter]"
+bind  index,pager           d   delete-thread # think "big delete" like delete line in vim
+bind  index,pager           D   undelete-thread
+macro index                 \Ce "<delete-pattern>~A<enter>"         "delete all messages"
+macro index                 \Ca "<tag-pattern>~A<enter>"            "tag all messages"
+bind  index,pager           E   edit                                                            # full message content
+bind  index,pager           f   flag-message # gmail is "s"
+bind  index                 I   toggle-new
+#bind index U toggle-new
+bind  pager                 I   mark-as-new
+#bind pager U mark-as-new
+bind  generic,index         t   tag-entry # gmail uses "x" but we'll use vim-like "t"
+bind  pager                 t   tag-message # gmail uses "x" but we'll use vim-like "t"
+bind  index                 T   tag-thread # gmail uses "x" but we'll use vim-like "t"
+bind  index                 \CT   tag-pattern # gmail uses "x" but we'll use vim-like "t"
+
+# navigation/saving ---------------------------------------------------
+bind index,pager            w   sync-mailbox # default is $, but this is more like vim 'write'
+macro index,pager           W   "<sync-mailbox><shell-escape>mailrun<enter>" "Sync mailbox and offlineimap." #<shell-escape>
+macro index,pager           $   "<sync-mailbox><shell-escape>mailrun<enter>" "Sync mailbox and offlineimap." #<shell-escape>
+bind index,pager            ZZ  quit # save changes to mailbox and quit
+bind pager                  q   exit # exit back to index
+bind index                  qq  exit # exit mutt without syncing changes
+bind generic,pager,browser,attach,compose,pgp,smime,postpone,query <esc> exit 
+# editor can apparently only be aborted with control-g and this can't be
+# effectively macro'd or rebound
+# macro editor \Ce '^G'
+
+# movement ------------------------------------------------------------
+bind generic,index,pager    J   next-entry
+bind generic,index,pager    K   previous-entry
+bind generic,index          j   next-entry
+bind generic,index          k   previous-entry
+bind pager                  j   next-line
+bind pager                  k   previous-line
+bind index,pager            l   next-thread
+bind index,pager            h   previous-thread
+bind generic,index,pager    J   next-entry
+bind generic,index,pager    K   previous-entry
+bind index,pager            \Cu next-new-then-unread # ctrl-j conflicts with the <return> bindings below so I use n/p cf http://dev.mutt.org/trac/ticket/3494
+bind index,pager            \Ch previous-new-then-unread
+bind generic,index,pager    \Cd half-down
+bind generic,index,pager    \Cu half-up 
+bind generic,index,pager    \Cf next-page
+bind generic,index,pager    \Cb previous-page
+bind index,pager            {   previous-thread
+bind index,pager            }   next-thread
+bind pager                  gg  top
+bind pager                  G   bottom
+bind index                  gg  first-entry
+bind index                  G   last-entry
+bind index                  H   top-page
+bind index                  M   middle-page
+bind index                  L   bottom-page
+bind pager                  H   top
+bind pager                  L   bottom
+bind pager                  <space> next-page
+bind pager                  ]   skip-quoted
+#bind index,pager n next-undeleted
+#bind index,pager p previous-undeleted
+
+# message actions -----------------------------------------------------
+bind index                  <return> display-message # like gmail
+bind generic                <return> select-entry # neither vim nor gmail like
+bind pager                  <return> exit # neither vim nor gmail like, but good
+
+macro index                 U |urlview\n
+macro pager                 U |urlview\n
+
+bind index,pager            b   bounce-message
+bind index,pager            f   forward-message
+bind index,pager            r   group-reply # to all recipients by default
+bind index,pager            R   reply # to sender only
+bind index,pager            m   mail # "c" would be more like gmail "compose" but using "c" for copy right now
+
+# composition actions -------------------------------------------------
+#bind editor <Tab> complete-query
+#bind editor ^T complete
+
+macro generic,index,pager <F7> "<enter-command>unset wait_key<enter><shell-escape>/usr/bin/mutt-notmuch --prompt search<enter><change-folder>~/.cache/mutt_results<enter>" "search mail (using notmuch)"
+macro generic,index,pager <F8> "<enter-command>unset wait_key<enter><enter-command>unignore message-id<enter><pipe-message>/usr/bin/mutt-notmuch thread<enter><change-folder-readonly>~/.cache/mutt_results<enter><enter-command>set wait_key<enter>" "search and reconstruct owning thread (using notmuch)"
+macro generic,index,pager <F6> "<enter-command>unset wait_key<enter><enter-command>unignore message-id<enter><enter-command>push <pipe-message>muttjump<enter><enter>" "jump to original message"
+macro generic,index,pager <F5> "<enter-command>unset wait_key<enter><enter-command>unignore message-id<enter><pipe-message>/usr/bin/notmuch tag -new<enter><enter-command>set wait_key<enter>" "tag message (using notmuch)"
+
+# other actions -------------------------------------------------------
+bind generic,index,pager    /   search
+bind generic,index,pager    %   shell-escape # mnemonic: zsh standard prompt
+bind generic                \Cl refresh # this is default and same as vim
+bind index,pager            @   display-address # defaul mutt

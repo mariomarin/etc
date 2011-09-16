@@ -1,0 +1,7 @@
+#!/bin/bash
+
+INDEX1='%3C  %Z  %?[2d?%\?['
+INDEX2=`echo -n $(($(date +%H) + 1))h`
+INDEX3='\?     Today %{%H:%M}\& Yesterday %[%H:%M]\?&%\?[7d\?%[%a %b %d %H:%M]\&%[%a %b %d %Y] \?? %%?M?%3M-&%\?X\?%3X+\&%4c\??       %-20.20F  %s'
+
+echo -n \'$INDEX1+$INDEX2+$INDEX3\'
