@@ -51,6 +51,8 @@ export DATA_PATH=$HOME/$DATA_DIR
 export MAILCONF=$CONF_PATH/mail # used in muttrc, offlineimaprc, msmtprc
 export MAILDATA=$DATA_PATH/mail # used in muttrc, offlineimaprc, msmtprc
 
+export ARCH_HASKELL='Ethan Schoonover <es@ethanschoonover.com>'
+
 # ---------------------------------------------------------------------
 # PATH
 # ---------------------------------------------------------------------

@@ -7,13 +7,6 @@
 -- Normally, you'd only override those defaults you care about.
 --
 
-------------------------------------------------------------------------
--- Imports
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
--- Default imports
-
 import XMonad
 import Data.Monoid
 import System.Exit
@@ -21,15 +14,10 @@ import System.Exit
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
-------------------------------------------------------------------------
--- Custom imports
-
-import XMonad.Hooks.DynamicLog
-
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
-myTerminal      = "urxvtc"
+myTerminal      = "xterm"
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
@@ -64,8 +52,7 @@ myFocusedBorderColor = "#ff0000"
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
-------------------------------------------------------------------------
-
+--
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- launch a terminal
@@ -252,16 +239,19 @@ myLogHook = return ()
 myStartupHook = return ()
 
 ------------------------------------------------------------------------
--- Main
-------------------------------------------------------------------------
+-- Now run xmonad with all the defaults we set up.
 
-main = xmonad =<< xmobar myConfig
+-- Run xmonad with the settings you specify. No need to modify this.
+--
+main = xmonad defaults
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
 -- use the defaults defined in xmonad/XMonad/Config.hs
-
-myConfig = defaultConfig {
+--
+-- No need to modify this.
+--
+defaults = defaultConfig {
       -- simple stuff
         terminal           = myTerminal,
         focusFollowsMouse  = myFocusFollowsMouse,

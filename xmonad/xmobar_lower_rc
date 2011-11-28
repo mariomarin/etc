@@ -1,7 +1,7 @@
-Config  { font     = "xft:DejaVuSans:pixelsize=12"
+Config  { font     = "xft:lettergothicmono:style=bold:pixelsize=12"
         , bgColor       = "#073642"
         , fgColor       = "#657b83"
-        , position      = Top
+        , position      = Bottom
         , lowerOnStart  = True
         , commands      = [ Run Date "%a %b %_d %Y %H:%M:%S" "theDate" 10
                           , Run StdinReader
