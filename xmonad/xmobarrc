@@ -1,4 +1,4 @@
-Config  { font     = "xft:DejaVuSans:pixelsize=12"
+Config  { font     = "xft:DejaVuSansMono:pixelsize=14"
         , bgColor       = "#073642"
         , fgColor       = "#657b83"
         , position      = Top
@@ -15,5 +15,5 @@ Config  { font     = "xft:DejaVuSans:pixelsize=12"
                           ]
         , sepChar       = "%"
         , alignSep      = "}{"
-        , template      = " %StdinReader% }{ %KSEA% <fc=#2aa198>%wlan0wi%</fc> <fc=#b58900>%default:Master%</fc> <fc=#93a1a1>%battery%</fc> <fc=#6c71c4>%cpu% %cpufreq% %swap%</fc> <fc=#268bd2>%theDate%</fc> "
+        , template      = " %StdinReader% }{ <fc=#2aa198>%wlan0wi%</fc> <fc=#b58900>%default:Master%</fc> <fc=#93a1a1>%battery%</fc> <fc=#6c71c4>%cpu% %cpufreq% %swap%</fc> <fc=#268bd2>%theDate%</fc> "
         }

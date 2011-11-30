@@ -7,7 +7,7 @@ xrdb -merge ~/.Xresources
 xsetroot -cursor_name left_ptr
 xsetroot -solid "#002b36"
 hsetroot -solid "#002b36"
-unclutter &
+unclutter -root -idle 1 &
 urxvtd -q -f -o &
 
 #following is duplicate of above... why did I stick it in here?
@@ -38,6 +38,7 @@ xset -b
 dbuslaunch="`which dbus-launch 2>/dev/null`"
 if [ -n "$dbuslaunch" ] && [ -x "$dbuslaunch" ] && [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
   eval `$dbuslaunch --sh-syntax --exit-with-session`
+  eval `$dbuslaunch --auto-syntax`
 fi
 
 # xsetwacom set "Wacom ISDv4 E6 Finger touch" Mode "Absolute"
@@ -71,5 +72,6 @@ _touch_id="$(xsetwacom --list devices | grep TOUCH | sed 's/^.*id:\s*\(\w*\)\W.*
 . $HOME/.profile
 xbindkeys
 /usr/bin/xscreensaver -no-splash -no-capture-stderr &
-/home/es/tmp/xrandr_quickset &
+#/home/es/tmp/xrandr_quickset &
+#taffybar &
 xmonad

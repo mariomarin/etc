@@ -58,6 +58,7 @@ export ARCH_HASKELL='Ethan Schoonover <es@ethanschoonover.com>'
 # ---------------------------------------------------------------------
 # initial bin relative to current directory
 export PATH="bin:/usr/local/bin:/usr/local/sbin:$PATH:$BIN_PATH:$CONF_PATH/bin:$SEC_PATH/bin"
+export PATH="$PATH:$HOME/.cabal/bin"
 
 # ---------------------------------------------------------------------
 # APPS
@@ -132,8 +133,10 @@ case $SHELLMODE in
             eval `keychain --quiet --eval id_rsa`
             # .Xauthority causes X startup failure every other login. I know 
             # how that sounds. .Xauthority, I do not like you.
-            rm .Xauthority* &>/dev/null || true
+            #rm .Xauthority* &>/dev/null || true
+            echo "STARTING X"
             startx
+            echo "LOGGING OUT"
             logout
         fi
     ;;
