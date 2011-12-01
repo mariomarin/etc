@@ -40,10 +40,10 @@ main = do
       mem = pollingGraphNew memCfg 1 memCallback
       cpu = pollingGraphNew cpuCfg 0.5 cpuCallback
       --batt = textBatteryNew "%d %%" 30
-      --batt = batteryBarNew defaultBatteryConfig 30
+      batt = batteryBarNew defaultBatteryConfig 30
       tray = systrayNew
   defaultTaffybar defaultTaffybarConfig { startWidgets = [ log, note ]
-                                        , endWidgets = [ tray, wea, clock, mem, cpu, mpris ]
-                                        --, endWidgets = [ tray, wea, clock, mem, cpu, batt, mpris ]
+                                        --, endWidgets = [ tray, wea, clock, mem, cpu, mpris ]
+                                        , endWidgets = [ tray, wea, clock, mem, cpu, batt, mpris ]
                                         , barHeight = 20
                                         }
