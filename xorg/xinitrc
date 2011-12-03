@@ -3,12 +3,11 @@
 
 sysmodmap=/etc/X11/xinit/Xmodmap
 if [ -f $sysmodmap ]; then xmodmap $sysmodmap; fi
-xrdb -merge ~/.Xresources
+xrdb -merge $HOME/.Xresources
 xsetroot -cursor_name left_ptr
 xsetroot -solid "#002b36"
 hsetroot -solid "#002b36"
 unclutter -root -idle 1 &
-urxvtd -q -f -o &
 
 #following is duplicate of above... why did I stick it in here?
 #xmodmap /etc/X11/xinit/Xmodmap
@@ -21,7 +20,9 @@ xcompmgr -f -D 6 &
 #cairo-compmgr &
 
 #xcompmgr -cC -f -D 6 &
+#
 gromit-mpx &
+#
 #xbindkeys -f /etc/X11/xinit/xbindkeysrc
 #xbindkeys -f $HOME/.xbindkeysrc -X :0
 
@@ -34,7 +35,7 @@ xset -b
 # work on tight loops and flashing when changing windows manually in xmonad
 # export SAL_USE_VCLPLUGIN=gen
 
-# D-Bus
+RESTORE FOLLOWING BLOCK# D-Bus
 dbuslaunch="`which dbus-launch 2>/dev/null`"
 if [ -n "$dbuslaunch" ] && [ -x "$dbuslaunch" ] && [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
   eval `$dbuslaunch --sh-syntax --exit-with-session`
@@ -70,8 +71,11 @@ _touch_id="$(xsetwacom --list devices | grep TOUCH | sed 's/^.*id:\s*\(\w*\)\W.*
 # must source environment for xbindkeys mouse bindings to function
 # TODO: figure out why
 . $HOME/.profile
-xbindkeys
-/usr/bin/xscreensaver -no-splash -no-capture-stderr &
+#xbindkeys
+#/usr/bin/xscreensaver -no-splash -no-capture-stderr &
 #/home/es/tmp/xrandr_quickset &
 #taffybar &
 xmonad
+#exec ck-launch-session gnome-session
+#exec ck-launch-session xmonad
+

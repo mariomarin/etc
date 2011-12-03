@@ -53,6 +53,8 @@ export MAILDATA=$DATA_PATH/mail # used in muttrc, offlineimaprc, msmtprc
 
 export ARCH_HASKELL='Ethan Schoonover <es@ethanschoonover.com>'
 
+export XENVIRONMENT="$HOME/.Xresources"
+
 # ---------------------------------------------------------------------
 # PATH
 # ---------------------------------------------------------------------

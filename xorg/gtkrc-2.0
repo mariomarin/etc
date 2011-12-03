@@ -3,7 +3,7 @@
 
 gtk-theme-name="Dyne"
 gtk-icon-theme-name="hicolor"
-gtk-font-name="LetterGothicMono Regular 8"
+gtk-font-name="Terminus Regular 12"
 gtk-cursor-theme-size=0
 gtk-toolbar-style=GTK_TOOLBAR_BOTH
 gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR

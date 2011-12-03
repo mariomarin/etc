@@ -1,4 +1,4 @@
-Config  { font     = "xft:DejaVuSansMono:pixelsize=14"
+Config  { font     = "xft:Terminus:style=Medium:pixelsize=16"
         , bgColor       = "#073642"
         , fgColor       = "#657b83"
         , position      = Top
