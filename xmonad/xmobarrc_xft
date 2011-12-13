@@ -1,4 +1,4 @@
-Config  { font     = "-*-terminus-medium-r-normal--14-*-*-*-*-*-*-*"
+Config  { font     = "xft:Terminus:style=Medium:pixelsize=14"
         , bgColor       = "#073642"
         , fgColor       = "#657b83"
         , position      = TopW L 95%

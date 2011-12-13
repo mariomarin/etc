@@ -1,1 +1,1 @@
-xmonad.hs.xmobar
+xmonad.hs.xmobarnew

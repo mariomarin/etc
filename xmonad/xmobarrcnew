@@ -1,19 +1,19 @@
-Config  { font     = "-*-terminus-medium-r-normal--14-*-*-*-*-*-*-*"
+Config  { font          = "-xos4-terminus-medium-r-normal--14-*-*-*-*-*-*-*"
         , bgColor       = "#073642"
         , fgColor       = "#657b83"
-        , position      = TopW L 95%
+        , position      = Top
         , lowerOnStart  = True
         , commands      = [ Run Date "%a %b %_d %Y %H:%M:%S" "theDate" 10
                           , Run StdinReader
-                          , Run Volume "default" "Master" ["-t", "Vol:<volumebar><status>", "--", "-O", "", "-o", "mute"] 10
-                          , Run Battery ["-t", "Batt: <acstatus><watts><left>%/<timeleft>", "--", "-O", "AC+", "-o", ""] 10
+                          , Run Volume "default" "Master" ["-t", "<volumebar><status>", "--", "-O", "", "-o", " mute"] 10
+                          , Run Battery ["-t", "<acstatus><watts>(<left>%)/<timeleft>", "--", "-O", "AC+", "-o", ""] 10
                           , Run Weather "KSEA" ["-t","Seattle:<tempF>°|<skyCondition>"] 36000
                           , Run Cpu ["-L","50","-H","80","--normal","yellow","--high","red"] 25
                           , Run CpuFreq ["-t", "Freq:<cpu0>", "-L", "0", "-H", "2", "-l", "#6c71c4", "-n","#6c71c4", "-h", "#719e07"] 25
                           , Run Swap ["-L","50","-H","80","--normal","yellow","--high","red"] 25
-                          , Run Wireless "wlan0" ["-t","<essid> (<quality>)"] 25
+                          , Run Wireless "wlan0" ["-t","<quality> <essid>"] 25
                           ]
         , sepChar       = "%"
         , alignSep      = "}{"
-        , template      = " %StdinReader% }{ <fc=#2aa198>%wlan0wi%</fc> <fc=#b58900>%default:Master%</fc> <fc=#93a1a1>%battery%</fc> <fc=#6c71c4>%cpu% %cpufreq% %swap%</fc> <fc=#268bd2>%theDate%</fc> "
+        , template      = " %StdinReader% }{ <fc=#2aa198>%wlan0wi%</fc> <fc=#b58900>%default:Master%</fc> <fc=#93a1a1>%battery%</fc> <fc=#6c71c4>%cpu% %cpufreq% %swap%</fc> <fc=#268bd2>%theDate%</fc>        "
         }

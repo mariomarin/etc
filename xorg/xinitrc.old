@@ -3,15 +3,11 @@
 
 sysmodmap=/etc/X11/xinit/Xmodmap
 if [ -f $sysmodmap ]; then xmodmap $sysmodmap; fi
-xset +fp /usr/share/fonts/local && xset fp rehash
 xrdb -merge $HOME/.Xresources
 xsetroot -cursor_name left_ptr
 xsetroot -solid "#002b36"
 hsetroot -solid "#002b36"
 unclutter -root -idle 1 &
-
-# following two lines to detect terminus properly?
-# though not sure this is necessary
 
 #following is duplicate of above... why did I stick it in here?
 #xmodmap /etc/X11/xinit/Xmodmap
@@ -76,10 +72,9 @@ _touch_id="$(xsetwacom --list devices | grep TOUCH | sed 's/^.*id:\s*\(\w*\)\W.*
 # TODO: figure out why
 . $HOME/.profile
 #xbindkeys
-/usr/bin/xscreensaver -no-splash -no-capture-stderr &
+#/usr/bin/xscreensaver -no-splash -no-capture-stderr &
 #/home/es/tmp/xrandr_quickset &
 #taffybar &
-#dunst &
 xmonad
 #exec ck-launch-session gnome-session
 #exec ck-launch-session xmonad

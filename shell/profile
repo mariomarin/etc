@@ -11,7 +11,7 @@ case $(uname) in
             # script can start chromium differently on different systems,
             # for intance, forcing webgl to start
             # export BROWSER=uzbl
-            export BROWSER=chrome
+            export BROWSER=chromium
             export PLATFORM=linux
         ;;
         Darwin)
@@ -66,7 +66,7 @@ export PATH="$PATH:$HOME/.cabal/bin"
 # APPS
 # ---------------------------------------------------------------------
 export EDITOR=vim
-export BROWSER=chrome
+#export BROWSER=chromium #see above in platform detection case block
 export MUTTJUMP_INDEXER=notmuch
 
 # ---------------------------------------------------------------------

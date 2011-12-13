@@ -1,8 +1,3 @@
-[CONTACTS]
-fields = name,email
-user = es@ethanschoonover.com
-skip_auth = True
-
 [DOCS]
 spreadsheet_format = xls
 format = txt
@@ -10,34 +5,39 @@ spreadsheet_editor = openoffice.org
 presentation_format = ppt
 presentation_editor = openoffice.org
 document_format = txt
-user = es@ethanschoonover.com
-skip_auth = True
 drawing_format = png
+
+[CALENDAR]
+fields = title,when
+skip_auth = True
+user = es@ethanschoonover.com
+
+[GENERAL]
+regex = True
+url_field = site
+missing_field_value = N/A
+fields = title,url-site
+cap_results = False
+max_retries = 2
+hostid = es@tau
+retry_delay = 0.5
+date_print_format = %b %d %H:%M
+client_id = 949167677243.apps.googleusercontent.com
+client_secret = LVr-86FOI39uGUGZgk79S5xc
+devkey2 = AIzaSyD_3tSCNqMxLUdgyWiUTi1ujpDeSg0mfCs
+formatting = pprint
 
 [YOUTUBE]
 max_results = 50
 
-[GENERAL]
-regex = True
-hostid = es@rho
-delete_by_default = False
-missing_field_value = N/A
-fields = title,url-site
-tags_prompt = False
-cap_results = False
-delete_prompt = True
-url_field = site
-date_print_format = %b %d %H:%M
-retry_delay = 0.5
-max_retries = 2
-
-[CALENDAR]
-fields = title,when
-user = es@ethanschoonover.com
-skip_auth = True
+[CONTACTS]
+fields = name,email
 
 [PICASA]
-access = public
-user = es@ethanschoonover.com
 skip_auth = True
+user = es@ethanschoonover.com
+
+[FINANCE]
+skip_auth = True
+user = es@ethanschoonover.com
 
