@@ -48,7 +48,8 @@ import XMonad.Actions.WithAll -- used for killall
 -- Key Bindings --------------------------------------------------------
 
 -- this method of applying X.U.EZConfig from loupgaroublonds config
-import qualified XMonad.Util.EZConfig as EZ
+--import qualified XMonad.Util.EZConfig as EZ
+import XMonad.Util.EZConfig
 import qualified Data.Map as M
 
 -- Navigation ----------------------------------------------------------
@@ -57,12 +58,17 @@ import XMonad.Actions.CycleWS
 import XMonad.Prompt
 import XMonad.Prompt.Window
 
+-- Custom Modules ------------------------------------------------------
+
+--import Keys -- key bindings
+--import Apps -- applications, scratchpads
+
 ------------------------------------------------------------------------
 -- Applications and Utilities
 ------------------------------------------------------------------------
 
 urxvt           = "urxvtc || (urxvtd -f -o -q && urxvtc)"
-chrome          = "chromium"
+chrome          = "chromium --memory-model=low --enable-print-preview --enable-smooth-scrolling"
 firefox         = "aurora"
 skype           = "skype"
 calendar        = ""
@@ -168,6 +174,10 @@ myPromptConfig = defaultXPConfig
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
+-- Applications
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 -- Scratchpads
 ------------------------------------------------------------------------
 
@@ -177,29 +187,34 @@ myPromptConfig = defaultXPConfig
 
 -- Key bindings --------------------------------------------------------
 
-myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X())
-myKeys = \conf -> EZ.mkKeymap conf $(_myKeys conf)
- 
-_myKeys :: XConfig Layout -> [(String, X())]
-_myKeys  = \conf ->
+--myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X())
+--myKeys = \conf -> EZ.mkKeymap conf $(_myKeys conf)
+
+--_myKeys :: XConfig Layout -> [(String, X())]
+--_myKeys  = \conf ->
 
     -- from Brent Yorgey's xmonad.sh in config archive
     -- mod-[1..],       Switch to workspace N
     -- mod-shift-[1..], Move client to workspace N
     -- mod-ctrl-[1..],  Switch to workspace N on other screen
-    [ (m ++ "M-" ++ [k], f i)                                   -- (0)
-        | (i, k) <- zip (XMonad.workspaces conf) "1234567890-=[]\\" -- (0)
-        , (f, m) <- [ (windows . W.view, "")                    -- (0a)
-                    , (windows . W.shift, "S-")
-                    , (\ws -> nextScreen >> (windows . W.view $ ws), "C-")
-                    ]
-    ]
- 
-    ++
+--myKeys = [ (m ++ "M-" ++ [k], f i)                                   -- (0)
+--        | (i, k) <- zip (XMonad.workspaces conf) "1234567890-=[]\\" -- (0)
+--        , (f, m) <- [ (windows . W.view, "")                    -- (0a)
+--                    , (windows . W.shift, "S-")
+--                    , (\ws -> nextScreen >> (windows . W.view $ ws), "C-")
+--                    ]
+--    ]
 
-    [
+
+    -- Change Xinerama bindings
+    -- from Regalia's config archive sample
+--    [ ("M-"++key, screenWorkspace sc >>= flip whenJust (windows . f))
+--        | (key, sc) <- zip ["1", "2", "3"] [0..]
+--        , (f, m) <- [(W.view, 0)]] 
+ 
+myKeys =    [
     -- launch a terminal ------------------------------------------------
-      ("M-S-<Return>",          spawn $ XMonad.terminal conf            )
+      ("M-S-<Return>",          spawn $ myTerminal )
 
     -- close focused window ---------------------------------------------
     , ("M-c",                   kill                                    )
@@ -211,7 +226,7 @@ _myKeys  = \conf ->
     , ("M-<Space>",             sendMessage NextLayout                  )
 
     --  Reset the layouts on the current workspace to default -----------
-    , ("M-S-<Space>",           setLayout $ XMonad.layoutHook conf      )
+--    , ("M-S-<Space>",           setLayout $ XMonad.layoutHook conf      )
 
     -- Resize viewed windows to the correct size ------------------------
     , ("M-n",                   refresh                                 )
@@ -252,6 +267,11 @@ _myKeys  = \conf ->
     -- Deincrement the number of windows in the master area -------------
     , ("M-.",                   sendMessage (IncMasterN (-1))           )
 
+ -- move between screens
+    , ("M-<Right>",                   nextScreen                              )
+    , ("M-S-w",                   swapNextScreen                          )
+    , ("M-S-e",                   shiftNextScreen                         )
+
     -- Toggle the status bar gap
     -- Use this binding with avoidStruts from Hooks.ManageDocks.
     -- See also the statusBar function from Hooks.DynamicLog.
@@ -272,6 +292,16 @@ _myKeys  = \conf ->
       ("M4-b", spawn $ myBrowser)
     , ("M4-c", spawn $ chrome)
     , ("M4-f", spawn $ firefox)
+    , ("M4-t", spawn $ "thunar &")
+    ]
+
+    ++
+
+    [
+      ("<XF86Display>", spawn $ "/home/es/bin/execute display cycle")
+    , ("C-<XF86Display>", spawn $ "/home/es/bin/execute display external")
+    , ("S-<XF86Display>", spawn $ "/home/es/bin/execute display internal")
+    , ("S-C-<XF86Display>", spawn $ "/home/es/bin/execute display mirror")
     ]
 
     ++
@@ -371,8 +401,26 @@ myPP = defaultPP
 --myStartupHook = return ()
 myStartupHook = do
     E.ewmhDesktopsStartup
-    spawn $ "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --widthtype percent --width 5 --transparent true --tint 0x073642 --alpha 50 --height 20 &"
-    spawn $ "dunst &"
+    spawn $ "trayer"
+          ++ " --edge top --align right"
+          ++ " --SetDockType true --SetPartialStrut true"
+          ++ " --expand true --widthtype percent --width 5"
+          ++ " --transparent true --tint 0x073642 --alpha 50"
+          ++ " --height 20"
+          ++ " &"
+    spawn $ "xcompmgr -f -D 6 &"
+    spawn $ "dunst -geometry 0x10-0 -fn "   -- width of message, max ten lines high, right flush top
+          ++ show myFontBig 
+          ++ " -lb " ++ show yellow 
+          ++ " -nb " ++ show green 
+          ++ " -cb " ++ show magenta 
+          ++ " -lf " ++ show base03 
+          ++ " -nf " ++ show base03 
+          ++ " -cf " ++ show base03 
+          ++ " -key Return -mod mod4"       -- Super+Return to dismiss
+          ++ " -lto 2 -nto 5 -cto 0"        -- 2/5 second time out for low/normal, no timeout for critical
+          ++ " -s"                          -- sort messages by urgency
+          ++ " &"
     return ()
 
 ------------------------------------------------------------------------
@@ -403,4 +451,4 @@ myConfig = defaultConfig {
         handleEventHook    = myEventHook,
         --logHook            = myLogHook,
         startupHook        = myStartupHook
-    }
+    } `additionalKeysP` myKeys

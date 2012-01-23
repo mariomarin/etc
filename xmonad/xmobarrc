@@ -5,7 +5,7 @@ Config  { font     = "-*-terminus-medium-r-normal--14-*-*-*-*-*-*-*"
         , lowerOnStart  = True
         , commands      = [ Run Date "%a %b %_d %Y %H:%M:%S" "theDate" 10
                           , Run StdinReader
-                          , Run Volume "default" "Master" ["-t", "Vol:<volumebar><status>", "--", "-O", "", "-o", "mute"] 10
+                          , Run Volume "pulse" "Master" ["-t", "Vol:<volumebar><status>", "--", "-O", "", "-o", "mute"] 10
                           , Run Battery ["-t", "Batt: <acstatus><watts><left>%/<timeleft>", "--", "-O", "AC+", "-o", ""] 10
                           , Run Weather "KSEA" ["-t","Seattle:<tempF>°|<skyCondition>"] 36000
                           , Run Cpu ["-L","50","-H","80","--normal","yellow","--high","red"] 25
@@ -15,5 +15,5 @@ Config  { font     = "-*-terminus-medium-r-normal--14-*-*-*-*-*-*-*"
                           ]
         , sepChar       = "%"
         , alignSep      = "}{"
-        , template      = " %StdinReader% }{ <fc=#2aa198>%wlan0wi%</fc> <fc=#b58900>%default:Master%</fc> <fc=#93a1a1>%battery%</fc> <fc=#6c71c4>%cpu% %cpufreq% %swap%</fc> <fc=#268bd2>%theDate%</fc> "
+        , template      = " %StdinReader% }{ <fc=#2aa198>%wlan0wi%</fc> <fc=#b58900>%pulse:Master%</fc> <fc=#93a1a1>%battery%</fc> <fc=#6c71c4>%cpu% %cpufreq% %swap%</fc> <fc=#268bd2>%theDate%</fc> "
         }

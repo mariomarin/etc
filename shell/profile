@@ -121,6 +121,15 @@ else
 fi
 
 # ---------------------------------------------------------------------
+# HELPER FUNCTIONS
+# ---------------------------------------------------------------------
+
+Keychain_Prompt ()
+{
+    eval `keychain --quiet --attempts 3 --eval id_rsa`
+}
+
+# ---------------------------------------------------------------------
 # EXECUTE BASED ON SHELL MODE
 # ---------------------------------------------------------------------
 case $SHELLMODE in
@@ -131,19 +140,19 @@ case $SHELLMODE in
 
         # start x if we're not root and on tty1 (e.g. default boot condition)
         # who needs a display manager?
+        Keychain_Prompt
         if [[ $USER != "root" ]] && [[ `tty` = /dev/tty1 ]] && [[ -z "$DISPLAY" ]]; then
-            eval `keychain --quiet --eval id_rsa`
             # .Xauthority causes X startup failure every other login. I know 
             # how that sounds. .Xauthority, I do not like you.
             #rm .Xauthority* &>/dev/null || true
-            echo "STARTING X"
             startx
-            echo "LOGGING OUT"
             logout
         fi
+        logger ">>>>>>>>>> SHELL MODE: login ($SHELLTYPE)"
     ;;
     nonlogin)
         # normal shell & shell script state
+        Keychain_Prompt
         logger ">>>>>>>>>> SHELL MODE: nonlogin ($SHELLTYPE)"
     ;;
     *)  logger ">>>>>>>>>> SHELL MODE: NOT DETECTED ($SHELLTYPE)" ;;
@@ -162,4 +171,5 @@ case $SHELLSTATE in
     ;;
     *)  logger ">>>>>>>>>> SHELL STATE: NOT DETECTED" ;;
 esac
+
 

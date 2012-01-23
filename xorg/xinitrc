@@ -20,7 +20,7 @@ unclutter -root -idle 1 &
 # xmonad? could also just be the fact that I switch to cairo-compmgr-git
 #cairo-compmgr &
 
-xcompmgr -f -D 6 &
+#xcompmgr -f -D 6 &
 #cairo-compmgr &
 
 #xcompmgr -cC -f -D 6 &
@@ -76,11 +76,20 @@ _touch_id="$(xsetwacom --list devices | grep TOUCH | sed 's/^.*id:\s*\(\w*\)\W.*
 # TODO: figure out why
 . $HOME/.profile
 #xbindkeys
-/usr/bin/xscreensaver -no-splash -no-capture-stderr &
 #/home/es/tmp/xrandr_quickset &
 #taffybar &
 #dunst &
-xmonad
 #exec ck-launch-session gnome-session
 #exec ck-launch-session xmonad
 
+_xmonad () {
+/usr/bin/xscreensaver -no-splash -no-capture-stderr &
+xmonad
+}
+
+_gnome () {
+exec ck-launch-session gnome-session
+}
+
+#_gnome
+_xmonad
