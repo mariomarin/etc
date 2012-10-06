@@ -52,25 +52,25 @@ lib = TARGET=txt
 checkout = $GITHUB/$ES$TARGET.git $TARGET
 chain = true
 
-[etc]
-lib = TARGET=etc
-checkout = $GITHUB/$ES$TARGET.git $TARGET
-fixups = $HOME/$TARGET/conform
-
 [bin]
 lib = TARGET=bin
 checkout = $GITHUB/$ES$TARGET.git $TARGET
 chain = true
 
+[etc]
+lib = TARGET=etc
+checkout = $GITHUB/$ES$TARGET.git $TARGET
+#fixups = $HOME/$TARGET/conform
+
 #[shr]
 
-#[ent]
+[ent]
 # This is a dummy target, all it does is run fixups
 # at the end of an update.
-#fixups = #$HOME/bin/conform
-#checkout = mkdir -p $HOME/ent
-#status = :
-#order = 25
+fixups = $HOME/etc/conform
+checkout = mkdir -p $HOME/ent
+status = :
+order = 25
 
 #[/etc]
 # I use etckeeper to keep /etc in git.
