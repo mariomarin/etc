@@ -1,0 +1,125 @@
+# ---------------------------------------------------------------------
+# global git ignore file - es@ethanschoonover.com
+#
+# add to gitconfig with:
+#
+#   git config --global core.excludesfile ~/.gitignore
+#
+# Note that the tilde will expand, so must either edit gitconfig
+# file by hand after running the above command, or add the following
+# line entirely by hand in one's own gitconfig file:
+#
+# [core]
+#         excludesfile = ~/.gitignore
+#
+# ---------------------------------------------------------------------
+
+# ---------------------------------------------------------------------
+# security related
+# ---------------------------------------------------------------------
+*.pass
+
+# ---------------------------------------------------------------------
+# linux
+# ---------------------------------------------------------------------
+.*
+*~
+*.sw[a-p]
+
+# ---------------------------------------------------------------------
+# osx specific
+# ---------------------------------------------------------------------
+.DS_Store?
+Icon?
+# Thumbnails
+._*
+ehthumbs.db
+Thumbs.db
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# ---------------------------------------------------------------------
+# hakyll specific
+# ---------------------------------------------------------------------
+_site
+_cache
+_live
+bin/site
+bin/site.hi
+bin/site.o
+
+# ---------------------------------------------------------------------
+# haskell specific
+# ---------------------------------------------------------------------
+dist
+*.o
+*.hi
+
+# ---------------------------------------------------------------------
+# python
+# ---------------------------------------------------------------------
+*.py[co]
+# Packages
+*.egg
+*.egg-info
+#dist
+#build
+#eggs
+#parts
+#bin
+#develop-eggs
+.installed.cfg
+# Installer logs
+pip-log.txt
+# Unit test / coverage reports
+.coverage
+.tox
+
+# ---------------------------------------------------------------------
+# ruby
+# ---------------------------------------------------------------------
+#coverage
+#rdoc
+#pkg
+#test/tmp
+#test/version_tmp
+tmp
+#pkg
+*.gem
+*.rbc
+#lib/bundler/man
+#spec/reports
+.config
+InstalledFiles
+.bundle
+# YARD artifacts
+.yardoc
+_yardoc
+#doc/
+
+# ---------------------------------------------------------------------
+# vi/vim
+# ---------------------------------------------------------------------
+*.swp
+*.swo
+.*.sw[a-z]
+*.un~
+'
+
+# ---------------------------------------------------------------------
+# emacs
+# ---------------------------------------------------------------------
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+.elc
+auto-save-list
+tramp
+
+# ---------------------------------------------------------------------
+# xmonad
+# ---------------------------------------------------------------------
+xmonad-*
+xmonad.errors

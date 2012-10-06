@@ -17,4 +17,3 @@ _garbage="$(ls -A1)"; for _file in "${_known_df[@]}"; do _garbage="$(echo "$_gar
 echo -e "\nFollowing dotfiles are unmanaged:"
 echo "$_garbage" | egrep "^\."
 
-
