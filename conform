@@ -1,7 +1,7 @@
 _dotfile_root="$HOME/etc"; _dotfile_trash="$HOME/tmp/_df_trash"; _managed_files=()
 _dotfile_list="$(find "$_dotfile_root" -name ".*" ! -name ".git" -print)"
 _special_files="
-irc/irssi-config .irssi/config
+irc/irssi .irssi/config
 web/googlecl-config .config/googlecl/config
 web/newsbeuter-config .newsbeuter/config
 .xmonad/taffybar .config/taffybar
