@@ -1,0 +1,17 @@
+_df_root="$HOME/etc"
+_df_trash="$HOME/tmp/_df_trash"
+_known_df=()
+
+cd $HOME
+rm -rf "$_df_trash"
+mkdir -p "$_df_trash"
+
+for _dfsrc in "$(find "$_df_root" -name ".*" ! -name ".git" -print)"; do
+  _df="$(basename "$_dfsrc")"; [ -e "$_df" ] && mv "$_df" "$_df_trash";
+  ln -s "$_dfsrc" "$_df" && _known_df=(${_known_df[@]} "$_df") || echo "FAILED TO LINK $_dfsrc";
+done
+_garbage="$(ls -A1)"; for _file in "${_known_df[@]}"; do _garbage="$(echo "$_garbage" | grep -v "$_file")"; done
+echo -e "\nFollowing dotfiles are unmanaged:"
+echo "$_garbage" | egrep "^\."
+
+
