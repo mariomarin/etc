@@ -30,9 +30,9 @@ IFS=$LINE_IFS; for _special_file in $_special_files; do IFS=$ORIG_IFS; _Link_Spe
 _garbage="$(ls -A1)"; for _file in "${_known_df[@]}"; do _garbage="$(echo "$_garbage" | grep -v "$_file")"; done
 
 echo -e "\n\nFollowing dotfiles are managed:"
-echo -e "\n\n---------------------------------"
+echo -e "---------------------------------"
 echo "${_managed_files[@]}"
-echo -e "\n\nFollowing dotfiles are unmanaged:"
-echo -e "\n\n---------------------------------"
-echo "$_garbage" | egrep "^\."
-
+echo -e "\nFollowing dotfiles are unmanaged:"
+echo -e "---------------------------------"
+echo $(echo "$_garbage" | egrep "^\.")
+echo
