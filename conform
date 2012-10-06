@@ -11,10 +11,16 @@ cd $HOME; rm -rf "$_dotfile_trash"; mkdir -p "$_dotfile_trash"
 
 _Link () { _source="$1"; _target="$2" ln -fs "$_source" "$_target" && _managed_files=(${_managed_files[@]} "$_target") || echo "FAILED TO LINK $_source"; }
 
-_Link_Normal () { _source="$1"; _target="$(basename "$_source")"; [ ! -L "$_target" ] && mv "$_target" "$_dotfile_trash"; _Link "$_source" "$_target"; }
+_Link_Normal () {
+_source="$1"; _target="$(basename "$_source")";
+[ -e "$_target" -a ! -L "$_target" ] && mv "$_target" "$_dotfile_trash";
+_Link "$_source" "$_target"; }
 
-_Link_Special () { _source="$_dotfile_root/$1"; _target="$2"; _target_parent="$(dirname "$_target")";
-[ ! -d "$_target_parent" ] && mkdir -p "$_target_parent"; [ ! -L "$_target" ] && mv "$_target" "$_dotfile_trash"; _Link "$_source" "$_target"; }
+_Link_Special () {
+_source="$_dotfile_root/$1"; _target="$2"; _target_parent="$(dirname "$_target")";
+[ ! -d "$_target_parent" ] && mkdir -p "$_target_parent";
+[ -e "$_target" -a ! -L "$_target" ] && mv "$_target" "$_dotfile_trash";
+_Link "$_source" "$_target"; }
 
 IFS=$LINE_IFS; for _normal_file in $_dotfile_list; do _Link_Normal "$_normal_file"; done; IFS=$ORIG_IFS
 IFS=$LINE_IFS; for _special_file in $_special_files; do IFS=$ORIG_IFS; _Link_Special $_special_file; IFS=$LINE_IFS; done; IFS=$ORIG_IFS
