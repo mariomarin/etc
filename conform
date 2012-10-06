@@ -1,14 +1,12 @@
-_dotfile_root="$HOME/etc"
-_dotfile_trash="$HOME/tmp/_df_trash"
-_managed_files=()
+_dotfile_root="$HOME/etc"; _dotfile_trash="$HOME/tmp/_df_trash"; _managed_files=()
 _dotfile_list="$(find "$_dotfile_root" -name ".*" ! -name ".git" -print)"
 _special_files="
 irc/irssi-config .irssi/config
 web/googlecl-config .config/googlecl/config
 web/newsbeuter-config .newsbeuter/config
+.xmonad/taffybar .config/taffybar
 "
-ORIG_IFS=$IFS
-LINE_IFS=$(echo -en "\n\b")
+ORIG_IFS=$IFS; LINE_IFS=$(echo -en "\n\b")
 cd $HOME; rm -rf "$_dotfile_trash"; mkdir -p "$_dotfile_trash"
 
 _Link () { 
@@ -29,10 +27,6 @@ IFS=$LINE_IFS; for _normal_file in $_dotfile_list; do _Link_Normal "$_normal_fil
 IFS=$LINE_IFS; for _special_file in $_special_files; do IFS=$ORIG_IFS; _Link_Special $_special_file; IFS=$LINE_IFS; done; IFS=$ORIG_IFS
 _garbage="$(ls -A1)"; for _file in "${_known_df[@]}"; do _garbage="$(echo "$_garbage" | grep -v "$_file")"; done
 
-echo -e "\n\nFollowing dotfiles are managed:"
-echo -e "---------------------------------"
-echo "${_managed_files[@]}"
-echo -e "\nFollowing dotfiles are unmanaged:"
-echo -e "---------------------------------"
-echo $(echo "$_garbage" | egrep "^\.")
+echo -e "\n\nFollowing dotfiles are managed:\n---------------------------------\n${_managed_files[@]}"
+echo -e "\nFollowing dotfiles are unmanaged:\n---------------------------------"; echo $(echo "$_garbage" | egrep "^\.")
 echo
