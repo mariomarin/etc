@@ -1,19 +1,38 @@
-_df_root="$HOME/etc"
-_df_trash="$HOME/tmp/_df_trash"
-_known_df=()
+_dotfile_root="$HOME/etc"
+_dotfile_trash="$HOME/tmp/_df_trash"
+_managed_files=()
+_dotfile_list="$(find "$_dotfile_root" -name ".*" ! -name ".git" -print)"
+_special_files="
+irc/irssi-config .irssi/config
+web/googlecl-config .config/googlecl/config
+web/newsbeuter-config .newsbeuter/config
+"
+ORIG_IFS=$IFS
+LINE_IFS=$(echo -en "\n\b")
+cd $HOME; rm -rf "$_dotfile_trash"; mkdir -p "$_dotfile_trash"
 
-cd $HOME
-rm -rf "$_df_trash"
-mkdir -p "$_df_trash"
+_Link () { 
+_source="$1"; _target="$2"
+ln -fs "$_source" "$_target" && _managed_files=(${_managed_files[@]} "$_target") || echo "FAILED TO LINK $_source"; }
 
-_dflist="$(find "$_df_root" -name ".*" ! -name ".git" -print)"
-_IFS=$IFS; IFS=$(echo -en "\n\b"); # for filenames with spaces
-for _dfsrc in $_dflist; do
-  _df="${_dfsrc##*/}"; [ -e "$_df" ] && mv "$_df" "$_df_trash";
-  ln -s "$_dfsrc" "$_df" && _known_df=(${_known_df[@]} "$_df") || echo "FAILED TO LINK $_dfsrc";
-done
-IFS=$_IFS
+_Link_Normal () {
+_source="$1"; _target="$(basename "$_source")";
+[ ! -L "$_target" ] && mv "$_target" "$_dotfile_trash";
+_Link "$_source" "$_target" }
+
+_Link_Special () {
+_source="$1"; _target="$2"; _target_parent="$(dirname "$_target")"
+[ ! -d "$_target_parent" ] && mkdir -p "$_target_parent"; [ ! -L "$_target" ] && mv "$_target" "$_dotfile_trash";
+_Link "$_source" "$_target" }
+
+IFS=$LINE_IFS; for _normal_file in $_dotfile_list; do _Link_Normal "$_normal_file"; done; IFS=$ORIG_IFS
+IFS=$LINE_IFS; for _special_file in $_special_files; do IFS=$ORIG_IFS; _Link_Special $_special_file; IFS=$LINE_IFS; done; IFS=$ORIG_IFS
 _garbage="$(ls -A1)"; for _file in "${_known_df[@]}"; do _garbage="$(echo "$_garbage" | grep -v "$_file")"; done
-echo -e "\nFollowing dotfiles are unmanaged:"
+
+echo -e "\n\nFollowing dotfiles are managed:"
+echo -e "\n\n---------------------------------"
+echo "${_managed_files[@]}"
+echo -e "\n\nFollowing dotfiles are unmanaged:"
+echo -e "\n\n---------------------------------"
 echo "$_garbage" | egrep "^\."
 
