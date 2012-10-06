@@ -21,7 +21,7 @@ _source="$1"; _target="$(basename "$_source")";
 _Link "$_source" "$_target"; }
 
 _Link_Special () {
-_source="$1"; _target="$2"; _target_parent="$(dirname "$_target")"
+_source="$_dotfile_root/$1"; _target="$2"; _target_parent="$(dirname "$_target")"
 [ ! -d "$_target_parent" ] && mkdir -p "$_target_parent"; [ ! -L "$_target" ] && mv "$_target" "$_dotfile_trash";
 _Link "$_source" "$_target"; }
 
