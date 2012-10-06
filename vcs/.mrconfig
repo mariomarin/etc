@@ -60,14 +60,14 @@ chain = true
 [etc]
 lib = TARGET=etc
 checkout = $GITHUB/$ES$TARGET.git $TARGET
-#fixups = $HOME/$TARGET/conform
+fixups = $HOME/$TARGET/conform
 
 #[shr]
 
 [ent]
 # This is a dummy target, all it does is run fixups
 # at the end of an update.
-fixups = $HOME/etc/conform
+# fixups = $HOME/etc/conform
 checkout = mkdir -p $HOME/ent
 status = :
 order = 25
