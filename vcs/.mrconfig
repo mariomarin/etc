@@ -5,7 +5,10 @@
 # Include all available libs.
 include = cat /usr/share/mr/* 2>/dev/null || true
 lib = git config --global credential.helper 'cache --timeout=3600';
-      GITHUB="git clone https://github.com/altercation"
+      [ -n "${AUTH_USERNAME}" -a -n "${AUTH_PASSWORD}" ] \
+      && _auth_string="${AUTH_USERNAME}:${AUTH_PASSWORD}@" || set _auth_string
+      GITHUB="git clone https://${_auth_string}github.com/altercation"
+      echo "USING AUTH STRING ${_auth_string}"; read _pause
       ES=es-
 
 # anx - git-annex - aud, img, vid
