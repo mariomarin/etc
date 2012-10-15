@@ -334,6 +334,7 @@ myKeys  = \conf -> mkKeymap conf $
  ++
 
     [ ("<XF86Display>",         spawn $ "dispatch display cycle"        )
+    , ("<XF86RotateWindows>",    spawn $ "onboard"        )
     , ("C-<XF86Display>",       spawn $ "dispatch display external"     )
     , ("S-<XF86Display>",       spawn $ "dispatch display internal"     )
     , ("S-C-<XF86Display>",     spawn $ "dispatch display mirror"       )
@@ -420,6 +421,7 @@ myManageHook = composeAll
     , className =? "Gimp"           --> doFloat
     , className =? "Skype"          --> doFloat
     , className =? "Onboard"        --> doIgnore
+    , className =? "onboard"        --> doIgnore
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
     , fullscreenManageHook

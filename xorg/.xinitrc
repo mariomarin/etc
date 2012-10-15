@@ -26,6 +26,7 @@ unclutter -root -idle 1 &
 #xcompmgr -cC -f -D 6 &
 #
 gromit-mpx &
+onboard &
 #
 #xbindkeys -f /etc/X11/xinit/xbindkeysrc
 #xbindkeys -f $HOME/.xbindkeysrc -X :0

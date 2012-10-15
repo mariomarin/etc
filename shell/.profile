@@ -1,6 +1,7 @@
 # universal zsh/bash environment & initialization script
 # es@ethanschoonover.com
 
+DEBUG=false
 
 # ---------------------------------------------------------------------
 # PLATFORM SPECIFIC ENVIRONMENT CONFIG
@@ -148,14 +149,14 @@ case $SHELLMODE in
             startx
             logout
         fi
-        logger ">>>>>>>>>> SHELL MODE: login ($SHELLTYPE)"
+        $DEBUG && logger ">>>>>>>>>> SHELL MODE: login ($SHELLTYPE)" || true
     ;;
     nonlogin)
         # normal shell & shell script state
         Keychain_Prompt
-        logger ">>>>>>>>>> SHELL MODE: nonlogin ($SHELLTYPE)"
+        $DEBUG && logger ">>>>>>>>>> SHELL MODE: nonlogin ($SHELLTYPE)" || true
     ;;
-    *)  logger ">>>>>>>>>> SHELL MODE: NOT DETECTED ($SHELLTYPE)" ;;
+    *)  $DEBUG && logger ">>>>>>>>>> SHELL MODE: NOT DETECTED ($SHELLTYPE)" || true ;;
 esac
 
 # ---------------------------------------------------------------------
@@ -163,13 +164,13 @@ esac
 # ---------------------------------------------------------------------
 case $SHELLSTATE in
     interactive)
-        logger ">>>>>>>>>> SHELL STATE: interactive ($SHELLTYPE)"
+        $DEBUG && logger ">>>>>>>>>> SHELL STATE: interactive ($SHELLTYPE)" || true
         if [[ $SHELLTYPE = "zsh" ]]; then omz; fi
     ;;
     noninteractive)
-        logger ">>>>>>>>>> SHELL STATE: noninteractive ($SHELLTYPE)"
+        $DEBUG && logger ">>>>>>>>>> SHELL STATE: noninteractive ($SHELLTYPE)" || true
     ;;
-    *)  logger ">>>>>>>>>> SHELL STATE: NOT DETECTED" ;;
+    *)  $DEBUG && logger ">>>>>>>>>> SHELL STATE: NOT DETECTED" || true ;;
 esac
 
 
