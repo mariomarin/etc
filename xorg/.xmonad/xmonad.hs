@@ -89,7 +89,7 @@ fuzzySpawn = do
 ------------------------------------------------------------------------
 
 urxvt           = "urxvtc || (urxvtd -f -o -q && urxvtc)"
-chrome          = "chromium --memory-model=low --enable-print-preview --enable-smooth-scrolling"
+chrome          = "chromium --memory-model=low --enable-print-preview --enable-smooth-scrolling --enable-sync-extensions"
 firefox         = "aurora"
 skype           = "skype"
 calendar        = ""
@@ -327,15 +327,23 @@ myKeys  = \conf -> mkKeymap conf $
     , ("M4-b",                  spawn $ myBrowser                       )
     , ("M4-c",                  spawn $ chrome                          )
     , ("M4-f",                  spawn $ firefox                         )
+    , ("M4-s",                  spawn $ skype                           )
     , ("M4-t",                  spawn $ "thunar &"                      )
     , ("M4-x",                  fuzzySpawn )
     ]
  ++
 
-    [ ("<XF86Display>",         spawn $ "execute display cycle"         )
-    , ("C-<XF86Display>",       spawn $ "execute display external"      )
-    , ("S-<XF86Display>",       spawn $ "execute display internal"      )
-    , ("S-C-<XF86Display>",     spawn $ "execute display mirror"        )
+    [ ("<XF86Display>",         spawn $ "dispatch display cycle"        )
+    , ("C-<XF86Display>",       spawn $ "dispatch display external"     )
+    , ("S-<XF86Display>",       spawn $ "dispatch display internal"     )
+    , ("S-C-<XF86Display>",     spawn $ "dispatch display mirror"       )
+    , ("<XF86AudioRaiseVolume>",spawn $ "dispatch volume up"            )
+    , ("<XF86AudioLowerVolume>",spawn $ "dispatch volume down"          )
+    , ("C-<XF86AudioRaiseVolume>",spawn $ "dispatch volume max"         )
+    , ("C-<XF86AudioLowerVolume>",spawn $ "dispatch volume mid"         )
+    , ("S-<XF86AudioRaiseVolume>",spawn $ "dispatch volume up 10"       )
+    , ("S-<XF86AudioLowerVolume>",spawn $ "dispatch volume down 10"     )
+    , ("<XF86AudioMute>",       spawn $ "dispatch volume toggle"        )
     ]
 
 --  ++
@@ -411,6 +419,8 @@ myManageHook = composeAll
     , className =? "MPlayer"        --> doFloat
     , className =? "Gimp"           --> doFloat
     , className =? "Skype"          --> doFloat
+    , className =? "InputOutput"    --> doIgnore
+    , className =? "Onboard"        --> doIgnore
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
     , fullscreenManageHook
@@ -452,7 +462,7 @@ myStartupHook = do
     spawn $ "trayer"
           ++ " --edge top --align right"
           ++ " --SetDockType true --SetPartialStrut true"
-          ++ " --expand true --widthtype percent --width 5"
+          ++ " --expand true --widthtype percent --width 10"
           ++ " --transparent true --tint 0x073642 --alpha 50"
           ++ " --height 20"
           ++ " &"
