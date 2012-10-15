@@ -64,8 +64,6 @@ import XMonad.Actions.CycleWS
 import XMonad.Prompt
 import XMonad.Prompt.Window
 
-import XMonad.Actions.Navigation2D
-
 -- For fuzzy prompt matching test --------------------------------------
 import Data.List
 import Text.EditDistance
@@ -225,39 +223,39 @@ myKeys  = \conf -> mkKeymap conf $
         , (f, m) <- [(W.view, "M-"), (W.shift, "M-S-")]] ++
 
     -- Switch between layers
-    [ ("M4-C-<Space>", switchLayer)
+--    [ ("M4-C-<Space>", switchLayer)
 
-    -- Directional navigation of windows
-    , ("M4-<Right>", windowGo R False)
-    , ("M4-<Left>", windowGo L False)
-    , ("M4-<Up>", windowGo U False)
-    , ("M4-<Down>", windowGo D False)
+--    -- Directional navigation of windows
+--    , ("M4-<Right>", windowGo R False)
+--    , ("M4-<Left>", windowGo L False)
+--    , ("M4-<Up>", windowGo U False)
+--    , ("M4-<Down>", windowGo D False)
+--
+--    -- Swap adjacent windows
+--    , ("M4-C-<Right>", windowSwap R False)
+--    , ("M4-C-<Left>", windowSwap L False)
+--    , ("M4-C-<Up>", windowSwap U False)
+--    , ("M4-C-<Down>", windowSwap D False)
+--
+--    -- Directional navigation of screens
+--    , ("M4-r", screenGo R False)
+--    , ("M4-l", screenGo L False)
+--    , ("M4-u", screenGo U False)
+--    , ("M4-d", screenGo D False)
+--
+--    -- Swap workspaces on adjacent screens
+--    , ("M4-C-r", screenSwap R False)
+--    , ("M4-C-l", screenSwap L False)
+--    , ("M4-C-u", screenSwap U False)
+--    , ("M4-C-d", screenSwap D False)
+--
+--    -- Send window to adjacent screen
+--    , ("M4-S-r", windowToScreen R False)
+--    , ("M4-S-l", windowToScreen L False)
+--    , ("M4-S-u", windowToScreen U False)
+--    , ("M4-S-d", windowToScreen D False)
 
-    -- Swap adjacent windows
-    , ("M4-C-<Right>", windowSwap R False)
-    , ("M4-C-<Left>", windowSwap L False)
-    , ("M4-C-<Up>", windowSwap U False)
-    , ("M4-C-<Down>", windowSwap D False)
-
-    -- Directional navigation of screens
-    , ("M4-r", screenGo R False)
-    , ("M4-l", screenGo L False)
-    , ("M4-u", screenGo U False)
-    , ("M4-d", screenGo D False)
-
-    -- Swap workspaces on adjacent screens
-    , ("M4-C-r", screenSwap R False)
-    , ("M4-C-l", screenSwap L False)
-    , ("M4-C-u", screenSwap U False)
-    , ("M4-C-d", screenSwap D False)
-
-    -- Send window to adjacent screen
-    , ("M4-S-r", windowToScreen R False)
-    , ("M4-S-l", windowToScreen L False)
-    , ("M4-S-u", windowToScreen U False)
-    , ("M4-S-d", windowToScreen D False)
-
-    ] ++
+ --   ] ++
 
     -- close focused window ---------------------------------------------
     -- close all windows ------------------------------------------------
@@ -282,10 +280,12 @@ myKeys  = \conf -> mkKeymap conf $
     --, ("M-k",                   windows W.focusUp                       )
 
     -- vim movement through windows and navigation through workspaces
-    , ("M-h", bindOn LD [("Tabbed", windows W.focusUp), ("", windowGo L False)])
-    , ("M-j", windowGo D False)
-    , ("M-k", windowGo U False)
-    , ("M-l", bindOn LD [("Tabbed", windows W.focusDown), ("", windowGo R False)])
+  --  , ("M-h", bindOn LD [("Tabbed", windows W.focusUp), ("", windowGo 
+  --  -  L False)])
+  --  , ("M-j", windowGo D False)
+  --  , ("M-k", windowGo U False)
+  --  , ("M-l", bindOn LD [("Tabbed", windows W.focusDown), ("", windowGo 
+  --  - R False)])
 
     , ("M-m",                   windows W.focusMaster                   )
 
@@ -479,9 +479,7 @@ toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 -- The main function.
 --main = xmonad =<< xmobar (E.ewmh $ withNavigation2DConfig defaultNavigation2DConfig $ myConfig)
 
-main = do 
-    xmonad . E.ewmh . withNavigation2DConfig defaultNavigation2DConfig
-    =<< xmobar myConfig
+main = xmonad =<< xmobar (E.ewmh $ myConfig)
 
 --main = xmonad $ addDescrKeys ((mod4Mask, xK_F1), xMessage) myKeys
 --                    defaultConfig { modMask = mod4Mask }
