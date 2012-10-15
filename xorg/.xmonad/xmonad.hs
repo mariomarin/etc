@@ -2,7 +2,7 @@
 -- Ethan Schoonover <es@ethanschoonover.com>
 --
 -- Current version always available at:
--- https://github.com/altercation/es-etc/blob/master/xmonad/xmonad.hs
+-- https://github.com/altercation/es-etc/tree/master/xorg/.xmonad/
 
 ------------------------------------------------------------------------
 -- Imports
@@ -259,8 +259,8 @@ myKeys  = \conf -> mkKeymap conf $
 
     -- close focused window ---------------------------------------------
     -- close all windows ------------------------------------------------
-    [ ("M-c",                   kill                                    )
-    , ("M-S-c",                 killAll                                 )
+    [ ("M-<Backspace>",         kill                                    )
+    , ("M-S-<Backspace>",       killAll                                 )
 
      -- Rotate through the available layout algorithms ------------------
     , ("M-<Space>",             sendMessage NextLayout                  )
@@ -276,8 +276,8 @@ myKeys  = \conf -> mkKeymap conf $
     -- Move focus to the previous window --------------------------------
     -- Move focus to the master window ----------------------------------
     , ("M-<Tab>",               windows W.focusDown                     )
-    --, ("M-j",                   windows W.focusDown                     )
-    --, ("M-k",                   windows W.focusUp                       )
+    , ("M-j",                   windows W.focusDown                     )
+    , ("M-k",                   windows W.focusUp                       )
 
     -- vim movement through windows and navigation through workspaces
   --  , ("M-h", bindOn LD [("Tabbed", windows W.focusUp), ("", windowGo 
@@ -323,6 +323,7 @@ myKeys  = \conf -> mkKeymap conf $
 
     -- launch a terminal ------------------------------------------------
     [ ("M-S-<Return>",          spawn $ XMonad.terminal conf            )
+    , ("M4-<Return>",           spawn $ XMonad.terminal conf            )
     , ("M4-b",                  spawn $ myBrowser                       )
     , ("M4-c",                  spawn $ chrome                          )
     , ("M4-f",                  spawn $ firefox                         )
