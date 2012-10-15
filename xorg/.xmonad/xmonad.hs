@@ -419,7 +419,6 @@ myManageHook = composeAll
     , className =? "MPlayer"        --> doFloat
     , className =? "Gimp"           --> doFloat
     , className =? "Skype"          --> doFloat
-    , className =? "InputOutput"    --> doIgnore
     , className =? "Onboard"        --> doIgnore
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
@@ -462,8 +461,9 @@ myStartupHook = do
     spawn $ "trayer"
           ++ " --edge top --align right"
           ++ " --SetDockType true --SetPartialStrut true"
-          ++ " --expand true --widthtype percent --width 10"
-          ++ " --transparent true --tint 0x073642 --alpha 50"
+          ++ " --expand true --widthtype percent --width 7"
+          ++ " --transparent true --tint 0x073642 --alpha 0"
+          ++ " --margin 1"
           ++ " --height 20"
           ++ " &"
     spawn $ "xcompmgr -f -D 6 &"
