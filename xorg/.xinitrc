@@ -9,38 +9,16 @@ xsetroot -cursor_name left_ptr
 xsetroot -solid "#002b36"
 hsetroot -solid "#002b36"
 unclutter -root -idle 1 &
-
-# following two lines to detect terminus properly?
-# though not sure this is necessary
-
-#following is duplicate of above... why did I stick it in here?
-#xmodmap /etc/X11/xinit/Xmodmap
-
-# cairo-compmgr seems to cause some occasional problem if started before 
-# xmonad? could also just be the fact that I switch to cairo-compmgr-git
-#cairo-compmgr &
-
-#xcompmgr -f -D 6 &
-#cairo-compmgr &
-
-#xcompmgr -cC -f -D 6 &
-#
 gromit-mpx &
-onboard &
-#
 #xbindkeys -f /etc/X11/xinit/xbindkeysrc
 #xbindkeys -f $HOME/.xbindkeysrc -X :0
-
-#setxkbmap -option ctrl:swapcaps
 setxkbmap -option ctrl:nocaps
-
-# turn off pc-speaker
-xset -b
+xset -b # turn off pc-speaker
 
 # work on tight loops and flashing when changing windows manually in xmonad
 # export SAL_USE_VCLPLUGIN=gen
 
-RESTORE FOLLOWING BLOCK# D-Bus
+# D-Bus
 dbuslaunch="`which dbus-launch 2>/dev/null`"
 if [ -n "$dbuslaunch" ] && [ -x "$dbuslaunch" ] && [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
   eval `$dbuslaunch --sh-syntax --exit-with-session`
@@ -55,7 +33,6 @@ fi
 _eraser_id="$(xsetwacom --list devices | grep ERASER | sed 's/^.*id:\s*\(\w*\)\W.*$/\1/')"
 _stylus_id="$(xsetwacom --list devices | grep STYLUS | sed 's/^.*id:\s*\(\w*\)\W.*$/\1/')"
 _touch_id="$(xsetwacom --list devices | grep TOUCH | sed 's/^.*id:\s*\(\w*\)\W.*$/\1/')"
-
 #xsetwacom set "Wacom ISDv4 E6 Finger touch" Suppress 1
 #xsetwacom set "Wacom ISDv4 E6 Finger touch" RawSample 20
 #xsetwacom set "Wacom ISDv4 E6 Finger touch" ScrollDistance 40
@@ -84,7 +61,7 @@ _touch_id="$(xsetwacom --list devices | grep TOUCH | sed 's/^.*id:\s*\(\w*\)\W.*
 #exec ck-launch-session xmonad
 
 _xmonad () {
-/usr/bin/xscreensaver -no-splash -no-capture-stderr &
+#/usr/bin/xscreensaver -no-splash -no-capture-stderr &
 xmonad
 }
 
@@ -92,5 +69,4 @@ _gnome () {
 exec ck-launch-session gnome-session
 }
 
-#_gnome
-_xmonad
+xmonad

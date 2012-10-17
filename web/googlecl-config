@@ -6,6 +6,8 @@ presentation_format = ppt
 presentation_editor = openoffice.org
 document_format = txt
 drawing_format = png
+skip_auth = True
+user = es@ethanschoonover.com
 
 [CALENDAR]
 fields = title,when

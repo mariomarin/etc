@@ -334,7 +334,8 @@ myKeys  = \conf -> mkKeymap conf $
  ++
 
     [ ("<XF86Display>",         spawn $ "dispatch display cycle"        )
-    , ("<XF86RotateWindows>",    spawn $ "onboard"        )
+    , ("<XF86RotateWindows>",   spawn $ "dispatch keyboard"             )
+    , ("<XF86ScreenSaver>",     spawn $ "dispatch system consolelock"   )
     , ("C-<XF86Display>",       spawn $ "dispatch display external"     )
     , ("S-<XF86Display>",       spawn $ "dispatch display internal"     )
     , ("S-C-<XF86Display>",     spawn $ "dispatch display mirror"       )
@@ -361,7 +362,6 @@ myKeys  = \conf -> mkKeymap conf $
 -- >  -- # or
 -- >     , ("C-M-h", bindOnLayouts [("MRT", sendMessage MirrorExpand), ("", sendMessage Shrink)]
 
-
 -- XMonad.Actions.ConditionalKeys code ---------------------------------
 -- from: http://www.haskell.org/pipermail/xmonad/attachments/20100322/e7ea7411/ConditionalKeys.obj
 
@@ -387,6 +387,9 @@ bindOn xc bindings = chooseAction xc $ chooser where
 
 -- Mouse bindings ------------------------------------------------------
 
+myButtons = [ -- ((0, 6), (\_ -> prevWS )) -- cycle workspaces 
+            -- , ((0, 7), (\_ -> nextWS )) -- with swipe left/right
+            ]
 
 ------------------------------------------------------------------------
 -- Layouts:
@@ -511,7 +514,7 @@ myConfig = defaultConfig {
         -- key bindings
         keys               = myKeys,
 
-        --mouseBindings      = myMouseBindings,
+        -- mouseBindings      = myMouseBindings,
 
         -- hooks, layouts
         layoutHook         = myLayout,
@@ -520,6 +523,8 @@ myConfig = defaultConfig {
         --logHook            = myLogHook,
         startupHook        = myStartupHook
     }
+    `additionalMouseBindings` myButtons
+
 -- >    -- Switch between layers
 -- >    , ((modm,                 xK_space), switchLayers)
 -- >
