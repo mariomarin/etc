@@ -59,6 +59,7 @@ chain = true
 [bin]
 lib = TARGET=bin
 checkout = $GITHUB/$ES$TARGET.git $TARGET
+fixups = $HOME/$TARGET/conform
 chain = true
 
 [etc]
