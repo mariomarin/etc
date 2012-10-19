@@ -41,6 +41,8 @@ import XMonad.Layout.TabBarDecoration
 
 import XMonad.Layout.SimpleFloat
 
+import XMonad.Hooks.UrgencyHook
+
 -- Application/System --------------------------------------------------
 
 import XMonad.Actions.WithAll -- used for killall
@@ -495,7 +497,7 @@ toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 -- The main function.
 --main = xmonad =<< xmobar (E.ewmh $ withNavigation2DConfig defaultNavigation2DConfig $ myConfig)
 
-main = xmonad =<< xmobar (E.ewmh $ myConfig)
+main = xmonad =<< xmobar (E.ewmh $ withUrgencyHook NoUrgencyHook $ myConfig)
 
 --main = xmonad $ addDescrKeys ((mod4Mask, xK_F1), xMessage) myKeys
 --                    defaultConfig { modMask = mod4Mask }
