@@ -19,8 +19,9 @@ Config  {
                           , Run DiskU [("/", "<size>(<usedp>%)")] ["-L","20","-H","50","-m","1","-p","2"] 20
                           , Run Com "xmobar-pwr" ["-s","-r"] "pwrmode" 25
                           , Run Com "xmobar-tab" ["-s","-r"] "tabmode" 50
+                          , Run CoreTemp ["-t", "<core0>C", "-L", "40", "-H", "60", "-l", "lightblue", "-n", "gray90", "-h", "red"] 50
                           ]
         , sepChar       = "%"
         , alignSep      = "}{"
-        , template      = " %StdinReader% }{ <fc=#2aa198>%wlan0wi%</fc> <fc=#6c71c4>DSK %disku%</fc> <fc=#93a1a1>%battery%</fc> <fc=#6c71c4>%cpu% %cpufreq% %swap%</fc> <fc=#268bd2>%theDate%</fc> %pwrmode% %tabmode%"
+        , template      = " %StdinReader% }{ <fc=#2aa198>%wlan0wi%</fc> <fc=#6c71c4>DSK %disku%</fc> <fc=#93a1a1>%battery%</fc> <fc=#6c71c4>%cpu% %cpufreq% %coretemp% %swap%</fc> <fc=#268bd2>%theDate%</fc> %pwrmode% %tabmode%"
         }
