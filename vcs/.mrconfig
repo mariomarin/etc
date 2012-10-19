@@ -4,8 +4,8 @@
 [DEFAULT]
 # Include all available libs.
 include = cat /usr/share/mr/* 2>/dev/null || true
-lib = GITHUB="git clone git@github.com:altercation"
-      ES=es-
+lib = [ -e "$HOME/.ssh/id_rsa" ] && GITHUB="git clone git@github.com:altercation" || GITHUB="git clone https://github.com/altercation"
+      USER=es
 
       #git config --global credential.helper 'cache --timeout=3600';
       #[ -n "${AUTH_USERNAME}" -a -n "${AUTH_PASSWORD}" ] \
@@ -23,48 +23,48 @@ lib = GITHUB="git clone git@github.com:altercation"
 
 [anx]
 lib = TARGET=anx
-checkout = $GITHUB/$ES$TARGET.git $TARGET
+checkout = $GITHUB/$USER-$TARGET.git $TARGET
 chain = true
 
 [inf]
 lib = TARGET=inf
-checkout = $GITHUB/$ES$TARGET.git $TARGET
+checkout = $GITHUB/$USER-$TARGET.git $TARGET
 chain = true
 
 [ord]
 lib = TARGET=ord
-checkout = $GITHUB/$ES$TARGET.git $TARGET
+checkout = $GITHUB/$USER-$TARGET.git $TARGET
 chain = true
 
 [pro]
 lib = TARGET=pro
-checkout = $GITHUB/$ES$TARGET.git $TARGET
+checkout = $GITHUB/$USER-$TARGET.git $TARGET
 chain = true
 
 [rec]
 lib = TARGET=rec
-checkout = $GITHUB/$ES$TARGET.git $TARGET
+checkout = $GITHUB/$USER-$TARGET.git $TARGET
 chain = true
 
 [sys]
 lib = TARGET=sys
-checkout = $GITHUB/$ES$TARGET.git $TARGET
+checkout = $GITHUB/$USER-$TARGET.git $TARGET
 chain = true
 
 [txt]
 lib = TARGET=txt
-checkout = $GITHUB/$ES$TARGET.git $TARGET
+checkout = $GITHUB/$USER-$TARGET.git $TARGET
 chain = true
 
 [bin]
 lib = TARGET=bin
-checkout = $GITHUB/$ES$TARGET.git $TARGET
+checkout = $GITHUB/$USER-$TARGET.git $TARGET
 fixups = $HOME/$TARGET/conform
 chain = true
 
 [etc]
 lib = TARGET=etc
-checkout = $GITHUB/$ES$TARGET.git $TARGET
+checkout = $GITHUB/$USER-$TARGET.git $TARGET
 fixups = $HOME/$TARGET/conform
 
 #[shr]
