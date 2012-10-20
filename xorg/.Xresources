@@ -30,7 +30,7 @@
 *keysym.C-equal:command:\033]710;xft:Terminus:style=Bold:pixelsize=28\007\
                         \033]711;xft:Terminus:style=Bold:pixelsize=28\007
 
-# 20 and 18 are very similar but 20 has greater line spacing
+! 20 and 18 are very similar but 20 has greater line spacing
 *font: -*-terminus-medium-r-normal--18-*-*-*-*-*-*-*
 *mfont: -*-terminus-medium-r-normal--18-*-*-*-*-*-*-*
 *boldFont: -*-terminus-bold-r-normal--18-*-*-*-*-*-*-*
@@ -192,3 +192,360 @@ urxvt*depth:            32
 urxvt*background:       [95]#002b36
 
 
+XScreenSaver.mode:			random
+XScreenSaver.timeout:		0:10:00
+XScreenSaver.cycle:			0:10:00
+XScreenSaver.lockTimeout:		0:00:00
+XScreenSaver.passwdTimeout:		0:00:30
+XScreenSaver.dpmsEnabled:		False
+XScreenSaver.dpmsQuickoffEnabled:	False
+XScreenSaver.dpmsStandby:		2:00:00
+XScreenSaver.dpmsSuspend:		2:00:00
+XScreenSaver.dpmsOff:		4:00:00
+XScreenSaver.grabDesktopImages:	True
+XScreenSaver.grabVideoFrames:	False
+XScreenSaver.chooseRandomImages:	False
+! This can be a local directory name, or the URL of an RSS or Atom feed.
+XScreenSaver.imageDirectory:	
+XScreenSaver.nice:			10
+XScreenSaver.memoryLimit:		0
+XScreenSaver.lock:			False
+XScreenSaver.verbose:		False
+XScreenSaver.timestamp:		True
+XScreenSaver.fade:			True
+XScreenSaver.unfade:		False
+XScreenSaver.fadeSeconds:		0:00:03
+XScreenSaver.fadeTicks:		20
+XScreenSaver.splash:		True
+XScreenSaver.splashDuration:	0:00:05
+XScreenSaver.visualID:		default
+XScreenSaver.captureStderr: 	True
+XScreenSaver.ignoreUninstalledPrograms: False
+
+XScreenSaver.textMode:		file
+XScreenSaver.textLiteral:		XScreenSaver
+XScreenSaver.textFile:		
+XScreenSaver.textProgram:		fortune
+XScreenSaver.textURL:		http://twitter.com/statuses/public_timeline.atom
+!*textURL:		http://www.livejournal.com/stats/latest-rss.bml
+
+XScreenSaver.overlayTextForeground:	#FFFF00
+XScreenSaver.overlayTextBackground:	#000000
+XScreenSaver.overlayStderr:		True
+XScreenSaver.font:			*-medium-r-*-140-*-m-*
+XScreenSaver.sgiSaverExtension:	True
+XScreenSaver.xidleExtension:	True
+XScreenSaver.procInterrupts:	True
+XScreenSaver.demoCommand: xscreensaver-demo
+XScreenSaver.prefsCommand: xscreensaver-demo -prefs
+XScreenSaver.loadURL: firefox '%s' || mozilla '%s' || netscape '%s'
+XScreenSaver.manualCommand: xterm -sb -fg black -bg gray75 -T '%s manual' \
+		    -e /bin/sh -c 'man "%s" ; read foo'
+
+
+! The format used for printing the date and time in the password dialog box
+! (see the strftime(3) manual page for details.)
+XScreenSaver.dateFormat:		%d-%b-%y (%a); %I:%M %p
+! To show the time only:
+! *dateFormat:		%I:%M %p
+! For 24 hour time:
+! *dateFormat:		%H:%M
+
+
+! This command is executed by the "New Login" button on the lock dialog.
+! (That button does not appear on the dialog if this program does not exist.)
+! For Gnome: probably "gdmflexiserver -ls".  KDE, probably "kdmctl reserve".
+! Or maybe yet another wheel-reinvention, "lxdm -c USER_SWITCH".
+!
+XScreenSaver.newLoginCommand:	gdmflexiserver -ls
+
+
+! Turning on "installColormap" on 8-bit systems interacts erratically with
+! certain jurassic window managers.  If your screen turns some color other
+! than black, the window manager is buggy, and you need to set this resource
+! to false.  Or switch WMs.  Or join the 21st century and get a 24-bit
+! graphics card.
+!
+XScreenSaver.installColormap:	True
+
+
+XScreenSaver.programs:								      \
+				maze -root				    \n\
+  GL: 				superquadrics -root			    \n\
+				attraction -root			    \n\
+				blitspin -root				    \n\
+				greynetic -root				    \n\
+				helix -root				    \n\
+				hopalong -root				    \n\
+				imsmap -root				    \n\
+-				noseguy -root				    \n\
+-				pyro -root				    \n\
+				qix -root				    \n\
+-				rocks -root				    \n\
+				rorschach -root				    \n\
+				decayscreen -root			    \n\
+				flame -root				    \n\
+				halo -root				    \n\
+				slidescreen -root			    \n\
+				pedal -root				    \n\
+				bouboule -root				    \n\
+-				braid -root				    \n\
+				coral -root				    \n\
+				deco -root				    \n\
+				drift -root				    \n\
+-				fadeplot -root				    \n\
+				galaxy -root				    \n\
+				goop -root				    \n\
+				grav -root				    \n\
+				ifs -root				    \n\
+  GL: 				jigsaw -root				    \n\
+				julia -root				    \n\
+-				kaleidescope -root			    \n\
+  GL: 				moebius -root				    \n\
+				moire -root				    \n\
+  GL: 				morph3d -root				    \n\
+				mountain -root				    \n\
+				munch -root				    \n\
+				penrose -root				    \n\
+  GL: 				pipes -root				    \n\
+				rd-bomb -root				    \n\
+  GL: 				rubik -root				    \n\
+-				sierpinski -root			    \n\
+				slip -root				    \n\
+  GL: 				sproingies -root			    \n\
+				starfish -root				    \n\
+				strange -root				    \n\
+				swirl -root				    \n\
+				triangle -root				    \n\
+				xjack -root				    \n\
+				xlyap -root				    \n\
+  GL: 				atlantis -root				    \n\
+				bsod -root				    \n\
+  GL: 				bubble3d -root				    \n\
+  GL: 				cage -root				    \n\
+-				crystal -root				    \n\
+				cynosure -root				    \n\
+				discrete -root				    \n\
+				distort -root				    \n\
+				epicycle -root				    \n\
+				flow -root				    \n\
+- GL: 				glplanet -root				    \n\
+				interference -root			    \n\
+				kumppa -root				    \n\
+  GL: 				lament -root				    \n\
+				moire2 -root				    \n\
+  GL: 				sonar -root				    \n\
+  GL: 				stairs -root				    \n\
+				truchet -root				    \n\
+-				vidwhacker -root			    \n\
+				blaster -root				    \n\
+				bumps -root				    \n\
+				ccurve -root				    \n\
+				compass -root				    \n\
+				deluxe -root				    \n\
+-				demon -root				    \n\
+- GL: 				extrusion -root				    \n\
+-				loop -root				    \n\
+				penetrate -root				    \n\
+				petri -root				    \n\
+				phosphor -root				    \n\
+  GL: 				pulsar -root				    \n\
+				ripples -root				    \n\
+				shadebobs -root				    \n\
+  GL: 				sierpinski3d -root			    \n\
+				spotlight -root				    \n\
+				squiral -root				    \n\
+				wander -root				    \n\
+-				webcollage -root			    \n\
+				xflame -root				    \n\
+				xmatrix -root				    \n\
+  GL: 				gflux -root				    \n\
+-				nerverot -root				    \n\
+				xrayswarm -root				    \n\
+				xspirograph -root			    \n\
+  GL: 				circuit -root				    \n\
+  GL: 				dangerball -root			    \n\
+- GL: 				dnalogo -root				    \n\
+  GL: 				engine -root				    \n\
+  GL: 				flipscreen3d -root			    \n\
+  GL: 				gltext -root				    \n\
+  GL: 				menger -root				    \n\
+  GL: 				molecule -root				    \n\
+				rotzoomer -root				    \n\
+				speedmine -root				    \n\
+  GL: 				starwars -root				    \n\
+  GL: 				stonerview -root			    \n\
+				vermiculate -root			    \n\
+				whirlwindwarp -root			    \n\
+				zoom -root				    \n\
+				anemone -root				    \n\
+				apollonian -root			    \n\
+  GL: 				boxed -root				    \n\
+  GL: 				cubenetic -root				    \n\
+  GL: 				endgame -root				    \n\
+				euler2d -root				    \n\
+				fluidballs -root			    \n\
+  GL: 				flurry -root				    \n\
+- GL: 				glblur -root				    \n\
+  GL: 				glsnake -root				    \n\
+				halftone -root				    \n\
+  GL: 				juggler3d -root				    \n\
+  GL: 				lavalite -root				    \n\
+-				polyominoes -root			    \n\
+  GL: 				queens -root				    \n\
+- GL: 				sballs -root				    \n\
+  GL: 				spheremonics -root			    \n\
+-				thornbird -root				    \n\
+				twang -root				    \n\
+- GL: 				antspotlight -root			    \n\
+				apple2 -root				    \n\
+  GL: 				atunnel -root				    \n\
+				barcode -root				    \n\
+  GL: 				blinkbox -root				    \n\
+  GL: 				blocktube -root				    \n\
+  GL: 				bouncingcow -root			    \n\
+				cloudlife -root				    \n\
+  GL: 				cubestorm -root				    \n\
+				eruption -root				    \n\
+  GL: 				flipflop -root				    \n\
+  GL: 				flyingtoasters -root			    \n\
+				fontglide -root				    \n\
+  GL: 				gleidescope -root			    \n\
+  GL: 				glknots -root				    \n\
+  GL: 				glmatrix -root				    \n\
+- GL: 				glslideshow -root			    \n\
+  GL: 				hypertorus -root			    \n\
+- GL: 				jigglypuff -root			    \n\
+				metaballs -root				    \n\
+  GL: 				mirrorblob -root			    \n\
+				piecewise -root				    \n\
+  GL: 				polytopes -root				    \n\
+				pong -root				    \n\
+				popsquares -root			    \n\
+  GL: 				surfaces -root				    \n\
+				xanalogtv -root				    \n\
+-				abstractile -root			    \n\
+				anemotaxis -root			    \n\
+- GL: 				antinspect -root			    \n\
+				fireworkx -root				    \n\
+				fuzzyflakes -root			    \n\
+				interaggregate -root			    \n\
+				intermomentary -root			    \n\
+				memscroller -root			    \n\
+  GL: 				noof -root				    \n\
+				pacman -root				    \n\
+  GL: 				pinion -root				    \n\
+  GL: 				polyhedra -root				    \n\
+- GL: 				providence -root			    \n\
+				substrate -root				    \n\
+				wormhole -root				    \n\
+- GL: 				antmaze -root				    \n\
+  GL: 				boing -root				    \n\
+				boxfit -root				    \n\
+  GL: 				carousel -root				    \n\
+				celtic -root				    \n\
+  GL: 				crackberg -root				    \n\
+  GL: 				cube21 -root				    \n\
+				fiberlamp -root				    \n\
+  GL: 				fliptext -root				    \n\
+  GL: 				glhanoi -root				    \n\
+  GL: 				tangram -root				    \n\
+  GL: 				timetunnel -root			    \n\
+  GL: 				glschool -root				    \n\
+  GL: 				topblock -root				    \n\
+  GL: 				cubicgrid -root				    \n\
+				cwaves -root				    \n\
+  GL: 				gears -root				    \n\
+  GL: 				glcells -root				    \n\
+  GL: 				lockward -root				    \n\
+				m6502 -root				    \n\
+  GL: 				moebiusgears -root			    \n\
+  GL: 				voronoi -root				    \n\
+  GL: 				hypnowheel -root			    \n\
+  GL: 				klein -root				    \n\
+-				lcdscrub -root				    \n\
+  GL: 				photopile -root				    \n\
+  GL: 				skytentacles -root			    \n\
+  GL: 				rubikblocks -root			    \n\
+  GL: 				companioncube -root			    \n\
+  GL: 				hilbert -root				    \n\
+  GL: 				tronbit -root				    \n\
+				electricsheep --root 1				    \n
+
+
+XScreenSaver.pointerPollTime:		0:00:05
+XScreenSaver.pointerHysteresis:		10
+XScreenSaver.initialDelay:		0:00:00
+XScreenSaver.windowCreationTimeout:	0:00:30
+XScreenSaver.bourneShell:		/bin/sh
+
+
+! Resources for the password and splash-screen dialog boxes of
+! the "xscreensaver" daemon.
+!
+
+XScreenSaver.Dialog.headingFont: -*-terminus-bold-r-normal--18-*-*-*-*-*-*-*
+XScreenSaver.Dialog.bodyFont: -*-terminus-bold-r-normal--18-*-*-*-*-*-*-*
+XScreenSaver.Dialog.labelFont: -*-terminus-medium-r-normal--18-*-*-*-*-*-*-*
+XScreenSaver.Dialog.unameFont: -*-terminus-bold-r-normal--28-*-*-*-*-*-*-*
+XScreenSaver.Dialog.buttonFont: -*-terminus-medium-r-normal--18-*-*-*-*-*-*-*
+XScreenSaver.Dialog.dateFont: -*-terminus-medium-r-normal--12-*-*-*-*-*-*-*
+XScreenSaver.passwd.passwdFont: -*-terminus-medium-r-normal--18-*-*-*-*-*-*-*
+!!XScreenSaver.Dialog.headingFont:		*-helvetica-bold-r-*-*-*-180-*-*-*-iso8859-1
+!!XScreenSaver.Dialog.bodyFont:		*-helvetica-bold-r-*-*-*-140-*-*-*-iso8859-1
+!!XScreenSaver.Dialog.labelFont:		*-helvetica-bold-r-*-*-*-140-*-*-*-iso8859-1
+!!XScreenSaver.Dialog.unameFont:		*-helvetica-bold-r-*-*-*-120-*-*-*-iso8859-1
+!!XScreenSaver.Dialog.buttonFont:		*-helvetica-bold-r-*-*-*-140-*-*-*-iso8859-1
+!!XScreenSaver.Dialog.dateFont:		*-helvetica-medium-r-*-*-*-80-*-*-*-iso8859-1
+! Helvetica asterisks look terrible.
+!*passwd.passwdFont:		*-helvetica-medium-r-*-*-*-140-*-*-*-iso8859-1
+!!XScreenSaver.passwd.passwdFont:		*-courier-medium-r-*-*-*-140-*-*-*-iso8859-1
+
+!!#define S_base03        #002b36
+!!#define S_base02        #073642
+!!#define S_base01        #586e75
+!!#define S_base00        #657b83
+!!#define S_base0         #839496
+!!#define S_base1         #93a1a1
+!!#define S_base2         #eee8d5
+!!#define S_base3         #fdf6e3
+!!#define S_yellow        #b58900
+!!#define S_orange        #cb4b16
+!!#define S_red           #dc322f
+!!#define S_magenta       #d33682
+!!#define S_violet        #6c71c4
+!!#define S_blue          #268bd2
+!!#define S_cyan          #2aa198
+!!#define S_green         #719e07
+XScreenSaver.Dialog.foreground:		#073642
+XScreenSaver.Dialog.background:		#657b83
+XScreenSaver.Dialog.Button.foreground:	#93a1a1
+XScreenSaver.Dialog.Button.background:	#586e75
+!*Dialog.Button.pointBackground: #EAEAEA
+!*Dialog.Button.clickBackground: #C3C3C3
+XScreenSaver.Dialog.text.foreground:		#073642
+XScreenSaver.Dialog.text.background:		#839496
+XScreenSaver.passwd.thermometer.foreground:	#268bd2
+!XScreenSaver.passwd.thermometer.background:	#839496
+XScreenSaver.Dialog.topShadowColor:		#586e75
+XScreenSaver.Dialog.bottomShadowColor:	        #586e75
+XScreenSaver.Dialog.logo.width:		1
+XScreenSaver.Dialog.logo.height:		1
+XScreenSaver.Dialog.internalBorderWidth:	50
+XScreenSaver.Dialog.borderWidth:		0
+XScreenSaver.Dialog.shadowThickness: 1
+
+XScreenSaver.passwd.heading.label:		
+XScreenSaver.passwd.body.label:		
+XScreenSaver.passwd.unlock.label:		OK
+XScreenSaver.passwd.login.label:		New Login
+XScreenSaver.passwd.user.label:		Username:
+XScreenSaver.passwd.thermometer.width:	5
+XScreenSaver.passwd.asterisks:              True
+XScreenSaver.passwd.uname:                  True
+
+XScreenSaver.splash.heading.label:		XScreenSaver %s
+XScreenSaver.splash.body.label:		Copyright © 1991-2012 by
+XScreenSaver.splash.body2.label:		Jamie Zawinski <jwz@jwz.org>
+XScreenSaver.splash.demo.label:		Settings
+XScreenSaver.splash.help.label:		Help

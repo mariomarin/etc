@@ -336,7 +336,7 @@ myKeys  = \conf -> mkKeymap conf $
  ++
 
     [ ("<XF86Display>",         spawn $ "dispatch display cycle"        )
-    --, ("<XF86RotateWindows>",   spawn $ "dispatch keyboard"             )
+    , ("<XF86RotateWindows>",   spawn $ "dispatch keyboard"             )
     , ("<XF86ScreenSaver>",     spawn $ "dispatch system consolelock"   )
     , ("C-<XF86Display>",       spawn $ "dispatch display external"     )
     , ("S-<XF86Display>",       spawn $ "dispatch display internal"     )

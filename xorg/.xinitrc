@@ -61,7 +61,7 @@ _touch_id="$(xsetwacom --list devices | grep TOUCH | sed 's/^.*id:\s*\(\w*\)\W.*
 #exec ck-launch-session xmonad
 
 _xmonad () {
-#/usr/bin/xscreensaver -no-splash -no-capture-stderr &
+/usr/bin/xscreensaver -no-splash -no-capture-stderr &
 xmonad
 }
 
@@ -69,4 +69,5 @@ _gnome () {
 exec ck-launch-session gnome-session
 }
 
+/usr/bin/xscreensaver -no-splash -no-capture-stderr &
 xmonad

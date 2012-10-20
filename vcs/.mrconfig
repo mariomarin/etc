@@ -31,57 +31,57 @@ lib = :
 # ent - entropy - tmp directory
 
 [anx]
-lib = HOME_REPO_URL_GEN es-anx anx
+lib =      HOME_REPO_URL_GEN es-anx anx
 checkout = HOME_REPO_CHECKOUT
-fixups = HOME_REPO_FIXUPS
-chain = true
+fixups =   HOME_REPO_FIXUPS
+chain =    true
 
 [inf]
-lib = HOME_REPO_URL_GEN es-inf inf
+lib =      HOME_REPO_URL_GEN es-inf inf
 checkout = HOME_REPO_CHECKOUT
-fixups = HOME_REPO_FIXUPS
-chain = true
+fixups =   HOME_REPO_FIXUPS
+chain =    true
 
 [ord]
-lib = HOME_REPO_URL_GEN es-ord ord
+lib =      HOME_REPO_URL_GEN es-ord ord
 checkout = HOME_REPO_CHECKOUT
-fixups = HOME_REPO_FIXUPS
-chain = true
+fixups =   HOME_REPO_FIXUPS
+chain =    true
 
 [pro]
-lib = HOME_REPO_URL_GEN es-pro pro
+lib =      HOME_REPO_URL_GEN es-pro pro
 checkout = HOME_REPO_CHECKOUT
-fixups = HOME_REPO_FIXUPS
-chain = true
+fixups =   HOME_REPO_FIXUPS
+chain =    true
 
 [rec]
-lib = HOME_REPO_URL_GEN es-rec rec
+lib =      HOME_REPO_URL_GEN es-rec rec
 checkout = HOME_REPO_CHECKOUT
-fixups = HOME_REPO_FIXUPS
-chain = true
+fixups =   HOME_REPO_FIXUPS
+chain =    true
 
 [sys]
-lib = HOME_REPO_URL_GEN es-sys rec
+lib =      HOME_REPO_URL_GEN es-sys rec
 checkout = HOME_REPO_CHECKOUT
-fixups = HOME_REPO_FIXUPS
-chain = true
+fixups =   HOME_REPO_FIXUPS
+chain =    true
 
 [txt]
-lib = HOME_REPO_URL_GEN es-txt txt
+lib =      HOME_REPO_URL_GEN es-txt txt
 checkout = HOME_REPO_CHECKOUT
-fixups = HOME_REPO_FIXUPS
-chain = true
+fixups =   HOME_REPO_FIXUPS
+chain =    true
 
 [bin]
-lib = HOME_REPO_URL_GEN es-bin bin
+lib =      HOME_REPO_URL_GEN es-bin bin
 checkout = HOME_REPO_CHECKOUT
-fixups = HOME_REPO_FIXUPS
-chain = true
+fixups =   HOME_REPO_FIXUPS
+chain =    true
 
 [etc]
-lib = HOME_REPO_URL_GEN es-etc etc
+lib =      HOME_REPO_URL_GEN es-etc etc
 checkout = HOME_REPO_CHECKOUT
-fixups = HOME_REPO_FIXUPS
+fixups =   HOME_REPO_FIXUPS
 
 #[shr]
 
