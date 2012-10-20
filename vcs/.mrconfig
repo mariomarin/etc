@@ -1,17 +1,26 @@
 # run this in mr bootstrap mode via:
-# mr --trust-all bootstrap https://raw.github.com/altercation/$EShome/master/.mrconfig
+# mr --trust-all bootstrap https://raw.github.com/altercation/es-home/master/.mrconfig
 
 [DEFAULT]
 # Include all available libs.
 include = cat /usr/share/mr/* 2>/dev/null || true
-lib = [ -e "$HOME/.ssh/id_rsa" ] && GITHUB="git clone git@github.com:altercation" || GITHUB="git clone https://github.com/altercation"
-      USER=es
+include = cat "$HOME/etc/vcs/mr/*" 2>/dev/null || true
+# If .ssh has been setup, use ssh
+# Note that the fixups should have code to switch over to the
+# ssh format using this same logic.
+# Note also that use of export means we can use these values
+# in chained .mrconfig files.
+lib = :
+      export GIT_USER=altercation
+      [ -e "$HOME/.ssh/id_rsa" ] \
+      && export GIT_URL="git@github.com:$GIT_USER" \
+      || export GIT_URL="https://github.com/$GIT_USER"
+      HOME_REPO_URL_GEN () { REPO_URL=$GIT_URL/$1.git REPO_DIR=${2:-$1}; }
+      HOME_REPO_CHECKOUT () { git clone $GIT_URL/$REPO_URL $REPO_DIR; }
+      HOME_REPO_FIXUPS () { git remote set-url origin $REPO_URL; ./conform; }
 
-      #git config --global credential.helper 'cache --timeout=3600';
-      #[ -n "${AUTH_USERNAME}" -a -n "${AUTH_PASSWORD}" ] \
-      #&& _auth_string="${AUTH_USERNAME}:${AUTH_PASSWORD}@" || set _auth_string
-      #GITHUB="git clone https://${_auth_string}github.com/altercation"
-
+# REFERENCE: HOME structure
+# ---------------------------------------------------------------------
 # anx - git-annex - aud, img, vid
 # inf - info, research (subdirs but monolithic)
 # org - organization, tasks, notes (
@@ -22,58 +31,65 @@ lib = [ -e "$HOME/.ssh/id_rsa" ] && GITHUB="git clone git@github.com:altercation
 # ent - entropy - tmp directory
 
 [anx]
-lib = TARGET=anx
-checkout = $GITHUB/$USER-$TARGET.git $TARGET
+lib = HOME_REPO_URL_GEN es-anx anx
+checkout = HOME_REPO_CHECKOUT
+fixups = HOME_REPO_FIXUPS
 chain = true
 
 [inf]
-lib = TARGET=inf
-checkout = $GITHUB/$USER-$TARGET.git $TARGET
+lib = HOME_REPO_URL_GEN es-inf inf
+checkout = HOME_REPO_CHECKOUT
+fixups = HOME_REPO_FIXUPS
 chain = true
 
 [ord]
-lib = TARGET=ord
-checkout = $GITHUB/$USER-$TARGET.git $TARGET
+lib = HOME_REPO_URL_GEN es-ord ord
+checkout = HOME_REPO_CHECKOUT
+fixups = HOME_REPO_FIXUPS
 chain = true
 
 [pro]
-lib = TARGET=pro
-checkout = $GITHUB/$USER-$TARGET.git $TARGET
+lib = HOME_REPO_URL_GEN es-pro pro
+checkout = HOME_REPO_CHECKOUT
+fixups = HOME_REPO_FIXUPS
 chain = true
 
 [rec]
-lib = TARGET=rec
-checkout = $GITHUB/$USER-$TARGET.git $TARGET
+lib = HOME_REPO_URL_GEN es-rec rec
+checkout = HOME_REPO_CHECKOUT
+fixups = HOME_REPO_FIXUPS
 chain = true
 
 [sys]
-lib = TARGET=sys
-checkout = $GITHUB/$USER-$TARGET.git $TARGET
+lib = HOME_REPO_URL_GEN es-sys rec
+checkout = HOME_REPO_CHECKOUT
+fixups = HOME_REPO_FIXUPS
 chain = true
 
 [txt]
-lib = TARGET=txt
-checkout = $GITHUB/$USER-$TARGET.git $TARGET
+lib = HOME_REPO_URL_GEN es-txt txt
+checkout = HOME_REPO_CHECKOUT
+fixups = HOME_REPO_FIXUPS
 chain = true
 
 [bin]
-lib = TARGET=bin
-checkout = $GITHUB/$USER-$TARGET.git $TARGET
-fixups = $HOME/$TARGET/conform
+lib = HOME_REPO_URL_GEN es-bin bin
+checkout = HOME_REPO_CHECKOUT
+fixups = HOME_REPO_FIXUPS
 chain = true
 
 [etc]
-lib = TARGET=etc
-checkout = $GITHUB/$USER-$TARGET.git $TARGET
-fixups = $HOME/$TARGET/conform
+lib = HOME_REPO_URL_GEN es-etc etc
+checkout = HOME_REPO_CHECKOUT
+fixups = HOME_REPO_FIXUPS
 
 #[shr]
 
-[ent]
+[tmp]
 # This is a dummy target, all it does is run fixups
 # at the end of an update.
 # fixups = $HOME/etc/conform
-checkout = mkdir -p $HOME/ent
+checkout = mkdir -p $HOME/tmp
 status = :
 order = 25
 
