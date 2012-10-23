@@ -193,12 +193,12 @@ urxvt*background:       [95]#002b36
 
 
 XScreenSaver.mode:			random
-XScreenSaver.timeout:		0:10:00
+XScreenSaver.timeout:		        0:10:00
 XScreenSaver.cycle:			0:10:00
 XScreenSaver.lockTimeout:		0:00:00
 XScreenSaver.passwdTimeout:		0:00:30
-XScreenSaver.dpmsEnabled:		False
-XScreenSaver.dpmsQuickoffEnabled:	False
+XScreenSaver.dpmsEnabled:		True
+XScreenSaver.dpmsQuickoffEnabled:	True
 XScreenSaver.dpmsStandby:		2:00:00
 XScreenSaver.dpmsSuspend:		2:00:00
 XScreenSaver.dpmsOff:		4:00:00

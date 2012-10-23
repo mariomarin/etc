@@ -13,7 +13,7 @@ Config  {
                           , Run BatteryP ["BAT0","BAT1","BAT2"] ["-t", "PWR <acstatus><watts>W <left>% <timeleft>", "--", "-O", "AC+", "-o", ""] 10
                           , Run Weather "KSEA" ["-t","Seattle:<tempF>°|<skyCondition>"] 36000
                           , Run Cpu ["-t","CPU <total>%","-p","2","-L","50","-H","80","--normal","yellow","--high","red","-c","0"] 25
-                          , Run CpuFreq ["-t", "<cpu0>","-L","0","-H","2","-l","#6c71c4","-n","#6c71c4","-h","#719e07"] 25
+                          , Run CpuFreq ["-t", "<cpu0>","-L","0","-H","2","-l","#6c71c4","-n","#6c71c4","-h","#719e07","-m","7"] 25
                           , Run Swap ["-t","SWP <usedratio>%","-c","0","-p","2","-L","50","-H","80","--normal","yellow","--high","red"] 25
                           , Run Wireless "wlan0" ["-t","WFI <qualitybar>","-b","-","-f",">","-W","5"] 25
                           , Run DiskU [("/", "<size>(<usedp>%)")] ["-L","20","-H","50","-m","1","-p","2"] 20

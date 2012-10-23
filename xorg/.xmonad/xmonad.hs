@@ -327,6 +327,7 @@ myKeys  = \conf -> mkKeymap conf $
     [ ("M-S-<Return>",          spawn $ XMonad.terminal conf            )
     , ("M4-<Return>",           spawn $ XMonad.terminal conf            )
     , ("M4-b",                  spawn $ myBrowser                       )
+    , ("M4-m",                  spawn $ "mypaint &"                     )
     , ("M4-c",                  spawn $ chrome                          )
     , ("M4-f",                  spawn $ firefox                         )
     , ("M4-s",                  spawn $ skype                           )
@@ -335,19 +336,22 @@ myKeys  = \conf -> mkKeymap conf $
     ]
  ++
 
-    [ ("<XF86Display>",         spawn $ "dispatch display cycle"        )
-    , ("<XF86RotateWindows>",   spawn $ "dispatch keyboard"             )
-    , ("<XF86ScreenSaver>",     spawn $ "dispatch system consolelock"   )
-    , ("C-<XF86Display>",       spawn $ "dispatch display external"     )
-    , ("S-<XF86Display>",       spawn $ "dispatch display internal"     )
-    , ("S-C-<XF86Display>",     spawn $ "dispatch display mirror"       )
-    , ("<XF86AudioRaiseVolume>",spawn $ "dispatch volume up"            )
-    , ("<XF86AudioLowerVolume>",spawn $ "dispatch volume down"          )
-    , ("C-<XF86AudioRaiseVolume>",spawn $ "dispatch volume max"         )
-    , ("C-<XF86AudioLowerVolume>",spawn $ "dispatch volume mid"         )
-    , ("S-<XF86AudioRaiseVolume>",spawn $ "dispatch volume up 10"       )
-    , ("S-<XF86AudioLowerVolume>",spawn $ "dispatch volume down 10"     )
-    , ("<XF86AudioMute>",       spawn $ "dispatch volume toggle"        )
+    [ ("<XF86RotateWindows>",   spawn $ "display tablet toggle"         )
+    --, ("<XF86ScreenSaver>",     spawn $ "display lock"          )
+    , ("<XF86Display>",         spawn $ "display cycle"                 )
+    , ("C-<XF86Display>",       spawn $ "display span"                  )
+    , ("S-<XF86Display>",       spawn $ "display mirror"                )
+    --, ("S-C-<XF86Display>",     spawn $ "display mirror"              )
+    , ("<XF86AudioRaiseVolume>",spawn $ "volume up"            )
+    , ("<XF86AudioLowerVolume>",spawn $ "volume down"          )
+    , ("C-<XF86AudioRaiseVolume>",spawn $ "volume max"         )
+    , ("C-<XF86AudioLowerVolume>",spawn $ "volume mid"         )
+    , ("S-<XF86AudioRaiseVolume>",spawn $ "volume up 10"       )
+    , ("S-<XF86AudioLowerVolume>",spawn $ "volume down 10"     )
+    , ("<XF86AudioMute>",       spawn $ "volume toggle"        )
+    --, ("<XF86Sleep>",     spawn $ "sudo power sleep"              )
+    --, ("<XF86PowerOff>",     spawn $ "sudo power off"              )
+    --, ("S-<XF86PowerOff>",     spawn $ "sudo power off"              )
     ]
 
 --  ++
