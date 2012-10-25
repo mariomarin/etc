@@ -69,5 +69,7 @@ _gnome () {
 exec ck-launch-session gnome-session
 }
 
+/usr/bin/system boot
 /usr/bin/xscreensaver -no-splash -no-capture-stderr &
+#/usr/bin/dunst &
 xmonad

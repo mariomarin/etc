@@ -3,6 +3,7 @@ _dotfile_list="$(find "$_dotfile_root" -name ".*" ! -name ".git" -print)"
 
 _special_files="
 $_gotfile_root/irc/irssi .irssi/config
+$_gotfile_root/xorg/dunstrc .config/dunstrc
 $_dotfile_root/web/googlecl-config .config/googlecl/config
 $_dotfile_root/web/newsbeuter-config .newsbeuter/config
 .xmonad/taffybar .config/taffybar
