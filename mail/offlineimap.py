@@ -15,7 +15,7 @@ def mycmp(x, y):
 
 def test_mycmp():
   import os, os.path
-  folders=os.listdir(os.path.expanduser('~/var/mail/gmail'))
+  folders=os.listdir(os.path.expanduser('~/var/mail/accounts/es'))
   folders.sort(mycmp)
   print folders
 

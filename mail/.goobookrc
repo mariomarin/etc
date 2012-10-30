@@ -5,7 +5,7 @@
 # email: es@ethanschoonover.com
 # password: passwordgoeshere
 # The following are optional, defaults are shown
-cache_filename: ~/.cache/goobook_cache
-cache_expiry_hours: 24
-filter_groupless_contacts: yes
+#cache_filename: ~/.cache/goobook_cache
+#cache_expiry_hours: 24
+#filter_groupless_contacts: yes
 

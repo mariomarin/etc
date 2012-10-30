@@ -479,20 +479,21 @@ myStartupHook = do
 --          ++ " &"
     spawn $ "systray &"
     spawn $ "xcompmgr -f -D 6 &"
-    spawn $ "dunst -geometry 0x10-0 "   -- width of message, max ten lines high, right flush top
-          ++ " -lh 20"
-          ++ " -fn " ++ show myFontBig 
-          ++ " -lb " ++ show yellow 
-          ++ " -nb " ++ show green 
-          ++ " -cb " ++ show red 
-          ++ " -lf " ++ show base03 
-          ++ " -nf " ++ show base03 
-          ++ " -cf " ++ show base03 
-          ++ " -key F10"       -- Super+Return to dismiss
-          ++ " -lto 2 -nto 5 -cto 0"        -- 2/5 second time out for low/normal, no timeout for critical
-          ++ " -s"                          -- sort messages by urgency
-          ++ " -config /home/es/etc/xorg/dunstrc"
-          ++ " &"
+    spawn $ "dunst &"
+--    spawn $ "dunst -geometry 0x10-0 "   -- width of message, max ten lines high, right flush top
+--          ++ " -lh 20"
+--          ++ " -fn " ++ show myFontBig 
+--          ++ " -lb " ++ show yellow 
+--          ++ " -nb " ++ show green 
+--          ++ " -cb " ++ show red 
+--          ++ " -lf " ++ show base03 
+--          ++ " -nf " ++ show base03 
+--          ++ " -cf " ++ show base03 
+--          ++ " -key F10"       -- Super+Return to dismiss
+--          ++ " -lto 2 -nto 5 -cto 0"        -- 2/5 second time out for low/normal, no timeout for critical
+--          ++ " -s"                          -- sort messages by urgency
+--          ++ " -config /home/es/etc/xorg/dunstrc"
+--          ++ " &"
     return ()
 
 ------------------------------------------------------------------------

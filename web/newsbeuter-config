@@ -6,6 +6,8 @@ include "~/etc/sec/newsbeuter.pass"
 googlereader-flag-share "h"
 googlereader-flag-star "s"
 
+browser w3m
+
 # vim like navigation
 bind-key j down
 bind-key k up

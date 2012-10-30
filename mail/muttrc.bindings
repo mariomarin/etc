@@ -116,8 +116,8 @@ bind index,pager            R   reply # to sender only
 bind index,pager            m   mail # "c" would be more like gmail "compose" but using "c" for copy right now
 
 # composition actions -------------------------------------------------
-#bind editor <Tab> complete-query
-#bind editor ^T complete
+bind editor <Tab> complete-query
+bind editor ^T complete
 
 macro generic,index,pager <F7> "<enter-command>unset wait_key<enter><shell-escape>/usr/bin/mutt-notmuch --prompt search<enter><change-folder>~/.cache/mutt_results<enter>" "search mail (using notmuch)"
 macro generic,index,pager <F8> "<enter-command>unset wait_key<enter><enter-command>unignore message-id<enter><pipe-message>/usr/bin/mutt-notmuch thread<enter><change-folder-readonly>~/.cache/mutt_results<enter><enter-command>set wait_key<enter>" "search and reconstruct owning thread (using notmuch)"
