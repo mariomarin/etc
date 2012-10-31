@@ -13,7 +13,7 @@ maxsyncaccounts = 2
 ui = basic
 #ui = quiet
 #pythonfile = ~/etc/mail/offlineimap.py
-# socktimeout = 60
+socktimeout = 60
 # skip forced fsyncing; higher performance, higher risk
 fsync = false
 
@@ -39,6 +39,7 @@ footer = "\n"
 
 localrepository = eslocal
 remoterepository = esremote
+# DEBUG: change autorefresh back to 5/other minutes
 autorefresh = 5
 quick = 10
 status_backend = sqlite
@@ -83,7 +84,7 @@ remoteuser         = es@ethanschoonover.com
 #password sourced from netrc
 maxconnections     = 3
 holdconnectionopen = yes
-keepalive          = 20
+keepalive          = 30
 readonly           = False
 idlefolders        = ['INBOX']
 subscribedonly     = no

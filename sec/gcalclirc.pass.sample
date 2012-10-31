@@ -1,9 +1,10 @@
 [gcalcli]
 user: es@ethanschoonover.com
-pw: passwordgoeshere
+pw: PASSWORD HERE or shell cmd
 cals: all
 details: false
 ignore-started: false
 cal-owner-color: brightblue
 cal-read-color: red
 cal-editor-color: yellow
+border-color: black
