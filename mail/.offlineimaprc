@@ -11,6 +11,7 @@ metadata = ~/var/mail/offlineimap
 accounts = es
 maxsyncaccounts = 2
 ui = basic
+#ui = quiet
 #pythonfile = ~/etc/mail/offlineimap.py
 # socktimeout = 60
 # skip forced fsyncing; higher performance, higher risk

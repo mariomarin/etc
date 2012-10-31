@@ -87,7 +87,7 @@ fixups =   HOME_REPO_FIXUPS
 
 [var]
 # dummy target to mkdir upon checkout
-checkout = mkdir -p $HOME/var/mail/{log,queue,offlineimap,accounts/es,mutt/cache,mutt/temp}; touch $HOME/var/mail/contacts/aliases
+checkout = mkdir -p $HOME/var/mail/{log,queue,offlineimap,accounts/es,mutt/cache,mutt/temp}; touch $HOME/var/mail/contacts/aliases; mkdir -p $HOME/var/share
 status = :
 order = 25
 

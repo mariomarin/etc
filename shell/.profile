@@ -56,6 +56,12 @@ export ARCH_HASKELL='Ethan Schoonover <es@ethanschoonover.com>'
 
 export XENVIRONMENT="$HOME/.Xresources"
 
+# see http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
+#export XDG_DATA_HOME="$HOME/var/data" # default is $HOME/.local/share
+#export XDG_CONFIG_HOME="$HOME/etc/config" # default is $HOME/.config
+#export XDG_CACHE_HOME="$HOME/var/cache # default is $HOME/.cache
+
+
 # ---------------------------------------------------------------------
 # PATH
 # ---------------------------------------------------------------------

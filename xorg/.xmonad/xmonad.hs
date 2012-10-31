@@ -469,31 +469,9 @@ myPP = defaultPP
 --myStartupHook = return ()
 myStartupHook = do
     E.ewmhDesktopsStartup
---    spawn $ "trayer"
---          ++ " --edge top --align right"
---          ++ " --SetDockType true --SetPartialStrut true"
---          ++ " --expand true --widthtype percent --width 7"
---          ++ " --transparent true --tint 0x073642 --alpha 0"
---          ++ " --margin 1"
---          ++ " --height 20"
---          ++ " &"
     spawn $ "systray &"
     spawn $ "xcompmgr -f -D 6 &"
     spawn $ "dunst &"
---    spawn $ "dunst -geometry 0x10-0 "   -- width of message, max ten lines high, right flush top
---          ++ " -lh 20"
---          ++ " -fn " ++ show myFontBig 
---          ++ " -lb " ++ show yellow 
---          ++ " -nb " ++ show green 
---          ++ " -cb " ++ show red 
---          ++ " -lf " ++ show base03 
---          ++ " -nf " ++ show base03 
---          ++ " -cf " ++ show base03 
---          ++ " -key F10"       -- Super+Return to dismiss
---          ++ " -lto 2 -nto 5 -cto 0"        -- 2/5 second time out for low/normal, no timeout for critical
---          ++ " -s"                          -- sort messages by urgency
---          ++ " -config /home/es/etc/xorg/dunstrc"
---          ++ " &"
     return ()
 
 ------------------------------------------------------------------------
