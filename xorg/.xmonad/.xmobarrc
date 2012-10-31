@@ -1,5 +1,5 @@
 Config  {
-          font     = "-*-terminus-medium-r-normal--14-*-*-*-*-*-*-*"
+          font     = "-*-terminus-medium-r-normal--12-*-*-*-*-*-*-*"
         , border        = NoBorder
         , bgColor       = "#073642"
         , borderColor   = "#073642"
@@ -16,7 +16,7 @@ Config  {
                           , Run CpuFreq ["-t", "FRQ <cpu0>","-L","0","-H","2","-l","#657b83","-n","#657b83","-h","#93a1a1","-M","3","-d","0"] 25
                           , Run Swap ["-t","SWP <usedratio>%","-c","0","-p","2","-L","50","-H","80","-l","#657b83","--normal","#b58900","--high","#dc322f"] 25
                           , Run Wireless "wlan0" ["-t","WFI <qualitybar>","-b","-","-f",">","-W","5"] 25
-                          , Run DiskU [("/", "<size>(<usedp>%)")] ["-L","20","-H","50","-m","1","-p","2"] 20
+                          , Run DiskU [("/", "DSK <size>(<usedp>%)")] ["-L","20","-H","50","-m","1","-p","2"] 20
                           , Run Com "xmobar-pwr" [] "pwrmode" 25
                           , Run Com "xmobar-tab" [] "tabmode" 50
                           , Run Com "mailqcount" [] "mailq" 200
@@ -26,5 +26,5 @@ Config  {
                           ]
         , sepChar       = "%"
         , alignSep      = "}{"
-        , template      = " %StdinReader% }{ %wlan0wi% » %battery% » %cpu% %cpufreq% %coretemp% %memory% %swap% DSK %disku% » %theDate% » %mail% %mailq% » %pwrmode% %tabmode%"
+        , template      = " %StdinReader% }{ %wlan0wi%  :  %battery%  :  %cpu% %cpufreq% %coretemp%  :  %memory% %swap%  :  %disku%  :  %theDate%  :  %mail% %mailq%  :  %pwrmode% %tabmode%"
         }
