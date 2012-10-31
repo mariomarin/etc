@@ -172,9 +172,9 @@ myTabTheme = defaultTheme
     , activeBorderColor     = base03
     , inactiveBorderColor   = base03
     , urgentBorderColor     = yellow
-    , activeTextColor       = base2
+    , activeTextColor       = blue
     , inactiveTextColor     = base01
-    , urgentTextColor       = yellow
+    , urgentTextColor       = base02
     , fontName              = myFont
     , decoHeight            = 22
     }
@@ -454,9 +454,27 @@ myEventHook   = E.ewmhDesktopsEventHook
 -- Status bars and logging
 ------------------------------------------------------------------------
 
---myBar = "taffybar" -- Command to launch the bar.
-myBar = "xmobar" -- Command to launch the bar.
-myPP = defaultPP
+--myXmobar :: LayoutClass l Window
+--      => XConfig l -> IO (XConfig (ModifiedLayout AvoidStruts l))
+myXmobar conf = statusBar "xmobar" myPP toggleStrutsKey conf
+
+myPP :: PP
+myPP = defaultPP { ppCurrent = xmobarColor base02 blue . wrap " " " "
+                 , ppTitle   = xmobarColor blue "" . shorten 40
+                 , ppVisible = wrap "(" ")"
+                 , ppUrgent  = xmobarColor base02 yellow . wrap " " " "
+                 , ppHidden          = id
+                 , ppHiddenNoWindows = const ""
+                 , ppSep             = " : "
+                 , ppWsSep           = " "
+                 , ppLayout          = id
+                 , ppOrder           = id
+                 , ppOutput          = putStrLn
+                 --, ppSort            = getSortByIndex
+                 , ppExtras          = []
+               }
+
+myLogHook = dynamicLogWithPP $ myPP
 
 ------------------------------------------------------------------------
 -- Startup hook
@@ -483,7 +501,7 @@ toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 -- The main function.
 --main = xmonad =<< xmobar (E.ewmh $ withNavigation2DConfig defaultNavigation2DConfig $ myConfig)
 
-main = xmonad =<< xmobar (E.ewmh $ withUrgencyHook NoUrgencyHook $ myConfig)
+main = xmonad =<< myXmobar (E.ewmh $ withUrgencyHook NoUrgencyHook $ myConfig)
 
 --main = xmonad $ addDescrKeys ((mod4Mask, xK_F1), xMessage) myKeys
 --                    defaultConfig { modMask = mod4Mask }
@@ -508,7 +526,7 @@ myConfig = defaultConfig {
         layoutHook         = myLayout,
         manageHook         = myManageHook,
         handleEventHook    = myEventHook,
-        --logHook            = myLogHook,
+        logHook            = myLogHook,
         startupHook        = myStartupHook
     }
     `additionalMouseBindings` myButtons
