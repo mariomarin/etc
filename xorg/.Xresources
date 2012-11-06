@@ -20,7 +20,8 @@
 
 *font:                  xft:Terminus:style=Medium:pixelsize=20
 *mfont:                 xft:Terminus:style=Medium:pixelsize=20
-*boldFont:              xft:Terminus:style=Bold:pixelsize=20
+!!*boldFont:              xft:Terminus:style=Bold:pixelsize=20
+*boldFont:              xft:Terminus:style=Medium:pixelsize=20
 *italicFont:            xft:Terminus:style=Medium:pixelsize=20
 *boldItalicFont:        xft:Terminus:style=Bold:pixelsize=20
 *keysym.C-0:command:    \033]710;xft:Terminus:style=Medium:pixelsize=20\007\

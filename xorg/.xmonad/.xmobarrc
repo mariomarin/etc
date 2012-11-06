@@ -26,5 +26,5 @@ Config  {
                           ]
         , sepChar       = "%"
         , alignSep      = "}{"
-        , template      = " %StdinReader% }{ %wlan0wi%  :  %battery%  :  %cpu% %cpufreq% %coretemp%  :  %memory% %swap%  :  %disku%  :  %theDate%  :  %mail% %mailq%  : %pwrmode%%tabmode% "
+        , template      = " %StdinReader% }{ %wlan0wi% : %battery% : %cpu% %cpufreq% %coretemp% : %memory% %swap% : %disku% : %theDate% : %mail% %mailq% : %pwrmode%%tabmode% "
         }

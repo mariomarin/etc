@@ -10,7 +10,9 @@
 metadata = ~/var/mail/offlineimap
 accounts = es
 maxsyncaccounts = 2
-ui = basic
+#ui = blinkenlights
+ui = TTYUI
+#ui = basic
 #ui = quiet
 #pythonfile = ~/etc/mail/offlineimap.py
 socktimeout = 60
@@ -63,12 +65,11 @@ nametrans          = lambda foldername: \
                      re.sub('chats',    '[Gmail]/Chats',
                      re.sub('drafts',   '[Gmail]/Drafts',
                      re.sub('flagged',  '[Gmail]/Starred',
-                     re.sub('important','[Gmail]/Important',
+                     re.sub('priority', '[Gmail]/Important',
                      re.sub('sent',     '[Gmail]/Sent Mail',
                      re.sub('spam',     '[Gmail]/Spam',
                      re.sub('trash',    '[Gmail]/Trash',
-                     re.sub('_',        ' ',
-                     foldername))))))))))
+                     foldername)))))))))
 
 
 # ---------------------------------------------------------------------
@@ -104,13 +105,27 @@ folderfilter       = lambda foldername:    foldername not in [
                                            '[Gmail]/All Mail',
                                            '[Gmail]/Chats']
 nametrans          = lambda foldername:  \
-                     re.sub('^\[gmail\].', '',
-                     re.sub('all_mail',    'archive',
-                     re.sub('starred',     'flagged',
-                     re.sub('important',   'priority',
-                     re.sub('sent_mail',   'sent',
-                     re.sub(' ',           '_', 
-                     foldername.lower()
-                     ))))))
+                     re.sub('INBOX',             'inbox',
+                     re.sub('All Mail',  'archive',
+                     re.sub('Chats',     'chats',
+                     re.sub('Drafts',    'drafts',
+                     re.sub('Starred',   'flagged',
+                     re.sub('Important', 'priority',
+                     re.sub('Sent Mail', 'sent',
+                     re.sub('Spam',      'spam',
+                     re.sub('Trash',     'trash',
+                     re.sub('^\[Gmail\].', '',
+                     foldername))))))))))
 
 
+# old nametrans with case conversion. not a good idea due to inability
+# to map back to proper case on server write
+#nametrans          = lambda foldername:  \
+#                     re.sub('^\[gmail\].', '',
+#                     re.sub('all_mail',    'archive',
+#                     re.sub('starred',     'flagged',
+#                     re.sub('important',   'priority',
+#                     re.sub('sent_mail',   'sent',
+#                     re.sub(' ',           '_', 
+#                     foldername.lower()
+#                     ))))))

@@ -815,8 +815,7 @@ myKeymap conf =
  				 ++"else transset-df -a -n 'stalonetray' 0.0; "
  				 ++"fi" )
 	manageDisplays		= runOrRaise "arandr" (title =? "Screen Layout Editor")
-	myBrowser		= runOrRaiseNext myBrowserPath
-				  (className =? myBrowserClass)
+	myBrowser		= runOrRaiseNext MYbROWSERpATh (className =? myBrowserClass)
 	kickstartApps		:: X ()
 	kickstartApps		= do
 				myNews
