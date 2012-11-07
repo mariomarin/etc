@@ -9,7 +9,7 @@
 -- reference:
 -- coding style - http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Doc-Developing.html#g:8
 
-------------------------------------------------------------------------
+
 -- Imports
 ------------------------------------------------------------------------
 
@@ -19,16 +19,28 @@ import Graphics.X11.ExtraTypes.XF86
 import System.Exit(ExitCode(ExitSuccess), exitWith)
 import System.IO
 import qualified System.IO.UTF8
-import XMonad
+import XMonad hiding ((|||))
+import XMonad.Actions.CycleSelectedLayouts
+import XMonad.Actions.CycleWS
 import XMonad.Actions.RotSlaves
 import XMonad.Actions.Submap
 import XMonad.Actions.Submap
+import XMonad.Actions.UpdatePointer
+import XMonad.Actions.WindowGo
+import XMonad.Actions.WithAll
 import XMonad.Hooks.DynamicLog
 import qualified XMonad.Hooks.EwmhDesktops as E
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.UrgencyHook
+import XMonad.Layout.Decoration
 import XMonad.Layout.Fullscreen
+import XMonad.Layout.LayoutCombinators ((|||))
+import XMonad.Layout.Named
+import XMonad.Layout.NoBorders
+import XMonad.Layout.SimpleFloat
+import XMonad.Layout.Simplest
+import XMonad.Layout.TabBarDecoration
 import XMonad.ManageHook
 import XMonad.Prompt
 import qualified XMonad.StackSet as W
@@ -36,24 +48,14 @@ import XMonad.Util.NamedActionsLocal
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run
 
-import XMonad.Actions.WithAll
-import XMonad.Actions.WindowGo
-
-import XMonad.Layout.NoBorders
-import XMonad.Layout.Decoration
-import XMonad.Layout.Named
-import XMonad.Layout.Simplest
-import XMonad.Layout.TabBarDecoration
-import XMonad.Layout.SimpleFloat
-
---import XMonad.Layout.Decoration
+--import Text.Regex.Posix ((=~))
 
 -- Note on fullscreen related modules
 -- apps such as chrome emit correct ewmh events and are handled properly
 -- while apps such as vlc use other fullscreen event messages and require
 -- X.L.Fullscreen, so we import both and reference X.H.EwmhDesktops as E
 
-------------------------------------------------------------------------
+
 -- Keyboard configuration:
 ------------------------------------------------------------------------
 
@@ -63,60 +65,7 @@ myModMask = altMask
 
 --myNewKeys conf@(XConfig {XMonad.modMask = modm}) =
 --  [ subtitle "Application launching"
---  , ((modm .|. shiftMask, xK_Return),     addName "Launch Terminal"                                      $ spawn $ XMonad.terminal conf)
 --
---  , subtitle "Cyclic window actions (J/K) [+=focus] [+control=cycle+keep focus] [+shift=move]"
---  , ((modm, xK_j),                        addName "Focus next window on workspace"                       $ windows W.focusDown >> movePointer)
---  , ((modm, xK_k),                        addName "Focus previous window on workspace"                   $ windows W.focusUp >> movePointer)
---  , ((modm.|. shiftMask, xK_j),           addName "Swap focused with next on workspace"                  $ windows W.swapDown >> movePointer)
---  , ((modm.|. shiftMask, xK_k),           addName "Swap focused with previous on workspace"              $ windows W.swapUp >> movePointer)
---  , ((modm.|. controlMask, xK_j),         addName "Rotate all windows forward while keeping focus"       $ rotAllUp >> movePointer)
---  , ((modm.|. controlMask, xK_k),         addName "Rotate all windows backwards while keeping focus"     $ rotAllDown >> movePointer)
---
---  , subtitle "Other window actions"
---  , ((modm, xK_m),                        addName "Move focus to master window"                          $ windows W.focusMaster >> movePointer)
---  , ((modm, xK_Return),                   addName "Swap the focused window and the master window"        $ windows W.swapMaster >> movePointer)
---  , ((modm, xK_t),                        addName "Push the window into tiling mode"                     $ withFocused (windows . W.sink) >> movePointer)
---  , ((modm.|. controlMask, xK_c),         addName "kill"                                                 $ kill)
---  , ((modm, xK_u),                        addName "Focus urgent winow"                                   $ focusUrgent >> movePointer)
---  , ((modm.|. controlMask, xK_u),         addName "Clear all urgent window statuses"                     $ clearUrgents)
---
---  , subtitle "Cyclic display actions (D/F) [+=select] [+control=swap] [+shift=move window to]"
---  , ((modm, xK_d),                        addName "Next screen"                                          $ nextScreen >> movePointer)
---  , ((modm, xK_f),                        addName "Previous screen"                                      $ prevScreen >> movePointer)
---  , ((modm.|. controlMask, xK_d),         addName "Swap current display witn next"                       $ swapNextScreen >> nextScreen >> movePointer)
---  , ((modm.|. controlMask, xK_f),         addName "Swap current display witn previous"                   $ swapPrevScreen >> nextScreen >> movePointer)
---  , ((modm.|. shiftMask, xK_d),           addName "Move window to next screen"                           $ shiftNextScreen >> nextScreen >> movePointer)
---  , ((modm.|. shiftMask, xK_f),           addName "Move window to previous screen"                       $ shiftPrevScreen >> prevScreen >> movePointer)
---
---  , subtitle "Workspace actions (E/R) [mod=select from prefix] [mod+control=select from all]"
---  , ((modm, xK_e),                        addName "Next workspace (prefix)"                              $ rmEmptyWs $ nextWsPrefix >> movePointer)
---  , ((modm, xK_r),                        addName "Previous workspace (prefix)"                          $ rmEmptyWs $ prevWsPrefix >> movePointer)
---  , ((modm.|. controlMask, xK_e),         addName "Next non empty workspace"                             $ rmEmptyWs $ nextWsNonEmpty >> movePointer)
---  , ((modm.|. controlMask, xK_r),         addName "Previous non empty workspace"                         $ rmEmptyWs $ prevWsNonEmpty >> movePointer)
---
---  , subtitle "Other workspace actions"
---  , ((modm, xK_w),                        addName "Toggle previous workspace"                            $ rmEmptyWs $ toggleWS)
---  , ((modm.|. controlMask, xK_w),         addName "Toggle previous workspace skipping some workspaces"   $ rmEmptyWs $ ignoredToggleWS)
---  , ((modm, xK_q),                        addName "Run default workspace launcer script"                 $ workspaceAction)
---
---  , subtitle "Workspace prompts"
---  , ((modm, xK_n),                        addName "Create or change workspace prompt"                    $ rmEmptyWs $ selectWorkspacePrompt >> maybeWorkspaceAction >> movePointer)
---  , ((modm.|. shiftMask, xK_n),           addName "Move window to other workspace prompt"                $ DW.withWorkspace myXPConfig (windows . W.shift) >> movePointer)
---  , ((modm.|. controlMask, xK_n),         addName "Rename current workspace"                             $ DW.renameWorkspace myXPConfig >> movePointer)
---  , ((modm.|. controlMask, xK_BackSpace), addName "Remove current workspace"                             $ DW.removeWorkspace >> movePointer)
---  , ((modm, xK_o),                        addName "Goto workspace by window search prompt"               $ gotoMenuArgs ["-l 23"] >> movePointer)
---
---  , subtitle "Modify current workspace layout... (H/L=size ,.=) [+alt=toggle]"
---  , ((modm, xK_space),                    addName "Switch to the next window layout"                     $ sendMessage NextLayout >> movePointer)
---  , ((modm.|. controlMask, xK_space),     addName "Switch to default layout"                             $ sendMessage (JumpToLayout "tall h") >> movePointer)
---  , ((modm.|. altMask, xK_space),         addName "Toggle fullscreen"                                    $ sendMessage (MT.Toggle MTI.NBFULL) >> movePointer)
---  , ((modm.|. altMask, xK_s),             addName "Toggle struts (ignore panels)"                        $ sendMessage ToggleStruts >> movePointer)
---  , ((modm.|. altMask, xK_b),             addName "Toggle window borders"                                $ sendMessage (MT.Toggle MTI.NOBORDERS) >> movePointer)
---  , ((modm, xK_h),                        addName "Shrink the master area"                               $ sendMessage Shrink >> movePointer)
---  , ((modm, xK_l),                        addName "Expand the master area"                               $ sendMessage Expand >> movePointer)
---  , ((modm, xK_comma),                    addName "Increment the number of windows in the master area"   $ sendMessage (IncMasterN 1) >> movePointer)
---  , ((modm, xK_period),                   addName "Deincrement the number of windows in the master area" $ sendMessage (IncMasterN (-1)) >> movePointer)
 --
 --
 --  , subtitle "Toggle scratchpads and workspaces"
@@ -129,9 +78,6 @@ myModMask = altMask
 --  , ((modm, xK_0),                        addName "Toggle dashboard workspace"                           $ rmEmptyWs $ myViewWS "dash" >> movePointer)
 --
 --  ] where
---
---    -- | Move mouse pointer to bottom right of the current window
---    movePointer = updatePointer (Relative 0.99 0.99)
 --
 --    -- | Run script with same name as "w.workspacename"
 --    workspaceAction = do
@@ -193,37 +139,79 @@ myModMask = altMask
 --    getSortByTagNoSP = fmap (.namedScratchpadFilterOutWorkspace) getSortByTag
 
 
---myKeys :: XConfig Layout -> [((KeyMask, KeySym), NamedAction)]
+myKeys :: XConfig Layout -> [((KeyMask, KeySym), NamedAction)]
 myKeys conf@(XConfig {XMonad.modMask = modm}) =
 
     [ subtitle "APPLICATIONS"
-    , ((superMask, xK_Return),              addName "Launch Terminal"                                      $ spawn $ XMonad.terminal conf)
-    , ((superMask, xK_b),                   addName "Browser - Chrome"                                     $ newBrowser)
-    , ((superMask.|. shiftMask, xK_b),      addName "Browser - Chrome"                                     $ nextBrowser)
-    , ((superMask, xK_m),                   addName "Mail - Mutt"                                          $ spawn myMailApp)
-    , ((superMask, xK_c),                   addName "Calendar - gcalcli"                                   $ spawn myCalendarApp)
-    --, ((superMask, xK_t),                 addName "Tasks - Astrid"                                       $ spawn myTasksApp)
-    , ((superMask, xK_d),                   addName "Docs - Google"                                        $ spawn myDocsApp)
-    , ((superMask, xK_v),                   addName "Vim"                                                  $ spawn myTextEditorApp)
+    , ((superMask, xK_Return),              addName "New terminal"                                         newTerminal)
+    , ((superMask, xK_b),                   addName "New browser"                                          newBrowser)
+    , ((superMask .|. shiftMask, xK_b),     addName "Next existing browser"                                nextBrowser)
+    , ((superMask, xK_m),                   addName "Show mail"                                            showMail)
+    , ((superMask, xK_p),                   addName "Show web contacts"                                    showWebContacts)
+    , ((superMask, xK_c),                   addName "Show calendar"                                        showCalendar)
+    --, ((superMask, xK_t),                 addName "Show tasks"                                           showTasks)
+    , ((superMask, xK_d),                   addName "Show Google drive"                                    showDrive)
+    , ((superMask, xK_v),                   addName "New Vim"                                              newVim)
+    , ((superMask .|. shiftMask, xK_v),     addName "Next Vim"                                             nextVim)
 
-    , subtitle "KILL"
+    , subtitle "KILL & QUIT"
     , ((modm, xK_BackSpace),                addName "Close the focused window"                             kill)
     , ((modm .|. shiftMask, xK_BackSpace),  addName "Close all workspace windows"                          killAll)
+    , ((modm              , xK_q     ),     addName "Restart XMonad"                                       myRestart)
+    , ((modm .|. shiftMask, xK_q     ),     addName "Quit XMonad"                                          myQuit)
 
-    , subtitle "CYCLE WINDOWS (J/K) [+=focus] [+ctrl=keep focus] [+shift=move]"
+    , subtitle "WINDOWS CYCLING (J/K) [+=focus] [+ctrl=keep focus] [+shift=move]"
     , ((modm, xK_j),                        addName "Focus next window on workspace"                       $ windows W.focusDown)
     , ((modm, xK_k),                        addName "Focus previous window on workspace"                   $ windows W.focusUp)
-    , ((modm.|. shiftMask, xK_j),           addName "Swap focused with next on workspace"                  $ windows W.swapUp)
-    , ((modm.|. shiftMask, xK_k),           addName "Swap focused with previous on workspace"              $ windows W.swapDown)
-    , ((modm.|. controlMask, xK_j),         addName "Rotate windows clockwise, keeping focus"              $ rotAllUp)
-    , ((modm.|. controlMask, xK_k),         addName "Rotate windows counter clockwise, keeping focus"      $ rotAllDown)
+    , ((modm .|. shiftMask, xK_j),          addName "Swap focused with next on workspace"                  $ windows W.swapUp)
+    , ((modm .|. shiftMask, xK_k),          addName "Swap focused with previous on workspace"              $ windows W.swapDown)
+    , ((modm .|. controlMask, xK_j),        addName "Rotate windows clockwise, keeping focus"              $ rotAllUp)
+    , ((modm .|. controlMask, xK_k),        addName "Rotate windows counter clockwise, keeping focus"      $ rotAllDown)
 
---  , subtitle "Other window actions"
---  , ((modm, xK_m),                        addName "Move focus to master window"                          $ windows W.focusMaster >> movePointer)
---  , ((modm, xK_Return),                   addName "Swap the focused window and the master window"        $ windows W.swapMaster >> movePointer)
---  , ((modm, xK_t),                        addName "Push the window into tiling mode"                     $ withFocused (windows . W.sink) >> movePointer)
---  , ((modm, xK_u),                        addName "Focus urgent winow"                                   $ focusUrgent >> movePointer)
---  , ((modm.|. controlMask, xK_u),         addName "Clear all urgent window statuses"                     $ clearUrgents)
+    , subtitle "WINDOW ACTIONS"
+    , ((modm, xK_m),                        addName "Move focus to master window"                          $ windows W.focusMaster)
+    , ((modm .|. shiftMask, xK_m),          addName "Swap the focused window and the master window"        $ windows W.swapMaster)
+    , ((modm, xK_t),                        addName "Push the window into tiling mode"                     $ withFocused (windows . W.sink))
+    , ((modm, xK_u),                        addName "Focus urgent winow"                                   $ focusUrgent)
+    , ((modm .|. controlMask, xK_u),        addName "Clear all urgent window statuses"                     $ clearUrgents)
+
+    , subtitle "DISPLAYS CYCLING (D/U) [+=select] [+ctrl=swap] [+shift=move window to]"
+    , ((modm, xK_d),                        addName "Next screen"                                          $ nextScreen >> moveCursor)
+    , ((modm, xK_u),                        addName "Previous screen"                                      $ prevScreen >> moveCursor)
+    , ((modm .|. controlMask, xK_d),        addName "Swap current display witn next"                       $ swapNextScreen >> nextScreen >> moveCursor)
+    , ((modm .|. controlMask, xK_u),        addName "Swap current display witn previous"                   $ swapPrevScreen >> nextScreen >> moveCursor)
+    , ((modm .|. shiftMask, xK_d),          addName "Move window to next screen"                           $ shiftNextScreen >> nextScreen >> moveCursor)
+    , ((modm .|. shiftMask, xK_u),          addName "Move window to previous screen"                       $ shiftPrevScreen >> prevScreen >> moveCursor)
+
+    , subtitle "WORKSPACE ACTIONS (N/P) [mod=from prefix] [mod+ctrl=from all]"
+--  , ((modm, xK_n),                        addName "Next workspace (prefix)"                              $ rmEmptyWs $ nextWsPrefix)
+--  , ((modm, xK_p),                        addName "Previous workspace (prefix)"                          $ rmEmptyWs $ prevWsPrefix)
+--  , ((modm.|. controlMask, xK_e),         addName "Next non empty workspace"                             $ rmEmptyWs $ nextWsNonEmpty)
+--  , ((modm.|. controlMask, xK_r),         addName "Previous non empty workspace"                         $ rmEmptyWs $ prevWsNonEmpty)
+--  , separator
+--  , ((modm, xK_w),                        addName "Toggle previous workspace"                            $ rmEmptyWs $ toggleWS)
+--  , ((modm.|. controlMask, xK_w),         addName "Toggle previous workspace skipping some workspaces"   $ rmEmptyWs $ ignoredToggleWS)
+--  , ((modm, xK_q),                        addName "Run default workspace launcer script"                 $ workspaceAction)
+--
+--  , subtitle "Workspace prompts"
+--  , ((modm, xK_n),                        addName "Create or change workspace prompt"                    $ rmEmptyWs $ selectWorkspacePrompt >> maybeWorkspaceAction >> movePointer)
+--  , ((modm.|. shiftMask, xK_n),           addName "Move window to other workspace prompt"                $ DW.withWorkspace myXPConfig (windows . W.shift) >> movePointer)
+--  , ((modm.|. controlMask, xK_n),         addName "Rename current workspace"                             $ DW.renameWorkspace myXPConfig >> movePointer)
+--  , ((modm.|. controlMask, xK_BackSpace), addName "Remove current workspace"                             $ DW.removeWorkspace >> movePointer)
+--  , ((modm, xK_o),                        addName "Goto workspace by window search prompt"               $ gotoMenuArgs ["-l 23"] >> movePointer)
+
+    , subtitle "WORKSPACE LAYOUTS (H/L=size ,.=) [+alt=toggle]"
+--  , ((modm, xK_space),                    addName "Switch to next window layout"                         $ sendMessage NextLayout)
+    , ((modm, xK_space),                    addName "Switch to next window layout"                         cycleLayouts)
+    , ((modm .|. shiftMask, xK_space ),     addName "Reset to default layout"                              $ setLayout $ XMonad.layoutHook conf)
+    , ((modm .|. controlMask, xK_space),    addName "Refresh layout"                                       refresh)
+--  , ((modm.|. altMask, xK_space),         addName "Toggle fullscreen"                                    $ sendMessage (MT.Toggle MTI.NBFULL))
+--  , ((modm.|. altMask, xK_s),             addName "Toggle struts (ignore panels)"                        $ sendMessage ToggleStruts)
+--  , ((modm.|. altMask, xK_b),             addName "Toggle window borders"                                $ sendMessage (MT.Toggle MTI.NOBORDERS))
+    , ((modm, xK_h),                        addName "Shrink the master area"                               $ sendMessage Shrink)
+    , ((modm, xK_l),                        addName "Expand the master area"                               $ sendMessage Expand)
+    , ((modm, xK_comma),                    addName "Increment the number of windows in the master area"   $ sendMessage (IncMasterN 1))
+    , ((modm, xK_period),                   addName "Deincrement the number of windows in the master area" $ sendMessage (IncMasterN (-1)))
 
     , subtitle "test submap" 
     , ((modm, xK_x), submapName $ 
@@ -232,7 +220,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     )
 
     -- c.f. http://hackage.haskell.org/cgi-bin/hackage-scripts/package/X11
-    , subtitle "MEDIA" 
+    , subtitle "MEDIA KEYS" 
     , ((0, xF86XK_AudioRaiseVolume),                 addName "Volume up by 1"                              $ spawn "volume up")
     , ((0, xF86XK_AudioLowerVolume),                 addName "Volume down by 1"                            $ spawn "volume down")
     , separator
@@ -243,45 +231,26 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((0 .|. controlMask, xF86XK_AudioRaiseVolume), addName "Volume at maximum"                           $ spawn "volume max")
     , ((0, xF86XK_AudioMute),                        addName "Volume mute toggle"                          $ spawn "volume toggle")
 
-    , subtitle "LAYOUTS"
-    , ((modm,               xK_space ), sendMessage' NextLayout) -- %! Rotate through the available layout algorithms
-    , ((modm .|. shiftMask, xK_space ), addName "Reset the layout" $ setLayout $ XMonad.layoutHook conf) -- %!  Reset the layouts on the current workspace to default
-
-    , separator
-    , ((modm,               xK_n     ), addName "Refresh" refresh) -- %! Resize viewed windows to the correct size
-
---  , subtitle "move focus up or down the window stack"
---  , ((modm,               xK_Tab   ), addName "Focus down" $ windows W.focusDown) -- %! Move focus to the next window
---  , ((modm .|. shiftMask, xK_Tab   ), addName "Focus up"   $ windows W.focusUp  ) -- %! Move focus to the previous window
---  , ((modm,               xK_j     ), addName "Focus down" $ windows W.focusDown) -- %! Move focus to the next window
---  , ((modm,               xK_k     ), addName "Focus up"   $ windows W.focusUp  ) -- %! Move focus to the previous window
---  , ((modm,               xK_m     ), addName "Focus the master" $ windows W.focusMaster  ) -- %! Move focus to the master window
-
---    , subtitle "modifying the window order"
---    , ((modm,               xK_Return), addName "Swap with the master" $ windows W.swapMaster) -- %! Swap the focused window and the master window
---    , ((modm .|. shiftMask, xK_j     ), addName "Swap down" $ windows W.swapDown  ) -- %! Swap the focused window with the next window
---    , ((modm .|. shiftMask, xK_k     ), addName "Swap up"   $ windows W.swapUp    ) -- %! Swap the focused window with the previous window
-
-    , subtitle "resizing the master/slave ratio"
-    , ((modm,               xK_h     ), addName "Shrink the master area" $ sendMessage Shrink)
-    , ((modm,               xK_l     ), addName "Expand the master area" $ sendMessage Expand)
-
-    , subtitle "floating layer support"
-    , ((modm,               xK_t     ), addName "Push floating to tiled" $ withFocused $ windows . W.sink)
-
-    , subtitle "change the number of windows in the master area"
-    , ((modm              , xK_comma ), addName "Increment the number of windows in the master area" $ sendMessage (IncMasterN 1))
-    , ((modm              , xK_period), addName "Deincrement the number of windows in the master area" $ sendMessage (IncMasterN (-1)))
-
-    , subtitle "quit, or restart"
-    , ((modm .|. shiftMask, xK_q     ), addName "Quit" $ io (exitWith ExitSuccess)) -- %! Quit xmonad
-    , ((modm              , xK_q     ), addName "Restart" $ spawn "xmonad --recompile && xmonad --restart") -- %! Restart xmonad
+    , subtitle "HOT KEYS" 
+    , ((0, 0x1008ff93),                              addName "Toggle min/max power modes"                  $ spawn "power toggle") -- XF86Battery button
+    , ((0 .|. shiftMask, 0x1008ff93),                addName "Toggle miv/mov power modes"                  $ spawn "power toggle pinned")
+    , ((0, xF86XK_Sleep),                            addName "System sleep"                                $ spawn "system sleep")
+    , ((0, xF86XK_PowerOff),                         addName "System power off"                            $ spawn "system off")
+    , ((0 .|. shiftMask, xF86XK_PowerOff),           addName "System reboot"                               $ spawn "system reboot")
+    , ((0, xF86XK_ScreenSaver),                      addName "Lock screen"                                 $ spawn "display lock")
+    , ((0, xF86XK_Display),                          addName "Cycle display mode"                          $ spawn "display cycle")
+    , ((0, xF86XK_Launch1),                          addName "Bluetooth toggle"                            $ spawn "wireless bluetooth toggle")
+    , ((0, xK_Print),                                addName "Screen annotation - start/finish"            $ spawn "screendraw")
+    , ((0 .|. shiftMask, xK_Print),                  addName "Screen annotation - force finish"            $ spawn "screendraw finish")
+    , ((modm, xK_Print),                             addName "Screen annotation - cancel"                  $ spawn "screendraw cancel")
+    , ((0, xF86XK_RotateWindows),                    addName "Screen annotation - clear"                   $ spawn "screendraw clear")
+    --, ((0, 0x1008ffa7),                            addName "System Reboot"                               $ spawn "system reboot") -- XF86Suspend button
     ]
 
     -- mod-[1..9] %! Switch to workspace N
     -- mod-shift-[1..9] %! Move client to workspace N
     ++
-    subtitle "switching workspaces":
+    subtitle "WORKSPACE SWITCHING":
     [((m .|. modm, k), addName (n ++ i) $ windows $ f i)
         | (f, m, n) <- [(W.greedyView, 0, "Switch to workspace "), (W.shift, shiftMask, "Move client to workspace ")]
         , (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]]
@@ -289,12 +258,15 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     -- mod-shift-{w,e,r} %! Move client to screen 1, 2, or 3
 
     ++
-    subtitle "switching screens" :
+    subtitle "SCREEN SWITCHING":
     [((m .|. modm, key), addName (n ++ show sc) $ screenWorkspace sc >>= flip whenJust (windows . f))
         | (f, m, n) <- [(W.view, 0, "Switch to screen number "), (W.shift, shiftMask, "Move client to screen number ")]
         , (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]]
 
         where
+
+            -- | Move mouse cursor to bottom right of the current window
+            moveCursor = updatePointer (Relative 0.99 0.99)
 
         --	cycleLayouts		= cycleThroughLayouts
         --				[ "Tab", "Marginalia"]
@@ -331,93 +303,113 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
         --                             ++"else transset-df -a -n 'stalonetray' 0.0; "
         --                             ++"fi" )
         --  manageDisplays = runOrRaise "arandr" (title =? "Screen Layout Editor")
-            nextBrowser = runOrRaiseNext chrome (className =? chromeClass )
-            newBrowser :: X ()
-            newBrowser = spawn $ chrome
-            kickstartApps              :: X ()
-            kickstartApps              = do
-                                       myNews
-                                       myDocs
-                                       myContacts
-                                       myTasks
-                                       myCalendar
-                                       myMail
-                                       myVault
---            kickstartSecondary = spawn "skype"
-            raiseByMatch :: String -> String -> X ()
-            raiseByMatch u m = raiseNextMaybe
-                (spawn $ (appBaseCommandurl $ u) ) 
-                (className =? "ChromiumAppMode" 
-                <&&> (fmap (\t -> isPrefixOf m t 
-                || isSuffixOf m t) title)) 
-            launchNew :: String -> X ()
-            launchNew u = spawn $ (appBaseCommandurl $ u) 
-            appBaseCommandurl :: String -> String
-            appBaseCommandurl u	= chrome
-                ++" --class=ChromiumAppMode "
-                ++" --name==chromiumappmode "
-                ++" --user-data-dir="
-                ++"/home/es/.config/chromium-app-mode "
-                ++" --app=" ++ u
-            myMutt = raiseMaybe (spawn $ (myTerminal ++ " -e mutt")) (title =? "mutt")
-            myMail = raiseByMatch "https://mail.google.com" "Ethan Schoonover Mail"
-            -- myTasks = raiseByMatch "https://mail.google.com/tasks/canvas" "Tasks"
-            myContacts = raiseByMatch "https://www.google.com/contacts" "Ethan Schoonover contacts"
-            myCalendar = raiseByMatch "https://calendar.google.com" "Ethan Schoonover - Calendar"
-            myDocs = raiseByMatch "https://docs.google.com" "Google Docs"
-            myDocsNew = launchNew "https://docs.google.com" 
-            myNews = raiseByMatch "https://reader.google.com" "Google Reader"
-            myTasks = raiseByMatch "https://astrid.com" "Astrid"
-            myVault = raiseByMatch "chrome-extension://hdokiejnpimakedhajhdlcegeplioahd/homelocal.html" "My LastPass Vault"
-        
-------------------------------------------------------------------------
+
+
 -- Applications
 ------------------------------------------------------------------------
 
---skype           = "skype"
-calendar        = ""
-mail            = ""
-tasks           = ""
+myTerminal         = "urxvtc"
+myTerminalInit     = "pgrep urxvtd || urxvtd -f -o -q"
+newTerminal :: X ()
+newTerminal        = spawn myTerminal
 
-myTerminal      = "urxvtc || (urxvtd -f -o -q && urxvtc)"
-chromeClass     = "Chromium"
-chrome          = "chromium --memory-model=low"
+newVim :: X ()
+newVim             = runInTerm "" "vim"
+nextVim            = raiseNextMaybe (runInTerm "" "vim") (title =? "vim")
+
+showMail           = raiseMaybe (runInTerm "" "mutt") (title =? "mutt")
+showCLICalendar    = "urxvtc -e gcal view week"
+
+chromeClass        = "Chromium"
+chromeBase         = "chromium --memory-model=low"
                    ++ "     --enable-print-preview"
                    ++ "     --enable-smooth-scrolling"
                    ++ "     --enable-sync-extensions"
-myMailApp       = "urxvtc -e Mutt"
---myCalendarApp   = "urxvtc -e gcal view week"
-myCalendarApp   = chrome ++ " --app=http://calendar.google.com/"
-myDocsApp       = chrome
-myTextEditorApp = "vim"
+                   ++ "     --enable-webgl"
+                   ++ "     --ignore-gpu-blacklist"
+chrome             = chromeBase ++ " --class=Chromium --name=chromium"
 
-------------------------------------------------------------------------
+newBrowser :: X ()
+newBrowser         = spawn $ chrome
+nextBrowser        = raiseNextMaybe (spawn $ chrome) (className =? chromeClass)
+
+showWebApp :: String -> String -> X ()
+showWebApp u m     = raiseNextMaybe
+                     (spawn $ (appBaseCmdURL $ u) ) 
+                     (className =? "ChromiumAppMode" <&&> (fmap (\t -> isPrefixOf m t || isSuffixOf m t) title)) 
+
+newWebApp :: String -> X ()
+newWebApp u        = spawn $ (appBaseCmdURL $ u) 
+
+appBaseCmdURL :: String -> String
+appBaseCmdURL u    = chromeBase
+                   ++ " --class=ChromiumAppMode"
+                   ++ " --name==chromiumappmode"
+                   ++ " --user-data-dir=/home/es/.config/chromium-app-mode"
+                   ++ " --app=" ++ u
+
+showWebMail        = showWebApp "https://mail.google.com" "Ethan Schoonover Mail"
+showCalendar       = showWebApp "https://calendar.google.com" "Ethan Schoonover - Calendar"
+showWebContacts    = showWebApp "https://www.google.com/contacts" "Google Contacts"
+showDrive          = showWebApp "https://drive.google.com" "Google Drive"
+newDrive           = newWebApp  "https://drive.google.com" 
+showNews           = showWebApp "https://reader.google.com" "Google Reader"
+showTasks          = showWebApp "https://astrid.com" "Astrid"
+showVault          = showWebApp "chrome-extension://hdokiejnpimakedhajhdlcegeplioahd/homelocal.html" "My LastPass Vault"
+
+startCoreApps :: X ()
+startCoreApps      = do
+                     showNews
+                     showDrive
+                     showWebContacts
+                     showTasks
+                     showCalendar
+                     showMail
+                     showVault
+
+mySystemTrayInit   = "systray &"
+mySystemTrayKill   = "trayer"
+
+myCompositorInit   = "compton -f -D 6 -m 0.95 &" -- "xcompmgr -f -D 6 &"
+myCompositorKill   = "compton"
+
+
+myNotifierInit     = "dunst &"
+myNotifierKill     = "dunst"
+
+myStatusBarInit    = ""
+myStatusBarKill    = "xmobar"
+
+
 -- Scratch Pads
 ------------------------------------------------------------------------
 
-------------------------------------------------------------------------
+
 -- Startup & Restarting
 ------------------------------------------------------------------------
 
 myStartupHook = do
     E.ewmhDesktopsStartup
-    spawn $ "systray &"
-    spawn $ "xcompmgr -f -D 6 &"
-    spawn $ "dunst &"
+    spawn $ mySystemTrayInit
+    spawn $ myCompositorInit
+    spawn $ myNotifierInit
+    spawn $ myTerminalInit
+
+killProcess :: String -> String
+killProcess p = "for pid in `pgrep " ++ p ++ "`; do kill -9 $pid; done && "
 
 myRestart :: X ()
 myRestart = spawn 
-    $  restartKill "xmobar"
-    ++ restartKill "trayer"
-    ++ restartKill "xcompmgr"
-    ++ restartKill "dunst"
+    $  killProcess myStatusBarKill
+    ++ killProcess mySystemTrayKill
+    ++ killProcess myCompositorKill
+    ++ killProcess myNotifierKill
     ++ "xmonad --recompile && xmonad --restart"
 
-restartKill :: String -> String
-restartKill p = "for pid in `pgrep " ++ p 
-    ++ "`; do kill -9 $pid; done && "
+myQuit = do
+    io (exitWith ExitSuccess)
 
-------------------------------------------------------------------------
+
 -- Window rules:
 ------------------------------------------------------------------------
 
@@ -435,7 +427,7 @@ myManageHook = composeAll
     , manageDocks
     ]
 
-------------------------------------------------------------------------
+
 -- Event handling
 ------------------------------------------------------------------------
 
@@ -447,7 +439,7 @@ myEventHook   = E.ewmhDesktopsEventHook
     <+> E.fullscreenEventHook
     <+> fullscreenEventHook
 
-------------------------------------------------------------------------
+
 -- Layouts:
 ------------------------------------------------------------------------
 
@@ -465,13 +457,19 @@ myLayoutHook = smartBorders $ (tabs ||| tiledX ||| tiledY ||| full ||| float) wh
     halfs        = 1/2
     thirds       = 1/3
     delta        = 3/100
-    tabs         = named "Tabbed" $ makeTab $ Simplest
+    -- the tabs/simplest combo below doesn't need noBorders except in dual monitor spanned instances
+    tabs         = named "Tabbed" $ makeTab $ noBorders $ Simplest
     makeTab l    = tabBar shrinkText myTabTheme Top $ resizeVertical (fi $ decoHeight myTabTheme) $ l
 
-------------------------------------------------------------------------
--- Solarized Colors
+cycleLayouts = cycleThroughLayouts ["Tabbed", "Tiled Tall" ]
+cycleMainLayouts = cycleThroughLayouts ["Tabbed", "Tiled Tall" ]
+--cycleMax = cycleThroughLayouts ["MadMax", "Tab"]
+
+
+-- Interface
 ------------------------------------------------------------------------
 
+-- Solarized Colors
 base03  = "#002b36"
 base02  = "#073642"
 base01  = "#586e75"
@@ -489,15 +487,13 @@ blue    = "#268bd2"
 cyan    = "#2aa198"
 green   = "#719e07"
 
-------------------------------------------------------------------------
--- Interface
-------------------------------------------------------------------------
 
 myFocusFollowsMouse    = False
 myBorderWidth          = 1
 
 -- workspaces = ["web", "irc", "code" ] ++ map show [4..9]
-myWorkspaces                = ["1","2","3","4","5","6","7","8","9"]
+--myWorkspaces                = ["1","2","3","4","5","6","7","8","9"]
+myWorkspaces = [ "000", "WWW.1", "WRK", "TXT", "ORG" ]
 
 myNormalBorderColor    = base02
 myFocusedBorderColor   = green
@@ -537,26 +533,7 @@ myPromptConfig = defaultXPConfig
     , autoComplete          = Just 500000
     }
 
-------------------------------------------------------------------------
--- Config
-------------------------------------------------------------------------
 
-myConfig = defaultConfig
-    { terminal           = myTerminal
-    , focusFollowsMouse  = myFocusFollowsMouse
-    , borderWidth        = myBorderWidth
-    , modMask            = myModMask
-  --, workspaces         = myWorkspaces
-    , normalBorderColor  = myNormalBorderColor
-    , focusedBorderColor = myFocusedBorderColor
-  --, mouseBindings      = myMouseBindings
-    , layoutHook         = myLayoutHook
-    , manageHook         = myManageHook
-    , handleEventHook    = myEventHook
-    , startupHook        = myStartupHook
-    }
-
-------------------------------------------------------------------------
 -- Status bars and logging
 ------------------------------------------------------------------------
 
@@ -585,7 +562,6 @@ myPP = defaultPP
 --myLogHook = dynamicLogWithPP $ myPP
 
 
-------------------------------------------------------------------------
 -- Main
 ------------------------------------------------------------------------
 
@@ -595,12 +571,26 @@ main = xmonad =<< myXmobar (E.ewmh
     $ withUrgencyHook NoUrgencyHook 
  -- $ withScratchpads scratchpads 
     $ addDescrKeys' ((superMask, xK_F1), showKeybindings) myKeys
-    $ myConfig) where
-        showKeybindings :: [((KeyMask, KeySym), NamedAction)] -> NamedAction
-        showKeybindings x = addName "Show Keybindings" $ io $ do
-            --h <- spawnPipe "zenity --text-info"
-            --h <- spawnPipe "cat > ~/tmp/xmonadkeys.txt && urxvtc -hold -e cat ~/tmp/xmonadkeys.txt"
-            h <- spawnPipe "cat > ~/tmp/xmonadkeys.txt && urxvtc -e less ~/tmp/xmonadkeys.txt"
-            System.IO.UTF8.hPutStr h (unlines $ showKm x)
-            hClose h
-            return ()
+    $ defaultConfig 
+    { terminal           = myTerminal
+    , focusFollowsMouse  = myFocusFollowsMouse
+    , borderWidth        = myBorderWidth
+    , modMask            = myModMask
+  --, workspaces         = myWorkspaces
+    , normalBorderColor  = myNormalBorderColor
+    , focusedBorderColor = myFocusedBorderColor
+  --, mouseBindings      = myMouseBindings
+    , layoutHook         = myLayoutHook
+    , manageHook         = myManageHook
+    , handleEventHook    = myEventHook
+    , startupHook        = myStartupHook
+    }) where
+
+       showKeybindings :: [((KeyMask, KeySym), NamedAction)] -> NamedAction
+       showKeybindings x = addName "Show Keybindings" $ io $ do
+           --h <- spawnPipe "zenity --text-info"
+           h <- spawnPipe "cat > ~/tmp/xmonadkeys.txt && urxvtc -e less ~/tmp/xmonadkeys.txt"
+           System.IO.UTF8.hPutStr h (unlines $ showKm x)
+           hClose h
+           return ()
+
