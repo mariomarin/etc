@@ -8,9 +8,9 @@ Config  {
         , lowerOnStart  = True
         , hideOnStart   = False
         , persistent    = False
-        , commands      = [ Run Date "<fc=#6c71c4>%^a %^b %_d %H:%M</fc>" "theDate" 10
+        , commands      = [ Run Date "<fc=#b58900>%^a %^b %d %H:%M</fc>" "theDate" 10
                           , Run StdinReader
-                          , Run BatteryP ["BAT0","BAT1","BAT2"] ["-t", "<acstatus> <watts> W <left>% <timeleft></fc>", "--", "-O", "<fc=#719e07>AC", "-o", "<fc=#d33682>BATT"] 10
+                          , Run BatteryP ["BAT0","BAT1","BAT2"] ["-t", "<acstatus> <watts> W <left>% <timeleft></fc>", "--", "-O", "<fc=#719e07>AC", "-o", "<fc=#dc322f>BATT"] 10
                           , Run Weather "KSEA" ["-t","Seattle:<tempF>°|<skyCondition>"] 36000
                           , Run Cpu ["-t","CPU <total>%","-p","2","-L","50","-H","80","-l","#657b83","--normal","#93a1a1","--high","#dc322f","-c","0"] 25
                           , Run CpuFreq ["-t", "FRQ <cpu0>","-L","0","-H","2","-l","#657b83","-n","#657b83","-h","#93a1a1","-M","3","-d","0"] 25
@@ -21,10 +21,10 @@ Config  {
                           , Run Com "xmobar-tab" [] "tabmode" 50
                           , Run Com "mailqcount" [] "mailq" 200
                           , Run Com "mailcount" [] "mail" 200
-                          , Run Memory ["-t","MEM <usedratio>%(<cache>M)"] 10
-                          , Run CoreTemp ["-t", "<core0>°", "-L", "40", "-H", "60", "-l", "#657b83", "-n", "#93a1a1", "-h", "#dc322f"] 50
+                          , Run Memory ["-t","MEM <usedratio>%","-L","50","-H","75","-l","#657b83","-n","#93a1a1","-h","#dc322f"] 10
+                          , Run CoreTemp ["-t", "<core0>°", "-L", "50", "-H", "65", "-l", "#657b83", "-n", "#93a1a1", "-h", "#dc322f"] 50
                           ]
         , sepChar       = "%"
         , alignSep      = "}{"
-        , template      = " %StdinReader% }{ %wlan0wi% : %battery% : %cpu% %cpufreq% %coretemp% : %memory% %swap% : %disku% : %theDate% : %mail% %mailq% : %pwrmode%%tabmode% "
+        , template      = " %StdinReader% }{ %wlan0wi%  %battery%  %cpu% %cpufreq% %coretemp%  %memory%  %swap%  %disku%  %theDate%  %mail% %mailq%  %pwrmode%%tabmode% "
         }

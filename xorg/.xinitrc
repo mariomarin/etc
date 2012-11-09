@@ -9,7 +9,7 @@ xsetroot -cursor_name left_ptr
 xsetroot -solid "#002b36"
 hsetroot -solid "#002b36"
 unclutter -root -idle 1 &
-gromit-mpx &
+#gromit-mpx &
 #xbindkeys -f /etc/X11/xinit/xbindkeysrc
 #xbindkeys -f $HOME/.xbindkeysrc -X :0
 setxkbmap -option ctrl:nocaps
