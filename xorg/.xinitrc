@@ -9,14 +9,8 @@ xsetroot -cursor_name left_ptr
 xsetroot -solid "#002b36"
 hsetroot -solid "#002b36"
 unclutter -root -idle 1 &
-#gromit-mpx &
-#xbindkeys -f /etc/X11/xinit/xbindkeysrc
-#xbindkeys -f $HOME/.xbindkeysrc -X :0
 setxkbmap -option ctrl:nocaps
 xset -b # turn off pc-speaker
-
-# work on tight loops and flashing when changing windows manually in xmonad
-# export SAL_USE_VCLPLUGIN=gen
 
 # D-Bus
 dbuslaunch="`which dbus-launch 2>/dev/null`"
@@ -45,20 +39,12 @@ _touch_id="$(xsetwacom --list devices | grep TOUCH | sed 's/^.*id:\s*\(\w*\)\W.*
 # and https://bbs.archlinux.org/viewtopic.php?pid=905725#p905725
 #/home/es/bin/xbindkeys-slowstart &
 
-# xrandr stuff
-#xrandr --newmode $(gtf 1920 1200 35.00 | grep Modeline | sed "s/.*Modeline\s*\(.*\)/\1/")
-#xrandr --addmode DP1 $(gtf 1920 1200 35.00 | grep Modeline | sed "s/.*Modeline\s*\(\".*\"\).*/\1/")
-#/home/es/tmp/xrandr_cinemadisplay &
-
 # must source environment for xbindkeys mouse bindings to function
 # TODO: figure out why
 . $HOME/.profile
 #xbindkeys
-#/home/es/tmp/xrandr_quickset &
-#taffybar &
-#dunst &
-#exec ck-launch-session gnome-session
-#exec ck-launch-session xmonad
+#xbindkeys -f /etc/X11/xinit/xbindkeysrc
+#xbindkeys -f $HOME/.xbindkeysrc -X :0
 
 _xmonad () {
 /usr/bin/xscreensaver -no-splash -no-capture-stderr &
@@ -71,5 +57,4 @@ exec ck-launch-session gnome-session
 
 /usr/bin/system boot
 /usr/bin/xscreensaver -no-splash -no-capture-stderr &
-#/usr/bin/dunst &
 xmonad

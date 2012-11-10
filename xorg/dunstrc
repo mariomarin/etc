@@ -112,8 +112,7 @@
     #background = "#268bd2"
     background = "#b58900"
     foreground = "#002b36"
-    #timeout = 2
-    timeout = 5
+    timeout = 2
 
 [urgency_normal]
     background = "#719e07"
