@@ -52,6 +52,11 @@ import qualified XMonad.Actions.DynamicWorkspaces as DW
 import qualified XMonad.Hooks.EwmhDesktops as E
 import qualified XMonad.StackSet as W
 
+import           XMonad.Actions.CopyWindow
+import           XMonad.Layout.PerWorkspace
+
+import XMonad.Layout.ShowWName
+
 import XMonad.Layout.Drawer
 
 import           XMonad.Util.WindowProperties
@@ -101,6 +106,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((modm .|. shft, xK_Return),  addName "Next existing terminal"    $ nextTerminal)
     , ((super, xK_Return),          addName "New browser"               $ newBrowser)
     , ((super .|. shft, xK_Return), addName "Next existing browser"     $ nextBrowser)
+    , ((super .|. shft, xK_Return), addName "Show marginal notes"       $ nextBrowser)
+
+    , subtitle "TEST"
+    , ((super, xK_y),               addName "Test 1"                    $ myJumpToLayout "Fullscreen")
+    , ((super .|. ctrl, xK_y),      addName "Test 1"                    $ fullScreen)
+    , ((super .|. shft, xK_y),      addName "Test 2"                    $ sendMessage $ SetStruts [] [minBound .. maxBound])
 
     , subtitle "SECONDAY APPS"
     , ((super, xK_m),               addName "Show mail"                 $ showMail)
@@ -112,7 +123,14 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((super, xK_v),               addName "New Vim"                   $ newVim)
     , ((super .|. shft, xK_v),      addName "Next Vim"                  $ nextVim)
 
+    --, subtitle "COMMON"
+    -- TODO: implement persistent (copied) windows that toggle off via kill1
+    -- functioning similarly to named scratch pads with a toggle function and a
+    -- possibly global layout modification that pushes other layout over
+    --, ((super, xK_e),               addName "Common Editor"             $ toggleEditor)
+
     , subtitle "SCRATCHPADS"
+    , ((super, xK_n),               addName "Persistent Notes"          $ toggleScratchpad "notepad")
     , ((super, xK_x),               addName "Audio Mixer"               $ toggleScratchpad "mixer")
     , ((super, xK_h),               addName "Process monitor"           $ toggleScratchpad "htop")
     , ((super, xK_c),               addName "Calendar - week"           $ toggleScratchpad "calweek")
@@ -120,7 +138,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((super, xK_w),               addName "Wifi connection menu"      $ toggleScratchpad "wifi")
 
     , subtitle "KILL & QUIT"
-    , ((modm, xK_BackSpace),        addName "Close focused"             $ kill)
+    , ((modm, xK_BackSpace),        addName "Close focused"             $ kill1)
     , ((modm .|. shft, bkSpc),      addName "Close all on workspace"    $ killAll)
     , ((modm, xK_q),                addName "Restart XMonad"            $ myRestart)
     , ((modm .|. shft, xK_q),       addName "Quit XMonad"               $ myQuit)
@@ -141,17 +159,19 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((modm, xK_t),                addName "Tile this window"          $ withFocused (windows . W.sink))
     , ((modm, xK_u),                addName "Focus urgent winow"        $ focusUrgent)
     , ((modm .|. ctrl, xK_u),       addName "Clear urgent status"       $ clearUrgents)
+    , ((modm, xK_a),                addName "Pin window"                $ windows copyToAll)
+    , ((modm .|. shft, xK_a),       addName "Unpin window"              $ killAllOtherCopies)
 
     -- X.A.CycleWS is doing the heavy lifting here
     -- http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-CycleWS.html
     , subtitle "WORKSPACE ACTIONS (N/P) [mod=from prefix] [mod+ctrl=from all]"
-    , ((modm, xK_l),                addName "Next workspace"            $ nextWS)
-    , ((modm, xK_h),                addName "Previous workspace"        $ prevWS)
-    , ((modm .|. shft, xK_l),       addName "Move to next workspace"    $ shiftToNext >> nextWS)
-    , ((modm .|. shft, xK_h),       addName "Move to prev workspace"    $ shiftToPrev >> prevWS)
-    , ((modm .|. ctrl, xK_l),       addName "Toss to next workspace"    $ shiftToNext)
-    , ((modm .|. ctrl, xK_h),       addName "Toss to prev workspace"    $ shiftToPrev)
-    , ((modm, xK_o),                addName "Jump to prev workspace"    $ toggleWS)
+    , ((modm, xK_l),                addName "Next workspace"            $ nextWS >> flashWS )
+    , ((modm, xK_h),                addName "Previous workspace"        $ prevWS >> flashWS)
+    , ((modm .|. shft, xK_l),       addName "Move to next workspace"    $ shiftToNext >> nextWS >> flashWS)
+    , ((modm .|. shft, xK_h),       addName "Move to prev workspace"    $ shiftToPrev >> prevWS >> flashWS)
+    , ((modm .|. ctrl, xK_l),       addName "Toss to next workspace"    $ shiftToNext >> flashWS)
+    , ((modm .|. ctrl, xK_h),       addName "Toss to prev workspace"    $ shiftToPrev >> flashWS)
+    , ((modm, xK_o),                addName "Jump to prev workspace"    $ toggleWS >> flashWS)
 
     , subtitle "SCREEN CYCLING (D/F) [+=select] [+ctrl=swap] [+shift=move window to]"
     , ((modm, xK_n),                addName "Next screen"               $ nextScreen >> moveCursor)
@@ -171,10 +191,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
 -- TODO: decide if I'm going to use different cycleThroughLayouts or limit layouts on a perworkspace basis
 
     , subtitle "WORKSPACE LAYOUTS (H/L=size ,.=) [+alt=toggle]"
-    , ((modm, xK_space),            addName "Switch to next layout"     $ sendMessage NextLayout) --cycleLayouts
-    --, ((modm, xK_space),          addName "Switch to next layout"     $ cycleLayouts)
+    , ((modm, xK_space),            addName "Switch to next layout"     $ cycleAllLayouts)
     , ((modm .|. shft, xK_space),   addName "Reset to default layout"   $ setLayout $ XMonad.layoutHook conf)
     , ((modm .|. ctrl, xK_space),   addName "Refresh layout"            $ refresh)
+    , ((modm, xK_f),                addName "Full Screen"               $ fullScreen)
 
     , ((modm .|. shft, xK_9),       addName "Shrink the master area"    $ sendMessage Shrink)
     , ((modm .|. shft, xK_0),       addName "Expand the master area"    $ sendMessage Expand)
@@ -235,7 +255,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
 
     ++
     subtitle "WORKSPACE SWITCHING: Alt+1-9":
-    [((m .|. modm, k), addName (n ++ i) $ windows $ f i)
+    --[((m .|. modm, k), addName (n ++ i) $ windows $ f i)
+    [((m .|. modm, k), addName (n ++ i) $ (windows $ f i) >> flashWS)
         | (f, m, n) <- [(W.greedyView, 0, "Switch to workspace "), (W.shift, shft, "Move client to workspace ")]
         , (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]]
 
@@ -265,21 +286,33 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
 
         where
 
-        volUp   = xF86XK_AudioRaiseVolume
-        volDown = xF86XK_AudioLowerVolume
-        volMute = xF86XK_AudioMute
-        btnDisplay = xF86XK_Display
-        btnLockScreen = xF86XK_ScreenSaver
-        btnBatt = 0x1008ff93
-        btnSleep = xF86XK_Sleep
-        btnPower = xF86XK_PowerOff
-        btnBluetooth = xF86XK_Launch1
-        btnRotate = xF86XK_RotateWindows
-        btnSuspend = 0x1008ffa7
-        prtSc = xK_Print
-        bkSpc = xK_BackSpace
+        volUp           = xF86XK_AudioRaiseVolume
+        volDown         = xF86XK_AudioLowerVolume
+        volMute         = xF86XK_AudioMute
+        btnDisplay      = xF86XK_Display
+        btnLockScreen   = xF86XK_ScreenSaver
+        btnBatt         = 0x1008ff93
+        btnSleep        = xF86XK_Sleep
+        btnPower        = xF86XK_PowerOff
+        btnBluetooth    = xF86XK_Launch1
+        btnRotate       = xF86XK_RotateWindows
+        btnSuspend      = 0x1008ffa7
+        prtSc           = xK_Print
+        bkSpc           = xK_BackSpace
 
         moveCursor = updatePointer (Relative 0.99 0.99)
+
+        -- use the following in a key binding such as:
+        --, ((modm, xK_space),
+        --  addName "Switch to next layout"
+        --  $ sendMessage NextLayout >> (curLayout >>= \d->spawn $"flash "++d)
+        curLayout :: X String
+        curLayout = gets windowset >>= return . description . W.layout . W.workspace . W.current
+
+        curWorkspace :: X String
+        curWorkspace = withWindowSet (return . W.currentTag)
+        --flashWS = (curWorkspace >>= \d->spawn $"flash "++d)
+        flashWS = return ()
 
         -- | Select workspae prompt
         selectWorkspacePrompt = workspacePrompt myPromptConfig $ \w ->
@@ -457,6 +490,10 @@ myScratchpads =
       (spTerminal myFont "-name wifi" "wifi")
       (resource =? "wifi") centSquare
 
+    , NS "notepad"
+      (spTerminal myFont "-name notepad" "vim")
+      (resource =? "notepad") centSquare
+
     , NS "mixer"
       (spTerminal myFontBig "" "alsamixer")
       (title =? "alsamixer") centWinBig
@@ -509,7 +546,7 @@ myManageHook = composeAll
     , resource  =? "kdesktop"       --> doIgnore
     , fullscreenManageHook
     , manageDocks
-    ] <+> namedScratchpadManageHook myScratchpads 
+    ] <+> namedScratchpadManageHook myScratchpads
 
 
 -- Event handling
@@ -523,6 +560,18 @@ myManageHook = composeAll
 myEventHook = E.ewmhDesktopsEventHook
     <+> E.fullscreenEventHook
     <+> fullscreenEventHook
+
+
+-- Workspaces
+------------------------------------------------------------------------
+
+-- workspaces   = ["web", "irc", "code" ] ++ map show [4..9]
+myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+
+-- irc, web, com, org, txt, wrk, img, dev, des
+-- consider topic spaces
+-- consider dynamic workspace modules
+-- consider showWName
 
 
 -- Layouts:
@@ -541,14 +590,21 @@ myEventHook = E.ewmhDesktopsEventHook
 
 
 -- Out of the myriad X.L.* modules, I'm choosing to focus on
--- XMonad.Layout.Combo and XMonad.Layout.WindowNavigation, as these
--- seem to be updated and the most recent generation of solution
--- to the navigation and combined layout problem. Keeping an eye out
--- for 2DNavigation, which handles multimonitor setups well (though
--- I don't know yet if X.L.WindowNavigation
+-- XMonad.Layout.PerWorkspace
+-- XMonad.Layout.CycleSelectedLayouts
+-- XMonad.Layout.Combo
+-- and XMonad.Layout.WindowNavigation,
+-- as these seem to be updated and the most recent generation of
+-- solution to the navigation and combined layout problem.
+-- Keeping an eye out for 2DNavigation, which handles multimonitor
+-- setups well (though I don't know yet if X.L.WindowNavigation
+--
+-- There is also XMonad.Layout.LayoutCombinators to consider,
+-- which has the useful JumpToLayout function, recreated below
 
-myLayoutHook = smartBorders 
-    $ (tabs ||| drawer ||| tiledX ||| tiledY ||| full ||| float) where
+myLayoutHook = showWName' mySWNConfig $ smartBorders $ 
+               onWorkspaces ["exmaple","andanother"] (tabs ||| full ||| float) $ 
+               (tabs ||| tiledX ||| full) where
 
     -- drawer is probably best used in conjunction with tagging the drawer window boring
     drawer      = renamed [Replace "Drawer"] $ leftDrawer `onLeft` tabs
@@ -561,11 +617,8 @@ myLayoutHook = smartBorders
     tiledY      = renamed [Replace "Wide Tiled"] 
                 $ Mirror $ Tall nmaster delta halfs
 
-    --full      = renamed [Replace "Fullscreen"] 
-    --          $ noBorders $ Full
-
     full        = renamed [Replace "Fullscreen"]
-                $ Full
+                $ noBorders $ Full
 
     float       = renamed [Replace "Floating"]
                 $ simpleFloat
@@ -581,21 +634,26 @@ myLayoutHook = smartBorders
     thirds      = 1/3
     delta       = 3/100
 
-cycleLayouts = cycleThroughLayouts ["Tabbed", "Vert Tiled" ]
+cycleLayouts = sendMessage NextLayout
+cycleAllLayouts = sendMessage NextLayout
 cycleMainLayouts = cycleThroughLayouts ["Tabbed", "Vert Tiled" ]
---cycleMax = cycleThroughLayouts ["MadMax", "Tab"]
+cycleAlternateLayouts = cycleThroughLayouts ["Tabbed", "Vert Tiled" ]
+myJumpToLayout l = cycleThroughLayouts [l]
+-- refresh layout to unfullscreen quickly and restore struts
+-- TODO: make this a toggle function
+fullScreen = cycleThroughLayouts ["Fullscreen"] >> (sendMessage $ SetStruts [] [minBound .. maxBound])
 
+mySWNConfig = defaultSWNConfig 
+    { swn_font    = myFontBig
+    , swn_bgcolor = base02
+    , swn_color   = base01
+    , swn_fade    = 1
+    }
+--mySWNConfig = defaultSWNConfig { swn_font = "-xos4-terminus-medium-i-normal--32-320-72-72-c-160-iso8859-1"
+--                               , swn_bgcolor = "DarkSlateGray"
+--                               , swn_color = "Orange"
+--                               , swn_fade = 1 }
 
--- Workspaces
-------------------------------------------------------------------------
-
--- workspaces   = ["web", "irc", "code" ] ++ map show [4..9]
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
-
--- irc, web, com, org, txt, wrk, img, dev, des
--- consider topic spaces
--- consider dynamic workspace modules
--- consider showWName
 
 -- Interface
 ------------------------------------------------------------------------
@@ -693,7 +751,7 @@ toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 main = xmonad =<< myXmobar (E.ewmh 
     $ withUrgencyHook NoUrgencyHook 
-    $ addDescrKeys' ((super, xK_F1), showKeybindings) myKeys
+    $ addDescrKeys' ((myModMask, xK_F1), showKeybindings) myKeys
     $ defaultConfig 
     { terminal              = myTerminal
     , focusFollowsMouse     = myFocusFollowsMouse
