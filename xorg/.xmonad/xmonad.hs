@@ -11,14 +11,14 @@
 -- Imports
 ------------------------------------------------------------------------
 
+
 import           Control.Monad
 import           Data.List
-import qualified Data.Map as M
 import           Graphics.X11.ExtraTypes.XF86
 import           System.Exit(ExitCode(ExitSuccess), exitWith)
 import           System.IO
-import qualified System.IO.UTF8
 import           XMonad hiding ((|||))
+import           XMonad.Actions.CopyWindow(copy)
 import           XMonad.Actions.CycleSelectedLayouts
 import           XMonad.Actions.CycleWS
 import           XMonad.Actions.RotSlaves
@@ -28,7 +28,6 @@ import           XMonad.Actions.UpdatePointer
 import           XMonad.Actions.WindowGo
 import           XMonad.Actions.WithAll
 import           XMonad.Hooks.DynamicLog
-import qualified XMonad.Hooks.EwmhDesktops as E
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.UrgencyHook
@@ -42,15 +41,18 @@ import           XMonad.Layout.Simplest
 import           XMonad.Layout.TabBarDecoration
 import           XMonad.ManageHook
 import           XMonad.Prompt
-import qualified XMonad.StackSet as W
+import           XMonad.Prompt
+import           XMonad.Prompt.Workspace
 import           XMonad.Util.NamedActionsLocal
 import           XMonad.Util.NamedScratchpad
 import           XMonad.Util.Run
-
-import           XMonad.Prompt
-import           XMonad.Prompt.Workspace
+import qualified Data.Map as M
+import qualified System.IO.UTF8
 import qualified XMonad.Actions.DynamicWorkspaces as DW
-import           XMonad.Actions.CopyWindow(copy)
+import qualified XMonad.Hooks.EwmhDesktops as E
+import qualified XMonad.StackSet as W
+
+import XMonad.Layout.Drawer
 
 import           XMonad.Util.WindowProperties
 
@@ -65,6 +67,22 @@ import XMonad.Actions.GridSelect
 -- while apps such as vlc use other fullscreen event messages and require
 -- X.L.Fullscreen, so we import both and reference X.H.EwmhDesktops as E
 
+--Notes on window properties:
+--Where XMonad.Util.WindowProperties is used, the following properties
+--and operators are used:
+--
+--Title String	 
+--ClassName String	 
+--Resource String	 
+--Role String	
+--WM_WINDOW_ROLE property
+--Machine String	
+--WM_CLIENT_MACHINE property
+--And Property Property	 
+--Or Property Property	 
+--Not Property	 
+--Const Bool
+
 
 -- Keyboard configuration:
 ------------------------------------------------------------------------
@@ -78,15 +96,19 @@ myModMask = alt
 myKeys :: XConfig Layout -> [((KeyMask, KeySym), NamedAction)]
 myKeys conf@(XConfig {XMonad.modMask = modm}) =
 
-    [ subtitle "APPLICATIONS"
+    [ subtitle "MAIN APPS"
     , ((modm, xK_Return),           addName "New terminal"              $ newTerminal)
-    , ((super, xK_b),               addName "New browser"               $ newBrowser)
-    , ((super .|. shft, xK_b),      addName "Next existing browser"     $ nextBrowser)
+    , ((modm .|. shft, xK_Return),  addName "Next existing terminal"    $ nextTerminal)
+    , ((super, xK_Return),          addName "New browser"               $ newBrowser)
+    , ((super .|. shft, xK_Return), addName "Next existing browser"     $ nextBrowser)
+
+    , subtitle "SECONDAY APPS"
     , ((super, xK_m),               addName "Show mail"                 $ showMail)
     , ((super, xK_p),               addName "Show web contacts"         $ showWebContacts)
     , ((super .|. shft, xK_c),      addName "Show calendar"             $ showWebCalendar)
     , ((super, xK_t),               addName "Show tasks"                $ showWebTasks)
     , ((super, xK_d),               addName "Show Google drive"         $ showWebDrive)
+    , ((super, xK_i),               addName "Show Chat Drawer"          $ showChatDrawer)
     , ((super, xK_v),               addName "New Vim"                   $ newVim)
     , ((super .|. shft, xK_v),      addName "Next Vim"                  $ nextVim)
 
@@ -149,8 +171,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
 -- TODO: decide if I'm going to use different cycleThroughLayouts or limit layouts on a perworkspace basis
 
     , subtitle "WORKSPACE LAYOUTS (H/L=size ,.=) [+alt=toggle]"
-    --, ((modm, xK_space),          addName "Switch to next layout"     $ sendMessage NextLayout) --cycleLayouts
-    , ((modm, xK_space),            addName "Switch to next layout"     $ cycleLayouts)
+    , ((modm, xK_space),            addName "Switch to next layout"     $ sendMessage NextLayout) --cycleLayouts
+    --, ((modm, xK_space),          addName "Switch to next layout"     $ cycleLayouts)
     , ((modm .|. shft, xK_space),   addName "Reset to default layout"   $ setLayout $ XMonad.layoutHook conf)
     , ((modm .|. ctrl, xK_space),   addName "Refresh layout"            $ refresh)
 
@@ -173,7 +195,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((0, xK_z),                   addName "test submap"               $ sendMessage Shrink)]
     )
 
-    , subtitle "MEDIA KEYS" -- c.f. key names at http://hackage.haskell.org/cgi-bin/hackage-scripts/package/X11
+
+    , subtitle "MEDIA KEYS"
+    -- c.f. key names at http://hackage.haskell.org/cgi-bin/hackage-scripts/package/X11
+
     , ((0, volUp),                  addName "Volume up by 1"            $ spawn "volume up")
     , ((0, volDown),                addName "Volume down by 1"          $ spawn "volume down")
     , separator
@@ -184,8 +209,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((0 .|. ctrl, volDown),       addName "Volume at maximum"         $ spawn "volume max")
     , ((0, volMute),                addName "Volume mute toggle"        $ spawn "volume toggle")
 
+
     , subtitle "HOT KEYS" 
-    , ((0, btnBatt),                addName "Toggle min/max pwr modes"  $ spawn "power toggle") -- XF86Battery button
+
+    , ((0, btnBatt),                addName "Toggle min/max pwr modes"  $ spawn "power toggle")
     , ((0 .|. shft, btnBatt),       addName "Toggle miv/mov pwr modes"  $ spawn "power toggle pinned")
     , ((0 .|. ctrl, btnBatt),       addName "Auto power modes"          $ spawn "power toggle pinned")
     , ((0, btnSleep),               addName "System sleep"              $ spawn "system sleep")
@@ -200,7 +227,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((0 .|. shft, prtSc),         addName "Screendraw - force finish" $ spawn "screendraw finish")
     , ((modm, prtSc),               addName "Screendraw - cancel"       $ spawn "screendraw cancel")
     , ((0, btnRotate),              addName "Screendraw - clear"        $ spawn "screendraw clear")
-    --, ((0, btnSuspend),           addName "System Reboot"             $ spawn "system reboot") -- XF86Suspend button
+    --, ((0, btnSuspend),           addName "System Reboot"             $ spawn "system reboot")
     ]
 
     -- mod-[1..9] %! Switch to workspace N
@@ -270,6 +297,14 @@ myTerminalStart :: X ()
 myTerminalStart     = spawn "pgrep urxvtd || urxvtd -f -o -q"
 newTerminal :: X ()
 newTerminal         = spawn myTerminal
+nextTerminal        = raiseNextMaybe
+                      (spawn $ myTerminal) (className =? "URxvt")
+
+showNotesDrawer     = raiseNextMaybe
+                      (spawn $ myTerminal ++ " -name notes") (resource =? "notes")
+
+showChatDrawer      = raiseNextMaybe
+                      (spawn $ myTerminal ++ " -name drawer") (resource =? "drawer")
 
 newVim :: X ()
 newVim              = runInTerm "" "vim"
@@ -504,8 +539,21 @@ myEventHook = E.ewmhDesktopsEventHook
 -- the tabs/simplest combo below doesn't need noBorders except in 
 -- dual monitor spanned instances
 
+
+-- Out of the myriad X.L.* modules, I'm choosing to focus on
+-- XMonad.Layout.Combo and XMonad.Layout.WindowNavigation, as these
+-- seem to be updated and the most recent generation of solution
+-- to the navigation and combined layout problem. Keeping an eye out
+-- for 2DNavigation, which handles multimonitor setups well (though
+-- I don't know yet if X.L.WindowNavigation
+
 myLayoutHook = smartBorders 
-    $ (tabs ||| tiledX ||| tiledY ||| full ||| float) where
+    $ (tabs ||| drawer ||| tiledX ||| tiledY ||| full ||| float) where
+
+    -- drawer is probably best used in conjunction with tagging the drawer window boring
+    drawer      = renamed [Replace "Drawer"] $ leftDrawer `onLeft` tabs
+                  where
+                    leftDrawer = simpleDrawer 0.2 0.5 (Resource "drawer" `Or` ClassName "Drawer")
 
     tiledX      = renamed [Replace "Vert Tiled"] 
                 $ Tall nmaster delta thirds
