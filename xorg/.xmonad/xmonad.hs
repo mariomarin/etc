@@ -11,13 +11,13 @@
 -- Imports
 ------------------------------------------------------------------------
 
-
 import           Control.Monad
 import           Data.List
 import           Graphics.X11.ExtraTypes.XF86
 import           System.Exit(ExitCode(ExitSuccess), exitWith)
 import           System.IO
 import           XMonad hiding ((|||))
+import           XMonad.Actions.CopyWindow
 import           XMonad.Actions.CopyWindow(copy)
 import           XMonad.Actions.CycleSelectedLayouts
 import           XMonad.Actions.CycleWS
@@ -35,6 +35,7 @@ import           XMonad.Layout.Decoration
 import           XMonad.Layout.Fullscreen
 import           XMonad.Layout.LayoutCombinators ((|||))
 import           XMonad.Layout.NoBorders
+import           XMonad.Layout.PerWorkspace
 import           XMonad.Layout.Renamed
 import           XMonad.Layout.SimpleFloat
 import           XMonad.Layout.Simplest
@@ -46,24 +47,41 @@ import           XMonad.Prompt.Workspace
 import           XMonad.Util.NamedActionsLocal
 import           XMonad.Util.NamedScratchpad
 import           XMonad.Util.Run
+import           XMonad.Util.WindowProperties
+import           XMonad.Layout.Decoration
+import           XMonad.Layout.DecorationAddons
+import           XMonad.Layout.DraggingVisualizer
+import           XMonad.Layout.Drawer
+import           XMonad.Layout.ImageButtonDecoration 
+import           XMonad.Layout.ShowWName
+import           XMonad.Layout.WindowSwitcherDecoration
+import           XMonad.Layout.TabbedWindowSwitcherDecoration
+import           XMonad.Util.Image
 import qualified Data.Map as M
 import qualified System.IO.UTF8
 import qualified XMonad.Actions.DynamicWorkspaces as DW
 import qualified XMonad.Hooks.EwmhDesktops as E
 import qualified XMonad.StackSet as W
 
-import           XMonad.Actions.CopyWindow
-import           XMonad.Layout.PerWorkspace
 
-import XMonad.Layout.ShowWName
+-- Prompt(s)
+import XMonad.Prompt
+import XMonad.Prompt.Man
+import XMonad.Prompt.RunOrRaise
+import XMonad.Prompt.Shell
+import XMonad.Prompt.Ssh
+import XMonad.Prompt.AppendFile
+import XMonad.Prompt.Workspace
 
-import XMonad.Layout.Drawer
+-- Topics
+import XMonad.Actions.TopicSpace
 
-import           XMonad.Util.WindowProperties
 
 -- TODO: implement a preconfigured grid select for tablet mode
 -- implement normal gridselect
 import XMonad.Actions.GridSelect
+
+
 
 --import Text.Regex.Posix ((=~))
 
@@ -109,7 +127,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((super .|. shft, xK_Return), addName "Show marginal notes"       $ nextBrowser)
 
     , subtitle "TEST"
-    , ((super, xK_y),               addName "Test 1"                    $ myJumpToLayout "Fullscreen")
+    , ((super, xK_y),               addName "Test 1"                    $ cycleTiledLayouts)
     , ((super .|. ctrl, xK_y),      addName "Test 1"                    $ fullScreen)
     , ((super .|. shft, xK_y),      addName "Test 2"                    $ sendMessage $ SetStruts [] [minBound .. maxBound])
 
@@ -225,8 +243,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((0 .|. shft, volUp),         addName "Volume up by 10"           $ spawn "volume up 10")
     , ((0 .|. shft, volDown),       addName "Volume down by 10"         $ spawn "volume down 10")
     , separator
-    , ((0 .|. ctrl, volUp),         addName "Volume at 50%"             $ spawn "volume mid")
-    , ((0 .|. ctrl, volDown),       addName "Volume at maximum"         $ spawn "volume max")
+    , ((0 .|. ctrl, volUp),         addName "Volume at 50%"             $ spawn "volume max")
+    , ((0 .|. ctrl, volDown),       addName "Volume at maximum"         $ spawn "volume mid")
     , ((0, volMute),                addName "Volume mute toggle"        $ spawn "volume toggle")
 
 
@@ -255,9 +273,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
 
     ++
     subtitle "WORKSPACE SWITCHING: Alt+1-9":
-    --[((m .|. modm, k), addName (n ++ i) $ windows $ f i)
-    [((m .|. modm, k), addName (n ++ i) $ (windows $ f i) >> flashWS)
-        | (f, m, n) <- [(W.greedyView, 0, "Switch to workspace "), (W.shift, shft, "Move client to workspace ")]
+--    [((m .|. modm, k), addName (n ++ i) $ windows $ f i)
+--        | (f, m, n) <- [(W.greedyView, 0, "Switch to workspace "), (W.shift, shft, "Move client to workspace ")]
+--        , (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]]
+    [((m .|. modm, k), addName (n ++ i) $ (windows $ f i) >> moveCursor >> flashWS)
+        | (f, m, n) <- [(W.view, 0, "Switch to workspace "), (W.shift, shft, "Move client to workspace ")]
         , (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]]
 
     -- mod-{w,e,r} %! Switch to physical/Xinerama screens 1, 2, or 3
@@ -544,7 +564,7 @@ myManageHook = composeAll
     , className =? "onboard"        --> doIgnore
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
-    , fullscreenManageHook
+    --, fullscreenManageHook
     , manageDocks
     ] <+> namedScratchpadManageHook myScratchpads
 
@@ -597,14 +617,24 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 -- as these seem to be updated and the most recent generation of
 -- solution to the navigation and combined layout problem.
 -- Keeping an eye out for 2DNavigation, which handles multimonitor
--- setups well (though I don't know yet if X.L.WindowNavigation
+-- setups well (though I don't know yet if X.L.WindowNavigation.
 --
 -- There is also XMonad.Layout.LayoutCombinators to consider,
--- which has the useful JumpToLayout function, recreated below
+-- which has the useful JumpToLayout function, recreated below.
+--
+-- Other contenders in lieu of Combo: X.L.SubLayouts.
+--
+-- In terms of navigation: WindowNavigation and WindowArranger seem to
+-- have some overlap and it might be worth trialing the latter.
+--
+-- Note that order of "addTabs" and "addBars" prior to setting
+-- noBorders is intentional. Inverse causes problems.
 
-myLayoutHook = showWName' mySWNConfig $ smartBorders $ 
-               onWorkspaces ["exmaple","andanother"] (tabs ||| full ||| float) $ 
-               (tabs ||| tiledX ||| full) where
+------------------------------------------------------------------------
+--myLayoutHook = showWName' mySWNConfig $
+myLayoutHook = onWorkspaces ["exmaple","andanother"] 
+                            (tabs ||| full ||| float)
+               $ (tabs ||| tiledX ||| tiledXNude ||| full) where
 
     -- drawer is probably best used in conjunction with tagging the drawer window boring
     drawer      = renamed [Replace "Drawer"] $ leftDrawer `onLeft` tabs
@@ -612,22 +642,32 @@ myLayoutHook = showWName' mySWNConfig $ smartBorders $
                     leftDrawer = simpleDrawer 0.2 0.5 (Resource "drawer" `Or` ClassName "Drawer")
 
     tiledX      = renamed [Replace "Vert Tiled"] 
-                $ Tall nmaster delta thirds
+                $ dragBars $ noBorders $ Tall nmaster delta thirds
+
+    tiledXNude  = renamed [Replace "Vert Tiled Nude"] 
+                $ smartBorders $ Tall nmaster delta thirds
 
     tiledY      = renamed [Replace "Wide Tiled"] 
-                $ Mirror $ Tall nmaster delta halfs
+                $ smartBorders $ Mirror $ Tall nmaster delta halfs
 
     full        = renamed [Replace "Fullscreen"]
                 $ noBorders $ Full
 
     float       = renamed [Replace "Floating"]
-                $ simpleFloat
+                $ smartBorders $ simpleFloat
 
     tabs        = renamed [Replace "Tabbed"] 
-                $ makeTab $ noBorders $ Simplest
+                $ dragTabs $ noBorders $ Simplest
 
-    makeTab l   = tabBar shrinkText myTabTheme Top 
-                $ resizeVertical (fi $ decoHeight myTabTheme) $ l
+    simpleTabs  = renamed [Replace "Simple Tabbed"] 
+                $ addTabs $ noBorders $ Simplest
+
+    addTabs l   = tabBar shrinkText myTheme Top 
+                $ resizeVertical (fi $ decoHeight myTheme) $ l
+
+    dragTabs l  = tabbedWindowSwitcherDecorationWithImageButtons shrinkText myThemeWithImageButtons (draggingVisualizer $ l)
+
+    dragBars l  = windowSwitcherDecorationWithImageButtons shrinkText myThemeWithImageButtons (draggingVisualizer $ l)
 
     nmaster     = 1
     halfs       = 1/2
@@ -637,22 +677,12 @@ myLayoutHook = showWName' mySWNConfig $ smartBorders $
 cycleLayouts = sendMessage NextLayout
 cycleAllLayouts = sendMessage NextLayout
 cycleMainLayouts = cycleThroughLayouts ["Tabbed", "Vert Tiled" ]
+cycleTiledLayouts = cycleThroughLayouts ["Vert Tiled", "Vert Tiled Nude"]
 cycleAlternateLayouts = cycleThroughLayouts ["Tabbed", "Vert Tiled" ]
 myJumpToLayout l = cycleThroughLayouts [l]
 -- refresh layout to unfullscreen quickly and restore struts
 -- TODO: make this a toggle function
 fullScreen = cycleThroughLayouts ["Fullscreen"] >> (sendMessage $ SetStruts [] [minBound .. maxBound])
-
-mySWNConfig = defaultSWNConfig 
-    { swn_font    = myFontBig
-    , swn_bgcolor = base02
-    , swn_color   = base01
-    , swn_fade    = 1
-    }
---mySWNConfig = defaultSWNConfig { swn_font = "-xos4-terminus-medium-i-normal--32-320-72-72-c-160-iso8859-1"
---                               , swn_bgcolor = "DarkSlateGray"
---                               , swn_color = "Orange"
---                               , swn_fade = 1 }
 
 
 -- Interface
@@ -679,18 +709,24 @@ green   = "#719e07"
 myFocusFollowsMouse         = False
 myBorderWidth               = 1
 
-myNormalBorderColor         = base02
-myFocusedBorderColor        = green
+-- intense
+--myNormalBorderColor         = base02
+--myFocusedBorderColor        = green
+
+-- subdued
+myNormalBorderColor         = base03
+myFocusedBorderColor        = blue
 
 myFontSize s                = "-*-terminus-medium-r-normal--" 
                               ++ show s ++ "-*-*-*-*-*-*-*"
+myFontExtraBig              = myFontSize 24
 myFontBig                   = myFontSize 16
 myFont                      = myFontSize 14
 myFontSmall                 = myFontSize 12
 myFontExtraSmall            = myFontSize 10
 
-myTabTheme :: Theme
-myTabTheme = defaultTheme
+myTheme :: Theme
+myTheme = defaultTheme
     { activeColor           = base03
     , inactiveColor         = base02
     , urgentColor           = yellow
@@ -704,6 +740,89 @@ myTabTheme = defaultTheme
     , decoHeight            = 22
     }
 
+myBarTheme :: Theme
+myBarTheme = myTheme
+    { -- base00, base01, blue all good activeColors
+      activeColor           = blue
+    , activeTextColor       = base03
+    }
+
+myThemeWithImageButtons :: Theme
+myThemeWithImageButtons = myBarTheme {
+    windowTitleIcons = [ (closeButton, CenterLeft 6) ] }
+--  windowTitleIcons = [ (menuButton, CenterLeft 6),
+--      (closeButton, CenterRight 6)]
+--      (maxiButton, CenterRight 18),
+--      (miniButton, CenterRight 33) ]
+--      }
+
+convertToBool' :: [Int] -> [Bool]
+convertToBool' = map (\x -> x == 1)
+
+convertToBool :: [[Int]] -> [[Bool]]
+convertToBool = map convertToBool'
+
+menuButton' :: [[Int]]
+menuButton' = [[1,1,1,1,1,1,1,1,1,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,1,1,1,1,1,1,1,1,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,1,1,1,1,1,1,1,1,1]]
+
+menuButton :: [[Bool]]
+menuButton = convertToBool menuButton'
+
+miniButton' :: [[Int]]
+miniButton' = [[0,0,0,0,0,0,0,0,0,0],
+               [0,0,0,0,0,0,0,0,0,0],
+               [0,0,0,0,0,0,0,0,0,0],
+               [0,0,0,0,0,0,0,0,0,0],
+               [0,0,0,0,0,0,0,0,0,0],
+               [0,0,0,0,0,0,0,0,0,0],
+               [0,0,0,0,0,0,0,0,0,0],
+               [0,0,0,0,0,0,0,0,0,0],
+               [0,0,0,0,0,0,0,0,0,0],
+               [1,1,1,1,1,1,1,1,1,1]]
+
+miniButton :: [[Bool]]
+miniButton = convertToBool miniButton'
+
+maxiButton' :: [[Int]]
+maxiButton' = [[1,1,1,1,1,1,1,1,1,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,0,0,0,0,0,0,0,0,1],
+               [1,1,1,1,1,1,1,1,1,1]]
+
+maxiButton :: [[Bool]]
+maxiButton = convertToBool maxiButton'
+
+closeButton' :: [[Int]]
+closeButton' = [[0,0,0,0,0,0,0,0,0,0],
+                [0,1,0,0,0,0,0,0,1,0],
+                [0,0,1,0,0,0,0,1,0,0],
+                [0,0,0,1,0,0,1,0,0,0],
+                [0,0,0,0,1,1,0,0,0,0],
+                [0,0,0,0,1,1,0,0,0,0],
+                [0,0,0,1,0,0,1,0,0,0],
+                [0,0,1,0,0,0,0,1,0,0],
+                [0,1,0,0,0,0,0,0,1,0],
+                [0,0,0,0,0,0,0,0,0,0]]
+
+
+closeButton :: [[Bool]]
+closeButton = convertToBool closeButton' 
+
 myPromptConfig :: XPConfig
 myPromptConfig = defaultXPConfig
     { font                  = myFont
@@ -715,6 +834,14 @@ myPromptConfig = defaultXPConfig
     , promptBorderWidth     = 1
     , height                = 22
     , autoComplete          = Just 500000
+    }
+
+mySWNConfig :: SWNConfig 
+mySWNConfig = defaultSWNConfig 
+    { swn_font    = myFontExtraBig
+    , swn_bgcolor = base03
+    , swn_color   = base00
+    , swn_fade    = 1
     }
 
 
@@ -762,7 +889,7 @@ main = xmonad =<< myXmobar (E.ewmh
     , focusedBorderColor    = myFocusedBorderColor
     , layoutHook            = myLayoutHook
     , manageHook            = myManageHook
-    , handleEventHook       = myEventHook
+    --, handleEventHook       = myEventHook
     , startupHook           = myStartupHook
     }) where
 

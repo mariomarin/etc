@@ -3,6 +3,7 @@
 
 DEBUG=false
 
+
 # ---------------------------------------------------------------------
 # PLATFORM SPECIFIC ENVIRONMENT CONFIG
 # ---------------------------------------------------------------------
@@ -180,3 +181,28 @@ case $SHELLSTATE in
 esac
 
 
+
+# urxvt title
+#case $TERM in
+#        rxvt*)
+#            trap 'echo -ne "\e]0;$USER@$HOSTNAME: $BASH_COMMAND\007"' DEBUG
+#         ;;
+#    esac
+
+# Prompt
+BGREEN='\[\033[1;32m\]'
+GREEN='\[\033[0;32m\]'
+BRED='\[\033[1;31m\]'
+RED='\[\033[0;31m\]'
+BBLUE='\[\033[1;34m\]'
+BLUE='\[\033[0;34m\]'
+NORMAL='\[\033[00m\]'
+PS1="${BLUE}(${NORMAL}\w${BLUE})\n${NORMAL}\u${BLUE}@\h ${RED}\$ ${NORMAL}"
+# X Terminal titles
+case "$TERM" in
+xterm*|rxvt*)
+        PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+        ;;
+*)
+        ;;
+esac

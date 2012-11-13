@@ -167,8 +167,14 @@ urxvt.matcher.button:   1
 *scrollBar_right:       true
 *scrollBar_floating:    true
 *scrollstyle:           plain
+!!#define S_base02        
+!!#define S_base01        
 !! S_green:
-*scrollColor:           #719e07
+!!*scrollColor:           #719e07
+!! S_base01:
+!!*scrollColor:           #586e75
+!! S_base02:
+*scrollColor:           #073642
 
 
 !! transparent is for faux transparency, so i turn it off here
