@@ -54,7 +54,6 @@ import           XMonad.Layout.DraggingVisualizer
 import           XMonad.Layout.Drawer
 import           XMonad.Layout.ImageButtonDecoration 
 import           XMonad.Layout.ShowWName
-import           XMonad.Layout.WindowSwitcherDecoration
 import           XMonad.Layout.TabbedWindowSwitcherDecoration
 import           XMonad.Util.Image
 import qualified Data.Map as M
@@ -636,10 +635,12 @@ myLayoutHook = onWorkspaces ["exmaple","andanother"]
                             (tabs ||| full ||| float)
                $ (tabs ||| tiledX ||| tiledXNude ||| full) where
 
-    -- drawer is probably best used in conjunction with tagging the drawer window boring
+    -- drawer is probably best used in conjunction with tagging 
+    -- the drawer window boring
     drawer      = renamed [Replace "Drawer"] $ leftDrawer `onLeft` tabs
                   where
-                    leftDrawer = simpleDrawer 0.2 0.5 (Resource "drawer" `Or` ClassName "Drawer")
+                    leftDrawer = simpleDrawer 0.2 0.5 
+                        (Resource "drawer" `Or` ClassName "Drawer")
 
     tiledX      = renamed [Replace "Vert Tiled"] 
                 $ dragBars $ noBorders $ Tall nmaster delta thirds
@@ -662,12 +663,20 @@ myLayoutHook = onWorkspaces ["exmaple","andanother"]
     simpleTabs  = renamed [Replace "Simple Tabbed"] 
                 $ addTabs $ noBorders $ Simplest
 
-    addTabs l   = tabBar shrinkText myTheme Top 
+    -- addTabs uses the official X.L.TabBarDecoration
+    addTabs  l  = tabBar shrinkText myTheme Top 
                 $ resizeVertical (fi $ decoHeight myTheme) $ l
 
-    dragTabs l  = tabbedWindowSwitcherDecorationWithImageButtons shrinkText myThemeWithImageButtons (draggingVisualizer $ l)
+    -- dragTabs uses the my custom X.L.TabbedWindowSwitcherDecoration
+    dragTabs l  = tabbedWindowSwitcherDecorationWithImageButtons 
+                  shrinkText myTabThemeWithImageButtons 
+                  (draggingVisualizer $ l)
 
-    dragBars l  = windowSwitcherDecorationWithImageButtons shrinkText myThemeWithImageButtons (draggingVisualizer $ l)
+    -- dragBars uses either the official X.L.WindowSwitcherDecoration
+    -- or (in this case) my custom X.L.TabbedWindowSwitcherDecoration
+    dragBars l  = windowSwitcherDecorationWithImageButtons 
+                  shrinkText myThemeWithImageButtons 
+                  (draggingVisualizer $ l)
 
     nmaster     = 1
     halfs       = 1/2
@@ -682,7 +691,8 @@ cycleAlternateLayouts = cycleThroughLayouts ["Tabbed", "Vert Tiled" ]
 myJumpToLayout l = cycleThroughLayouts [l]
 -- refresh layout to unfullscreen quickly and restore struts
 -- TODO: make this a toggle function
-fullScreen = cycleThroughLayouts ["Fullscreen"] >> (sendMessage $ SetStruts [] [minBound .. maxBound])
+fullScreen = cycleThroughLayouts ["Fullscreen"] 
+             >> (sendMessage $ SetStruts [] [minBound .. maxBound])
 
 
 -- Interface
@@ -747,9 +757,17 @@ myBarTheme = myTheme
     , activeTextColor       = base03
     }
 
+myTabThemeWithImageButtons :: Theme
+myTabThemeWithImageButtons = myTheme {
+      windowTitleIcons = [ (nullButton, CenterLeft 0),
+      (closeButton, CenterRight 6)]
+      }
+
 myThemeWithImageButtons :: Theme
 myThemeWithImageButtons = myBarTheme {
-    windowTitleIcons = [ (closeButton, CenterLeft 6) ] }
+      windowTitleIcons = [ (nullButton, CenterLeft 0),
+      (closeButton, CenterRight 6)]
+      }
 --  windowTitleIcons = [ (menuButton, CenterLeft 6),
 --      (closeButton, CenterRight 6)]
 --      (maxiButton, CenterRight 18),
@@ -761,6 +779,11 @@ convertToBool' = map (\x -> x == 1)
 
 convertToBool :: [[Int]] -> [[Bool]]
 convertToBool = map convertToBool'
+
+nullButton' :: [[Int]]
+nullButton' = [[]]
+nullButton :: [[Bool]]
+nullButton = convertToBool nullButton'
 
 menuButton' :: [[Int]]
 menuButton' = [[1,1,1,1,1,1,1,1,1,1],

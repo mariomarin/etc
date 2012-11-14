@@ -19,10 +19,12 @@
 module XMonad.Layout.TabbedWindowSwitcherDecoration
     ( -- * Usage:
       -- $usage
-      tabbedWindowSwitcherDecoration,
-      tabbedWindowSwitcherDecorationWithButtons,
+      WindowSwitcherDecoration,
+      windowSwitcherDecorationWithButtons,
+      windowSwitcherDecorationWithImageButtons,
       tabbedWindowSwitcherDecorationWithImageButtons,
-      TabbedWindowSwitcherDecoration, TabbedImageWindowSwitcherDecoration,
+      WindowSwitcherDecoration, ImageWindowSwitcherDecoration,
+      TabbedImageWindowSwitcherDecoration,
     ) where
 
 import XMonad
@@ -36,16 +38,6 @@ import qualified XMonad.StackSet as S
 import Control.Monad
 import Data.List
 import Foreign.C.Types(CInt)
-
---module XMonad.Layout.TabBarDecoration
---    ( -- * Usage
---      -- $usage
---      simpleTabBar, tabBar
---    , defaultTheme, shrinkText
---    , TabBarDecoration (..), XPPosition (..)
---    , module XMonad.Layout.ResizeScreen
---    ) where
---
 
 
 -- $usage
@@ -82,18 +74,18 @@ import Foreign.C.Types(CInt)
 -- > main = xmonad defaultConfig { layoutHook = myL }
 --
 
-tabbedWindowSwitcherDecoration :: (Eq a, Shrinker s) => s -> Theme
-           -> l a -> ModifiedLayout (Decoration TabbedWindowSwitcherDecoration s) l a
-tabbedWindowSwitcherDecoration s c = decoration s c $ WSD False
+windowSwitcherDecoration :: (Eq a, Shrinker s) => s -> Theme
+           -> l a -> ModifiedLayout (Decoration WindowSwitcherDecoration s) l a
+windowSwitcherDecoration s c = decoration s c $ WSD False
 
-tabbedWindowSwitcherDecorationWithButtons :: (Eq a, Shrinker s) => s -> Theme
-           -> l a -> ModifiedLayout (Decoration TabbedWindowSwitcherDecoration s) l a
-tabbedWindowSwitcherDecorationWithButtons s c = decoration s c $ WSD True
+windowSwitcherDecorationWithButtons :: (Eq a, Shrinker s) => s -> Theme
+           -> l a -> ModifiedLayout (Decoration WindowSwitcherDecoration s) l a
+windowSwitcherDecorationWithButtons s c = decoration s c $ WSD True
 
-data TabbedWindowSwitcherDecoration a = WSD Bool deriving (Show, Read)
+data WindowSwitcherDecoration a = WSD Bool deriving (Show, Read)
 
-instance Eq a => DecorationStyle TabbedWindowSwitcherDecoration a where
-    describeDeco _ = "TabbedWindowSwitcherDeco"
+instance Eq a => DecorationStyle WindowSwitcherDecoration a where
+    describeDeco _ = "WindowSwitcherDeco"
 
     decorationCatchClicksHook (WSD withButtons) mainw dFL dFR = if withButtons
                                                                     then titleBarButtonHandler mainw dFL dFR
@@ -107,14 +99,14 @@ instance Eq a => DecorationStyle TabbedWindowSwitcherDecoration a where
 -- Note: the image button code is duplicated from the above
 -- because the title bar handle is different
 
-tabbedWindowSwitcherDecorationWithImageButtons :: (Eq a, Shrinker s) => s -> Theme
-           -> l a -> ModifiedLayout (Decoration TabbedImageWindowSwitcherDecoration s) l a
-tabbedWindowSwitcherDecorationWithImageButtons s c = decoration s c $ IWSD True
+windowSwitcherDecorationWithImageButtons :: (Eq a, Shrinker s) => s -> Theme
+           -> l a -> ModifiedLayout (Decoration ImageWindowSwitcherDecoration s) l a
+windowSwitcherDecorationWithImageButtons s c = decoration s c $ IWSD True
 
-data TabbedImageWindowSwitcherDecoration a = IWSD Bool deriving (Show, Read)
+data ImageWindowSwitcherDecoration a = IWSD Bool deriving (Show, Read)
 
-instance Eq a => DecorationStyle TabbedImageWindowSwitcherDecoration a where
-    describeDeco _ = "TabbedImageWindowSwitcherDeco"
+instance Eq a => DecorationStyle ImageWindowSwitcherDecoration a where
+    describeDeco _ = "ImageWindowSwitcherDeco"
 
     decorationCatchClicksHook (IWSD withButtons) mainw dFL dFR = if withButtons
                                                                     then imageTitleBarButtonHandler mainw dFL dFR
@@ -124,8 +116,30 @@ instance Eq a => DecorationStyle TabbedImageWindowSwitcherDecoration a where
                                                           hasCrossed <- handleScreenCrossing mainw decoWin
                                                           unless hasCrossed $ do sendMessage $ DraggingStopped
                                                                                  performWindowSwitching mainw
-    pureDecoration (IWSD p) _ dht (Rectangle x y wh ht) s _ (w,_) =
-        if isInStack s w then Just $ Rectangle nx ny wid (fi dht) else Nothing
+
+
+tabbedWindowSwitcherDecorationWithImageButtons :: (Eq a, Shrinker s) => s -> Theme
+           -> l a -> ModifiedLayout (Decoration TabbedImageWindowSwitcherDecoration s) l a
+           -- -> l a -> ModifiedLayout (Decoration TabbedImageWindowSwitcherDecoration s) l a
+tabbedWindowSwitcherDecorationWithImageButtons s c = decoration s c $ TIWSD True
+
+
+data TabbedImageWindowSwitcherDecoration a = TIWSD Bool deriving (Show, Read)
+
+instance Eq a => DecorationStyle TabbedImageWindowSwitcherDecoration a where
+    describeDeco _ = "TabbedImageWindowSwitcherDeco"
+
+    decorationCatchClicksHook (TIWSD withButtons) mainw dFL dFR = if withButtons
+                                                                    then imageTitleBarButtonHandler mainw dFL dFR
+                                                                    else return False
+    decorationWhileDraggingHook _ ex ey (mainw, r) x y = handleTiledDraggingInProgress ex ey (mainw, r) x y
+    decorationAfterDraggingHook _ (mainw, _) decoWin = do focus mainw
+                                                          hasCrossed <- handleScreenCrossing mainw decoWin
+                                                          unless hasCrossed $ do sendMessage $ DraggingStopped
+                                                                                 performWindowSwitching mainw
+    pureDecoration (TIWSD p) _ dht (Rectangle x y wh ht) s _ (w,_) =
+        if (isInStack s w && numWindows > 1)
+          then Just $ Rectangle nx ny wid (fi dht) else Nothing
         where wrs = S.integrate s
               loc i = (wh * fi i) `div` max 1 (fi $ length wrs)
               wid = maybe (fi x) (\i -> loc (i+1) - loc i) $ w `elemIndex` wrs
@@ -134,7 +148,7 @@ instance Eq a => DecorationStyle TabbedImageWindowSwitcherDecoration a where
 --                     Bottom -> y + fi ht - fi dht
               ny  = y
               nx  = (x +) $ maybe 0 (fi . loc) $ w `elemIndex` wrs
-
+              numWindows = length wrs
 
 handleTiledDraggingInProgress :: CInt -> CInt -> (Window, Rectangle) -> Position -> Position -> X ()
 handleTiledDraggingInProgress ex ey (mainw, r) x y = do
@@ -165,10 +179,3 @@ performWindowSwitching win =
             | x == b    = a
             | otherwise = x
 
-
-
---    data TabBarDecoration a = TabBar XPPosition deriving (Read, Show)
---    instance Eq a => DecorationStyle TabBarDecoration a where
---        describeDeco  _ = "TabBar"
---        shrink    _ _ r = r
---        decorationCatchClicksHook _ mainw _ _ = focus mainw >> return True
