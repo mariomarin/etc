@@ -8,6 +8,8 @@
 -- https://github.com/pbrisbin/xmonad-config/
 -- https://github.com/mntnoe/mntnoe-dotfiles
 
+-- TODO: Modularize
+
 -- Imports
 ------------------------------------------------------------------------
 import Control.Arrow (second)
@@ -65,7 +67,7 @@ import qualified XMonad.Actions.DynamicWorkspaces as DW
 import qualified XMonad.Hooks.EwmhDesktops as E
 import qualified XMonad.StackSet as W
 
-import XMonad.Layout.SideSpacing
+import           XMonad.Layout.SideSpacing
 
 -- Prompt(s)
 import XMonad.Prompt
@@ -113,170 +115,408 @@ import XMonad.Actions.GridSelect
 -- Keyboard configuration:
 ------------------------------------------------------------------------
 
+-- simply for convenience and readability
 super = mod4Mask
 alt   = mod1Mask
 ctrl  = controlMask
 shft  = shiftMask
 
-myModMask = alt
+confModMask = alt
 
 myKeys :: XConfig Layout -> [((KeyMask, KeySym), NamedAction)]
 myKeys conf@(XConfig {XMonad.modMask = modm}) =
 
     [ subtitle "MAIN APPS"
-    , ((modm, xK_Return),           addName "New terminal"              $ newTerminal)
-    , ((modm .|. shft, xK_Return),  addName "Next existing terminal"    $ nextTerminal)
-    , ((super, xK_Return),          addName "New browser"               $ newBrowser)
-    , ((super .|. shft, xK_Return), addName "Next existing browser"     $ nextBrowser)
-    , ((super .|. shft, xK_Return), addName "Show marginal notes"       $ nextBrowser)
+    ----------------------------
+
+    , ((modm, xK_Return),           addName "New terminal"
+    $ newTerminal)
+
+    , ((modm .|. shft, xK_Return),  addName "Next existing terminal"
+    $ nextTerminal)
+
+    , ((super, xK_Return),          addName "New browser"
+    $ newBrowser)
+
+    , ((super .|. shft, xK_Return), addName "Next existing browser"
+    $ nextBrowser)
+
+    , ((super .|. shft, xK_Return), addName "Show marginal notes"
+    $ nextBrowser)
 
     , subtitle "TEST"
-    , ((super, xK_y),               addName "Test 1"                    $ cycleTiledLayouts)
-    , ((super .|. ctrl, xK_y),      addName "Test 1"                    $ fullScreen)
-    , ((super .|. shft, xK_y),      addName "Test 2"                    $ sendMessage $ SetStruts [] [minBound .. maxBound])
+    , ((super, xK_y),               addName "Test 1"                    
+    $ cycleTiledLayouts)
+
+    , ((super .|. ctrl, xK_y),      addName "Test 1"                    
+    $ fullScreen)
+
+    , ((super .|. shft, xK_y),      addName "Test 2"                    
+    $ sendMessage $ SetStruts [] [minBound .. maxBound])
+
 
     , subtitle "SECONDAY APPS"
-    , ((super, xK_m),               addName "Show mail"                 $ showMail)
-    , ((super, xK_p),               addName "Show web contacts"         $ showWebContacts)
-    , ((super .|. shft, xK_c),      addName "Show calendar"             $ showWebCalendar)
-    , ((super, xK_t),               addName "Show tasks"                $ showWebTasks)
-    , ((super, xK_d),               addName "Show Google drive"         $ showWebDrive)
-    , ((super, xK_i),               addName "Show Chat Drawer"          $ showChatDrawer)
-    , ((super, xK_v),               addName "New Vim"                   $ newVim)
-    , ((super .|. shft, xK_v),      addName "Next Vim"                  $ nextVim)
+    ----------------------------
+
+    , ((super, xK_m),               addName "Show mail"                 
+    $ showMail)
+
+    , ((super, xK_p),               addName "Show web contacts"         
+    $ showWebContacts)
+
+    , ((super .|. shft, xK_c),      addName "Show calendar"             
+    $ showWebCalendar)
+
+    , ((super, xK_t),               addName "Show tasks"                
+    $ showWebTasks)
+
+    , ((super, xK_d),               addName "Show Google drive"         
+    $ showWebDrive)
+
+    , ((super, xK_i),               addName "Show Chat Drawer"          
+    $ showChatDrawer)
+
+    , ((super, xK_v),               addName "New Vim"                   
+    $ newVim)
+
+    , ((super .|. shft, xK_v),      addName "Next Vim"                  
+    $ nextVim)
+
 
     --, subtitle "COMMON"
-    -- TODO: implement persistent (copied) windows that toggle off via kill1
-    -- functioning similarly to named scratch pads with a toggle function and a
-    -- possibly global layout modification that pushes other layout over
-    --, ((super, xK_e),               addName "Common Editor"             $ toggleEditor)
+    ----------------------------
+    -- TODO: implement persistent (copied) windows that toggle off via
+    -- kill1 functioning similarly to named scratch pads with a toggle
+    -- function and a possibly global layout modification that pushes
+    -- other layout over
+    -- , ((super, xK_e), addName "Common Editor" $ toggleEditor)
+
 
     , subtitle "SCRATCHPADS"
-    , ((super, xK_n),               addName "Persistent Notes"          $ toggleScratchpad "notepad")
-    , ((super, xK_x),               addName "Audio Mixer"               $ toggleScratchpad "mixer")
-    , ((super, xK_h),               addName "Process monitor"           $ toggleScratchpad "htop")
-    , ((super, xK_c),               addName "Calendar - week"           $ toggleScratchpad "calweek")
-    , ((super, xK_v),               addName "Calendar - month"          $ toggleScratchpad "calmonth")
-    , ((super, xK_w),               addName "Wifi connection menu"      $ toggleScratchpad "wifi")
+    ----------------------------
+    , ((super, xK_n),               addName "Persistent Notes"          
+    $ toggleScratchpad "notepad")
+
+    , ((super, xK_x),               addName "Audio Mixer"               
+    $ toggleScratchpad "mixer")
+
+    , ((super, xK_h),               addName "Process monitor"           
+    $ toggleScratchpad "htop")
+
+    , ((super, xK_c),               addName "Calendar - week"           
+    $ toggleScratchpad "calweek")
+
+    , ((super, xK_v),               addName "Calendar - month"          
+    $ toggleScratchpad "calmonth")
+
+    , ((super, xK_w),               addName "Wifi connection menu"      
+    $ toggleScratchpad "wifi")
+
 
     , subtitle "KILL & QUIT"
-    , ((modm, xK_BackSpace),        addName "Close focused"             $ kill1)
-    , ((modm .|. shft, bkSpc),      addName "Close all on workspace"    $ killAll)
-    , ((modm, xK_q),                addName "Restart XMonad"            $ myRestart)
-    , ((modm .|. shft, xK_q),       addName "Quit XMonad"               $ myQuit)
+    ----------------------------
+    , ((modm, xK_BackSpace),        addName "Close focused"             
+    $ kill1)
 
--- TODO: make all movement hjkl ... alt+ = local windows, super+ = workspaces, alt+super+ = screens
+    , ((modm .|. shft, bkSpc),      addName "Close all on workspace"    
+    $ killAll)
 
-    , subtitle "WINDOW CYCLING (J/K) [+=focus] [+ctrl=keep focus] [+shift=move]"
-    , ((modm, xK_j),                addName "Focus next window"         $ windows W.focusDown)
-    , ((modm, xK_k),                addName "Focus previous window"     $ windows W.focusUp)
-    , ((modm .|. shft, xK_j),       addName "Swap focused w/previous"   $ windows W.swapDown)
-    , ((modm .|. shft, xK_k),       addName "Swap focused w/next"       $ windows W.swapUp)
-    , ((modm .|. ctrl, xK_j),       addName "Rotate counterclockwise"   $ rotAllDown)
-    , ((modm .|. ctrl, xK_k),       addName "Rotate clockwise"          $ rotAllUp)
+    , ((modm, xK_q),                addName "Rebuild and restart XMonad"            
+    $ rebuildXMonad)
+
+    , ((modm .|. ctrl, xK_q),       addName "Restart XMonad, no rebuild"            
+    $ restartXMonad)
+
+    , ((modm .|. shft, xK_q),       addName "Quit XMonad"               
+    $ quitXMonad)
+
+
+    , subtitle "WINDOW CYCLING (J/K)"
+    ----------------------------
+    -- TODO: ? make all movement hjkl ... alt+ = local windows, 
+    -- super+ = workspaces, alt+super+ = screens
+
+    , ((modm, xK_j),                addName "Focus next window"         
+    $ windows W.focusDown)
+
+    , ((modm, xK_k),                addName "Focus previous window"     
+    $ windows W.focusUp)
+
+    , ((modm .|. shft, xK_j),       addName "Swap focused w/previous"   
+    $ windows W.swapDown)
+
+    , ((modm .|. shft, xK_k),       addName "Swap focused w/next"       
+    $ windows W.swapUp)
+
+    , ((modm .|. ctrl, xK_j),       addName "Rotate counterclockwise"   
+    $ rotAllDown)
+
+    , ((modm .|. ctrl, xK_k),       addName "Rotate clockwise"          
+    $ rotAllUp)
+
 
     , subtitle "WINDOW ACTIONS"
-    , ((modm, xK_m),                addName "Move focused to master"    $ windows W.focusMaster)
-    , ((modm .|. shft, xK_m),       addName "Swap focused and master"   $ windows W.swapMaster)
-    , ((modm, xK_t),                addName "Tile this window"          $ withFocused (windows . W.sink))
-    , ((modm, xK_u),                addName "Focus urgent winow"        $ focusUrgent)
-    , ((modm .|. ctrl, xK_u),       addName "Clear urgent status"       $ clearUrgents)
-    , ((modm, xK_a),                addName "Pin window"                $ windows copyToAll)
-    , ((modm .|. shft, xK_a),       addName "Unpin window"              $ killAllOtherCopies)
+    ----------------------------
 
-    -- X.A.CycleWS is doing the heavy lifting here
-    -- http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-CycleWS.html
-    , subtitle "WORKSPACE ACTIONS (N/P) [mod=from prefix] [mod+ctrl=from all]"
-    , ((modm, xK_l),                addName "Next workspace"            $ nextWS >> flashWS )
-    , ((modm, xK_h),                addName "Previous workspace"        $ prevWS >> flashWS)
-    , ((modm .|. shft, xK_l),       addName "Move to next workspace"    $ shiftToNext >> nextWS >> flashWS)
-    , ((modm .|. shft, xK_h),       addName "Move to prev workspace"    $ shiftToPrev >> prevWS >> flashWS)
-    , ((modm .|. ctrl, xK_l),       addName "Toss to next workspace"    $ shiftToNext >> flashWS)
-    , ((modm .|. ctrl, xK_h),       addName "Toss to prev workspace"    $ shiftToPrev >> flashWS)
-    , ((modm, xK_o),                addName "Jump to prev workspace"    $ toggleWS >> flashWS)
+    , ((modm, xK_m),                addName "Move focused to master"    
+    $ windows W.focusMaster)
 
-    , subtitle "SCREEN CYCLING (D/F) [+=select] [+ctrl=swap] [+shift=move window to]"
-    , ((modm, xK_n),                addName "Next screen"               $ nextScreen >> moveCursor)
-    , ((modm, xK_p),                addName "Previous screen"           $ prevScreen >> moveCursor)
-    , ((modm .|. shft, xK_n),       addName "Move win to next screen"   $ shiftNextScreen >> nextScreen >> moveCursor)
-    , ((modm .|. shft, xK_p),       addName "Move win to prev screen"   $ shiftPrevScreen >> prevScreen >> moveCursor)
-    , ((modm .|. ctrl, xK_n),       addName "Swap screen w/next"        $ swapNextScreen >> nextScreen >> moveCursor)
-    , ((modm .|. ctrl, xK_p),       addName "Swap screen w/prev"        $ swapPrevScreen >> nextScreen >> moveCursor)
+    , ((modm .|. shft, xK_m),       addName "Swap focused and master"   
+    $ windows W.swapMaster)
+
+    , ((modm, xK_t),                addName "Tile this window"          
+    $ withFocused (windows . W.sink))
+
+    , ((modm .|. shft, xK_t),       addName "Tile all windows "         
+    $ sinkAll)
+
+    , ((modm, xK_u),                addName "Focus urgent winow"        
+    $ focusUrgent)
+
+    , ((modm .|. ctrl, xK_u),       addName "Clear urgent status"       
+    $ clearUrgents)
+
+    , ((modm, xK_p),                addName "Pin window"                
+    $ windows copyToAll)
+
+    , ((modm .|. shft, xK_p),       addName "Unpin window"              
+    $ killAllOtherCopies)
+
+
+    , subtitle "WORKSPACE ACTIONS"
+    ----------------------------
+    -- X.A.CycleWS is doing the heavy lifting here http://goo.gl/jthn4
+    , ((modm, xK_l),                addName "Next workspace"            
+    $ nextWS >> flashWS )
+
+    , ((modm, xK_h),                addName "Previous workspace"        
+    $ prevWS >> flashWS)
+
+    , ((modm .|. shft, xK_l),       addName "Move to next workspace"    
+    $ shiftToNext >> nextWS >> flashWS)
+
+    , ((modm .|. shft, xK_h),       addName "Move to prev workspace"    
+    $ shiftToPrev >> prevWS >> flashWS)
+
+    , ((modm .|. ctrl, xK_l),       addName "Toss to next workspace"    
+    $ shiftToNext >> flashWS)
+
+    , ((modm .|. ctrl, xK_h),       addName "Toss to prev workspace"    
+    $ shiftToPrev >> flashWS)
+
+    , ((modm, xK_o),                addName "Jump to prev workspace"    
+    $ toggleWS >> flashWS)
+
+
+    , subtitle "SCREEN CYCLING (D/F)"
+    ----------------------------
+    , ((modm, xK_n),                addName "Next screen"               
+    $ nextScreen >> moveCursor)
+
+    --TODO: back to p or resolve collision with pinning
+    , ((modm, xK_8),                addName "Previous screen"           
+    $ prevScreen >> moveCursor)
+
+    , ((modm .|. shft, xK_n),       addName "Move win to next screen"   
+    $ shiftNextScreen >> nextScreen >> moveCursor)
+
+    , ((modm .|. shft, xK_p),       addName "Move win to prev screen"   
+    $ shiftPrevScreen >> prevScreen >> moveCursor)
+
+    , ((modm .|. ctrl, xK_n),       addName "Swap screen w/next"        
+    $ swapNextScreen >> nextScreen >> moveCursor)
+
+    , ((modm .|. ctrl, xK_p),       addName "Swap screen w/prev"        
+    $ swapPrevScreen >> nextScreen >> moveCursor)
+
+
+    , subtitle "TOPICS"
+    ----------------------------
+
+    --, ((modm              , xK_n     ), spawnShell) -- %! Launch terminal
+    --, ((modm              , xK_a     ), currentTopicAction myTopicConfig)
+    --, ((modm              , xK_g     ), promptedGoto)
+    --, ((modm .|. shiftMask, xK_g     ), promptedShift)
+
 
 --  , subtitle "Workspace prompts"
---  , ((modm.|. shft, xK_n),        addName "Make/change workspc prmpt" $ rmEmptyWs $ selectWorkspacePrompt >> maybeWorkspaceAction >> moveCursor)
---  , ((modm.|. shft, xK_n),        addName "Move win to workspc prmpt" $ DW.withWorkspace myXPConfig (windows . W.shift) >> movePointer)
---  , ((modm.|. ctrl, xK_n),        addName "Rename current workspace"  $ DW.renameWorkspace myXPConfig >> movePointer)
---  , ((modm.|. ctrl, bkSpc),       addName "Remove current workspace"  $ DW.removeWorkspace >> movePointer)
---  , ((modm, xK_o),                addName "Window search prmpt"       $ gotoMenuArgs ["-l 23"] >> movePointer)
+    ----------------------------
 
--- TODO: decide if I'm going to use different cycleThroughLayouts or limit layouts on a perworkspace basis
+--  , ((modm.|. shft, xK_n),        addName "Make/change workspc prmpt" 
+--  $ rmEmptyWs $ selectWorkspacePrompt >> maybeWorkspaceAction >> moveCursor)
 
-    , subtitle "WORKSPACE LAYOUTS (H/L=size ,.=) [+alt=toggle]"
-    , ((modm, xK_space),            addName "Switch to next layout"     $ cycleMainLayouts)
-    , ((modm .|. shft, xK_space),   addName "Reset to default layout"   $ setLayout $ XMonad.layoutHook conf)
-    , ((modm .|. ctrl, xK_space),   addName "Refresh layout"            $ refresh)
-    , ((modm, xK_f),                addName "Full Screen"               $ fullScreen)
+--  , ((modm.|. shft, xK_n),        addName "Move win to workspc prmpt" 
+--  $ DW.withWorkspace myXPConfig (windows . W.shift) >> movePointer)
 
-    , ((modm .|. shft, xK_9),       addName "Shrink the master area"    $ sendMessage Shrink)
-    , ((modm .|. shft, xK_0),       addName "Expand the master area"    $ sendMessage Expand)
-    , ((modm, xK_comma),            addName "+ windows in master area"  $ sendMessage (IncMasterN 1))
-    , ((modm, xK_period),           addName "- windows in master area"  $ sendMessage (IncMasterN (-1)))
+--  , ((modm.|. ctrl, xK_n),        addName "Rename current workspace"  
+--  $ DW.renameWorkspace myXPConfig >> movePointer)
 
-    , subtitle "WORKSPACE LAYOUTS (H/L=size ,.=) [+alt=toggle]"
+--  , ((modm.|. ctrl, bkSpc),       addName "Remove current workspace"  
+--  $ DW.removeWorkspace >> movePointer)
+
+--  , ((modm, xK_o),                addName "Window search prmpt"       
+--  $ gotoMenuArgs ["-l 23"] >> movePointer)
+
+
+    , subtitle "WORKSPACE LAYOUTS"
+    ----------------------------
+    -- TODO: decide if I'm going to use different cycleThroughLayouts
+    -- or limit layouts on a perworkspace basis
+
+
+    , ((modm, xK_space),            addName "Switch to next layout"     
+    $ cycleMainLayouts)
+
+    , ((modm .|. shft, xK_space),   addName "Reset to default layout"   
+    $ setLayout $ XMonad.layoutHook conf)
+
+    , ((modm .|. ctrl, xK_space),   addName "Refresh layout"            
+    $ refresh)
+
+    , ((modm, xK_f),                addName "Full Screen"               
+    $ fullScreen)
+
+    , ((modm .|. shft, xK_9),       addName "Shrink the master area"    
+    $ sendMessage Shrink)
+
+    , ((modm .|. shft, xK_0),       addName "Expand the master area"    
+    $ sendMessage Expand)
+
+    , ((modm, xK_comma),            addName "+ windows in master area"  
+    $ sendMessage (IncMasterN 1))
+
+    , ((modm, xK_period),           addName "- windows in master area"  
+    $ sendMessage (IncMasterN (-1)))
+
+
+    --, subtitle "CHROME KEYS TEST"
+    ----------------------------
+
+    -- TODO: should be using xmonad paste function here
     -- this is the inverse of what I'm going to do
-    --, ((ctrl, xK_j),              addName "Next tab in Chrome"        $ focusedHasProperty (ClassName chromeClass) >>= 
-    --                                                                    flip unless chromeTabNext) 
-    --, ((ctrl, xK_k),              addName "Previous tab in Chrome"    $ focusedHasProperty (ClassName chromeClass) >>= 
-    --                                                                    flip unless chromeTabPrevious) 
-    --, ((ctrl, xK_k),              addName "Previous tab in Chrome"    $ spawn "sleep 0.1 && xdotool key shift+control+Tab")
+    --, ((ctrl, xK_j),              addName "Next tab in Chrome" 
+    -- $ focusedHasProperty (ClassName chromeClass) >>= 
+    -- flip unless chromeTabNext) 
+    --, ((ctrl, xK_k),              addName "Previous tab in Chrome"
+    -- $ focusedHasProperty (ClassName chromeClass) >>= 
+    -- flip unless chromeTabPrevious) 
+    --, ((ctrl, xK_k),              addName "Previous tab in Chrome"
+    -- $ spawn "sleep 0.1 && xdotool key shift+control+Tab")
+
 
     , subtitle "test submap" 
+    ----------------------------
     , ((modm, xK_z), submapName $ 
-    [ ((0, xK_o),                   addName "test submap"               $ sendMessage Shrink)
-    , ((0, xK_z),                   addName "test submap"               $ sendMessage Shrink)]
+
+    [ ((0, xK_o),                   addName "test submap"
+    $ sendMessage Shrink)
+
+    , ((0, xK_z),                   addName "test submap"
+    $ sendMessage Shrink)]
     )
 
 
     , subtitle "MEDIA KEYS"
-    -- c.f. key names at http://hackage.haskell.org/cgi-bin/hackage-scripts/package/X11
+    ----------------------------
+    -- c.f. key names at http://goo.gl/KqOA6
 
-    , ((0, volUp),                  addName "Volume up by 1"            $ spawn "volume up")
-    , ((0, volDown),                addName "Volume down by 1"          $ spawn "volume down")
+    , ((0, volUp),                  addName "Volume up by 1"            
+    $ spawn "volume up")
+
+    , ((0, volDown),                addName "Volume down by 1"          
+    $ spawn "volume down")
+
     , separator
-    , ((0 .|. shft, volUp),         addName "Volume up by 10"           $ spawn "volume up 10")
-    , ((0 .|. shft, volDown),       addName "Volume down by 10"         $ spawn "volume down 10")
+    , ((0 .|. shft, volUp),         addName "Volume up by 10"           
+    $ spawn "volume up 10")
+
+    , ((0 .|. shft, volDown),       addName "Volume down by 10"         
+    $ spawn "volume down 10")
+
     , separator
-    , ((0 .|. ctrl, volUp),         addName "Volume at 50%"             $ spawn "volume max")
-    , ((0 .|. ctrl, volDown),       addName "Volume at maximum"         $ spawn "volume mid")
-    , ((0, volMute),                addName "Volume mute toggle"        $ spawn "volume toggle")
+    , ((0 .|. ctrl, volUp),         addName "Volume at 50%"             
+    $ spawn "volume max")
+
+    , ((0 .|. ctrl, volDown),       addName "Volume at maximum"         
+    $ spawn "volume mid")
+
+    , ((0, volMute),                addName "Volume mute toggle"        
+    $ spawn "volume toggle")
 
 
     , subtitle "HOT KEYS" 
+    ----------------------------
 
-    , ((0, btnBatt),                addName "Toggle min/max pwr modes"  $ spawn "power toggle")
-    , ((0 .|. shft, btnBatt),       addName "Toggle miv/mov pwr modes"  $ spawn "power toggle pinned")
-    , ((0 .|. ctrl, btnBatt),       addName "Auto power modes"          $ spawn "power toggle pinned")
-    , ((0, btnSleep),               addName "System sleep"              $ spawn "system sleep")
-    , ((0, btnPower),               addName "System power off"          $ spawn "system off")
-    , ((0 .|. shft, btnPower),      addName "System reboot"             $ spawn "system reboot")
-    , ((0, btnLockScreen),          addName "Lock screen"               $ spawn "display lock")
-    , ((0, btnDisplay),             addName "Cycle display mode"        $ spawn "display toggle")
-    , ((0 .|. shft, btnDisplay),    addName "Mirror display mode"       $ spawn "display mirror")
-    , ((0 .|. ctrl, btnDisplay),    addName "Span display mode"         $ spawn "display span")
-    , ((0, btnBluetooth),           addName "Bluetooth toggle"          $ spawn "wireless bluetooth toggle")
-    , ((0, prtSc),                  addName "Screendraw - start/finish" $ spawn "screendraw")
-    , ((0 .|. shft, prtSc),         addName "Screendraw - force finish" $ spawn "screendraw finish")
-    , ((modm, prtSc),               addName "Screendraw - cancel"       $ spawn "screendraw cancel")
-    , ((0, btnRotate),              addName "Screendraw - clear"        $ spawn "screendraw clear")
-    --, ((0, btnSuspend),           addName "System Reboot"             $ spawn "system reboot")
+    , ((0, btnBatt),                addName "Toggle min/max pwr modes"  
+    $ spawn "power toggle")
+
+    , ((0 .|. shft, btnBatt),       addName "Toggle miv/mov pwr modes"  
+    $ spawn "power toggle pinned")
+
+    , ((0 .|. ctrl, btnBatt),       addName "Auto power modes"          
+    $ spawn "power toggle pinned")
+
+    , ((0, btnSleep),               addName "System sleep"              
+    $ spawn "system sleep")
+
+    , ((0, btnPower),               addName "System power off"          
+    $ spawn "system off")
+
+    , ((0 .|. shft, btnPower),      addName "System reboot"             
+    $ spawn "system reboot")
+
+    , ((0, btnLockScreen),          addName "Lock screen"               
+    $ spawn "display lock")
+
+    , ((0, btnDisplay),             addName "Cycle display mode"        
+    $ spawn "display toggle")
+
+    , ((0 .|. shft, btnDisplay),    addName "Mirror display mode"       
+    $ spawn "display mirror")
+
+    , ((0 .|. ctrl, btnDisplay),    addName "Span display mode"         
+    $ spawn "display span")
+
+    , ((0, btnBluetooth),           addName "Bluetooth toggle"          
+    $ spawn "wireless bluetooth toggle")
+
+    , ((0, prtSc),                  addName "Screendraw - start/finish" 
+    $ spawn "screendraw")
+
+    , ((0 .|. shft, prtSc),         addName "Screendraw - force finish" 
+    $ spawn "screendraw finish")
+
+    , ((modm, prtSc),               addName "Screendraw - cancel"       
+    $ spawn "screendraw cancel")
+
+    , ((0, btnRotate),              addName "Screendraw - clear"        
+    $ spawn "screendraw clear")
+
     ]
 
     -- mod-[1..9] %! Switch to workspace N
     -- mod-shift-[1..9] %! Move client to workspace N
 
+    -- TOPICS
+    ----------------------------
+--    ++
+--    [ ((modm, k), switchNthLastFocused myTopicConfig i)
+--    | (i, k) <- zip [1..] workspaceKeys]
+--
+--    -- mod-[1..9], Switch to workspace N
+--    -- mod-shift-[1..9], Move client to workspace N
+--    [((m .|. modm, k), windows $ f i)
+--        | (i, k) <- zip (XMonad.workspaces conf) ([xK_1 .. xK_4])
+--        , (f, m) <- [{-(W.greedyView, 0),-} (W.shift, shiftMask)]]
+--    ++
+--    [((modm, k), switchTopic myTopicConfig i)
+--        | (i, k) <- zip (XMonad.workspaces conf) ([xK_1 .. xK_4])]
+--    ++
+
+
     ++
     subtitle "WORKSPACE SWITCHING: Alt+1-9":
+    ----------------------------
 --    [((m .|. modm, k), addName (n ++ i) $ windows $ f i)
 --        | (f, m, n) <- [(W.greedyView, 0, "Switch to workspace "), (W.shift, shft, "Move client to workspace ")]
 --        , (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]]
@@ -289,12 +529,14 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
 
     ++
     subtitle "SCREEN SWITCHING":
+    ----------------------------
     [((m .|. modm, key), addName (n ++ show sc) $ screenWorkspace sc >>= flip whenJust (windows . f))
         | (f, m, n) <- [(W.view, 0, "Switch to screen number "), (W.shift, shft, "Move client to screen number ")]
         , (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]]
 
 --    ++
 --    subtitle "WORKSPACE SWITCHING":
+    ----------------------------
 --    [((m .|. modm, k), addName (n ++ i) $ windows $ f i)
 --        | (f, m, n) <- [(W.greedyView, 0, "Switch to workspace "), (W.shift, shft, "Move client to workspace ")]
 --        , (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]]
@@ -329,9 +571,14 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
         -- use the following in a key binding such as:
         --, ((modm, xK_space),
         --  addName "Switch to next layout"
-        --  $ sendMessage NextLayout >> (curLayout >>= \d->spawn $"flash "++d)
+        --  $ sendMessage NextLayout 
+        --  >> (curLayout >>= \d->spawn $"flash "++d)
         curLayout :: X String
-        curLayout = gets windowset >>= return . description . W.layout . W.workspace . W.current
+        curLayout = gets windowset >>= return
+                                     . description
+                                     . W.layout
+                                     . W.workspace
+                                     . W.current
 
         curWorkspace :: X String
         curWorkspace = withWindowSet (return . W.currentTag)
@@ -349,20 +596,29 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
 -- Applications
 ------------------------------------------------------------------------
 
-myTerminal          = "urxvtc"
-myTerminalStart :: X ()
-myTerminalStart     = spawn "pgrep urxvtd || urxvtd -f -o -q"
+myShell             = "$SHELL"
+
+cmdTerminal         = "urxvtc"
+confTerminal        = cmdTerminal
+
+initTerminal :: X ()
+initTerminal        = spawn "pgrep urxvtd || urxvtd -f -o -q"
+
 newTerminal :: X ()
-newTerminal         = spawn myTerminal
+newTerminal         = spawn cmdTerminal
+
+newNamedTerminal :: String -> X ()
+newNamedTerminal n  = spawn $ cmdTerminal ++ " -name " ++ show n
+
 nextTerminal        = raiseNextMaybe
-                      (spawn $ myTerminal) (className =? "URxvt")
+                      newTerminal (className =? "URxvt")
 
 showNotesDrawer     = raiseNextMaybe
-                      (spawn $ myTerminal ++ " -name notes")
+                      (newNamedTerminal "notes")
                       (resource =? "notes")
 
 showChatDrawer      = raiseNextMaybe
-                      (spawn $ myTerminal ++ " -name drawer")
+                      (newNamedTerminal "drawer")
                       (resource =? "drawer")
 
 newVim :: X ()
@@ -448,51 +704,77 @@ startCoreApps       = do
                       showMail
                       showWebVault
 
-mySystemTrayStart   :: X ()
-mySystemTrayStop    :: X ()
-mySystemTrayStart   = spawn   "systray &"
-mySystemTrayStop    = unspawn "trayer"
+initSystemTray      :: X ()
+initSystemTray      = spawn   "systray &"
+killSystemTray      :: X ()
+killSystemTray      = unspawn "trayer"
 
-myCompositorStart   :: X ()
-myCompositorStop    :: X ()
-myCompositorStart   = spawn   "compton -f -D 6 -m 0.95 &"
-myCompositorStop    = unspawn "compton"
+initCompositor      :: X ()
+initCompositor      = spawn   "compton -f -D 6 -m 0.95 &"
+killCompositor      :: X ()
+killCompositor      = unspawn "compton"
 -- old xcompmgr command: "xcompmgr -f -D 6 &"
 
-myNotifierStart     :: X ()
-myNotifierStop      :: X ()
-myNotifierStart     = spawn   "dunst &"
-myNotifierStop      = unspawn "dunst"
+initNotifier        :: X ()
+initNotifier        = spawn   "dunst &"
+killNotifier        :: X ()
+killNotifier        = unspawn "dunst"
 
-myStatusBarStart    :: X ()
-myStatusBarStop     :: X ()
-myStatusBarStart    = return ()
-myStatusBarStop     = unspawn "xmobar"
+initStatusBar       :: X ()
+initStatusBar       = return ()
+killStatusBar       :: X ()
+killStatusBar       = unspawn "xmobar"
 
+flash :: String -> X ()
+flash s = spawn $ "flash "++ s
+
+notify :: String -> X ()
+notify s = spawn $ "notify "++ s
+
+alert :: String -> X ()
+alert s = spawn $ "alert "++ s
+
+warn :: String -> X ()
+warn s = spawn $ "warn "++ s
 
 -- Startup & Restarting
 ------------------------------------------------------------------------
 
-myXMonadRestart :: X ()
-myXMonadRestart  = spawn $ "xmonad --recompile && xmonad --restart"
-                   ++ " || warn 'XMonad recompile failed'"
+rebuildXMonad' :: X ()
+rebuildXMonad' = spawn $ "xmonad --recompile && xmonad --restart"
+               ++ " || warn 'XMonad recompile failed'"
 
-myStartupHook = do
+restartXMonad' :: X ()
+restartXMonad' = spawn $ "xmonad --restart"
+               ++ " || warn 'XMonad restart failed'"
+
+confStartupHook = do
     E.ewmhDesktopsStartup
-    mySystemTrayStart
-    myCompositorStart
-    myNotifierStart
-    myTerminalStart
+    initSystemTray
+    initCompositor
+    initNotifier
+    initTerminal
+    notify "XMonad started"
 
-myRestart :: X ()
-myRestart = do
-    myStatusBarStop
-    mySystemTrayStop
-    myCompositorStop
-    myNotifierStop
-    myXMonadRestart
+rebuildXMonad :: X ()
+rebuildXMonad = do
+    flash "rebuilding XMonad"
+    killStatusBar
+    killSystemTray
+    killCompositor
+    killNotifier
+    rebuildXMonad'
 
-myQuit = do
+restartXMonad :: X ()
+restartXMonad = do
+    flash "restarting XMonad"
+    killStatusBar
+    killSystemTray
+    killCompositor
+    killNotifier
+    restartXMonad'
+
+quitXMonad = do
     io (exitWith ExitSuccess)
 
 
@@ -502,7 +784,7 @@ myQuit = do
 toggleScratchpad sp = namedScratchpadAction myScratchpads sp
 
 spTerminal :: String -> String -> String -> String
-spTerminal f a c    = myTerminal
+spTerminal f a c    = confTerminal
                     ++ " -fn " ++ show f ++ " -fb " ++ show f
                     ++ " -fi " ++ show f ++ " -fbi " ++ show f
                     ++ " +sb " ++ " -b 15 " ++ a ++ " -e " ++ c
@@ -561,7 +843,7 @@ myScratchpads =
 ------------------------------------------------------------------------
 -- use xprop to id windows
 
-myManageHook = composeAll
+confManageHook = composeAll
     [ isFullscreen --> doFullFloat
     , className =? "MPlayer"        --> doFloat
     , className =? "Gimp"           --> doFloat
@@ -573,6 +855,43 @@ myManageHook = composeAll
     --, fullscreenManageHook
     , manageDocks
     ] <+> namedScratchpadManageHook myScratchpads
+
+--myManageHook = composeAll . concat $
+--               [ [ isApp c                 --> doFloat     | c <- myFloatApps      ]
+--               , [ isApp c <&&> title =? t --> doFloat     | (c, t) <- myFloatWins ]
+--               , [ isApp c                 --> doIgnore    | c <- myIgnores        ]
+--               --, [ title =? "googleearth-bin" --> doIgnore                        ]
+--               , [ isFullscreen            --> doFullFloat                        ]
+--               , [ isApp "gnome-mplayer" <&&> title =? "Gnome MPlayer Fullscreen"
+--                                           --> doFullFloat                        ]
+--               ]
+--               where
+--                 isApp c = className =? c <||> resource =? c
+--                 myFloatApps = ["Pidgin"
+--                               ,"skype"
+--                               ,"xpad"
+--                               ,"gimp"
+--                               ,"gimp-2.6"
+--                               ,"xfrun4"
+--                               ,"grpn"
+--                               ,"Melody Assistant"
+--                               ,"Wine"
+--                               ,"eclass-view-Main"
+--                               ]
+--                 myFloatWins = [("dia",        "Dia v0.97.1"            )
+--                               ,("thunar",     "File Operation Progress")
+--                               ,("mscore.real","MuseScore Startup"      )
+--                               ,("gnucash",    "GnuCash"                )
+--                               ,("gnucash",    "Select a Budget"        )
+--                               ,("Iceweasel",  "Downloads"              )
+--                               ,("Iceweasel",  "Password Required"      )
+--                               ,("Icedove",    "Password Required"      )
+--                               ,("claws-mail", "Error"                  )
+--                               ]
+--                 myIgnores   = ["Do"
+--                               ,"synapse"
+--                               ,"xfce4-notifyd"
+--                               ]
 
 
 -- Event handling
@@ -592,7 +911,7 @@ myEventHook = E.ewmhDesktopsEventHook
 ------------------------------------------------------------------------
 
 -- workspaces   = ["web", "irc", "code" ] ++ map show [4..9]
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+confWorkspaces  = ["1","2","3","4","5","6","7","8","9"]
 
 -- irc, web, com, org, txt, wrk, img, dev, des
 -- consider topic spaces
@@ -636,7 +955,7 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 -- Note that order of "addTabs" and "addBars" prior to setting
 -- noBorders is intentional. Inverse causes problems.
 
-myLayoutHook = onWorkspaces ["exmaple","andanother"] 
+confLayoutHook = onWorkspaces ["exmaple","andanother"] 
                             (tabs ||| full ||| float)
                $ (tabs ||| tiledX ||| tiledXNude ||| full) where
 
@@ -674,13 +993,13 @@ myLayoutHook = onWorkspaces ["exmaple","andanother"]
 
     -- dragTabs uses the my custom X.L.TabbedWindowSwitcherDecoration
     dragTabs l  = tabbedWindowSwitcherDecorationWithImageButtons 
-                  shrinkText myTabThemeWithImageButtons 
+                  shrinkText myTabbedThemeWithImageButtons 
                   (draggingVisualizer $ l)
 
     -- dragBars uses either the official X.L.WindowSwitcherDecoration
     -- or (in this case) my custom X.L.TabbedWindowSwitcherDecoration
     dragBars l  = windowSwitcherDecorationWithImageButtons 
-                  shrinkText myThemeWithImageButtons 
+                  shrinkText myTiledThemeWithImageButtons 
                   (draggingVisualizer $ l)
 
     nmaster     = 1
@@ -720,16 +1039,11 @@ blue    = "#268bd2"
 cyan    = "#2aa198"
 green   = "#719e07"
 
-myFocusFollowsMouse         = False
-myBorderWidth               = 1
+confFocusFollowsMouse       = False
+confBorderWidth             = 1
 
--- intense
---myNormalBorderColor         = base02
---myFocusedBorderColor        = green
-
--- subdued
-myNormalBorderColor         = base03
-myFocusedBorderColor        = blue
+confNormalBorderColor       = base03
+confFocusedBorderColor      = base01
 
 myFontSize s                = "-*-terminus-medium-r-normal--" 
                               ++ show s ++ "-*-*-*-*-*-*-*"
@@ -754,22 +1068,38 @@ myTheme = defaultTheme
     , decoHeight            = 22
     }
 
-myBarTheme :: Theme
-myBarTheme = myTheme
+myTabbedTheme :: Theme
+myTabbedTheme = myTheme
+    { -- base00, base01, blue all good activeColors
+      activeColor           = base03
+    , activeBorderColor     = base03
+    , activeTextColor       = base01
+    }
+
+myTiledTheme :: Theme
+myTiledTheme = myTheme
+    { -- base00, base01, blue all good activeColors
+      activeColor           = base01
+    , activeBorderColor     = base01
+    , activeTextColor       = base03
+    }
+
+myBrightTiledTheme :: Theme
+myBrightTiledTheme = myTheme
     { -- base00, base01, blue all good activeColors
       activeColor           = blue
     , activeBorderColor     = blue
     , activeTextColor       = base03
     }
 
-myTabThemeWithImageButtons :: Theme
-myTabThemeWithImageButtons = myTheme {
+myTabbedThemeWithImageButtons :: Theme
+myTabbedThemeWithImageButtons = myTabbedTheme {
       windowTitleIcons = [ (nullButton, CenterLeft 0),
       (closeButton, CenterRight 6)]
       }
 
-myThemeWithImageButtons :: Theme
-myThemeWithImageButtons = myBarTheme {
+myTiledThemeWithImageButtons :: Theme
+myTiledThemeWithImageButtons = myTiledTheme {
       windowTitleIcons = [ (nullButton, CenterLeft 0),
       (closeButton, CenterRight 6)]
       }
@@ -898,19 +1228,19 @@ toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 main = xmonad =<< myXmobar (E.ewmh 
     $ withUrgencyHook NoUrgencyHook 
-    $ addDescrKeys' ((myModMask, xK_F1), showKeybindings) myKeys
+    $ addDescrKeys' ((confModMask, xK_F1), showKeybindings) myKeys
     $ defaultConfig 
-    { terminal              = myTerminal
-    , focusFollowsMouse     = myFocusFollowsMouse
-    , borderWidth           = myBorderWidth
-    , modMask               = myModMask
-    , workspaces            = myWorkspaces
-    , normalBorderColor     = myNormalBorderColor
-    , focusedBorderColor    = myFocusedBorderColor
-    , layoutHook            = myLayoutHook
-    , manageHook            = myManageHook
+    { terminal              = confTerminal
+    , focusFollowsMouse     = confFocusFollowsMouse
+    , borderWidth           = confBorderWidth
+    , modMask               = confModMask
+    , workspaces            = confWorkspaces
+    , normalBorderColor     = confNormalBorderColor
+    , focusedBorderColor    = confFocusedBorderColor
+    , layoutHook            = confLayoutHook
+    , manageHook            = confManageHook
     --, handleEventHook       = myEventHook
-    , startupHook           = myStartupHook
+    , startupHook           = confStartupHook
     }) where
 
     showKeybindings :: [((KeyMask, KeySym), NamedAction)] -> NamedAction

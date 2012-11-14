@@ -134,7 +134,8 @@ fi
 
 Keychain_Prompt ()
 {
-    eval `keychain --quiet --attempts 3 --eval id_rsa`
+    eval `keychain --quiet --attempts 5 --eval id_rsa`
+    return 0
 }
 
 # ---------------------------------------------------------------------
