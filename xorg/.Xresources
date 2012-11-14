@@ -56,6 +56,27 @@
 
 
 !!--------------------------------------------------------
+!! Cursors
+!!--------------------------------------------------------
+!! find /usr/share/icons -type d -iname "*cursors*"
+
+!! handhelds
+!! Premium-left
+!! Simple-and-Soft
+!! whiteglass
+!! redglass
+!! Neutral
+!! Vanilla-DMZ
+!! Vanilla-DMZ-AA
+!! Premium
+
+!!Xcursor.theme: Premium
+Xcursor.theme: Neutral
+!!Xcursor.theme: Vanilla-DMZ
+!!Xcursor.theme: Vanilla-DMZ-AA
+
+
+!!--------------------------------------------------------
 !! Colors
 !!--------------------------------------------------------
 

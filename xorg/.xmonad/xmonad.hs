@@ -10,6 +10,10 @@
 
 -- Imports
 ------------------------------------------------------------------------
+import Control.Arrow (second)
+import XMonad.Util.Font (fi)
+import XMonad.Layout.LayoutModifier
+import Graphics.X11 (Rectangle(..))
 
 import           Control.Monad
 import           Data.List
@@ -53,7 +57,6 @@ import           XMonad.Layout.DecorationAddons
 import           XMonad.Layout.DraggingVisualizer
 import           XMonad.Layout.Drawer
 import           XMonad.Layout.ImageButtonDecoration 
-import           XMonad.Layout.ShowWName
 import           XMonad.Layout.TabbedWindowSwitcherDecoration
 import           XMonad.Util.Image
 import qualified Data.Map as M
@@ -62,6 +65,7 @@ import qualified XMonad.Actions.DynamicWorkspaces as DW
 import qualified XMonad.Hooks.EwmhDesktops as E
 import qualified XMonad.StackSet as W
 
+import XMonad.Layout.SideSpacing
 
 -- Prompt(s)
 import XMonad.Prompt
@@ -113,6 +117,7 @@ super = mod4Mask
 alt   = mod1Mask
 ctrl  = controlMask
 shft  = shiftMask
+
 myModMask = alt
 
 myKeys :: XConfig Layout -> [((KeyMask, KeySym), NamedAction)]
@@ -208,7 +213,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
 -- TODO: decide if I'm going to use different cycleThroughLayouts or limit layouts on a perworkspace basis
 
     , subtitle "WORKSPACE LAYOUTS (H/L=size ,.=) [+alt=toggle]"
-    , ((modm, xK_space),            addName "Switch to next layout"     $ cycleAllLayouts)
+    , ((modm, xK_space),            addName "Switch to next layout"     $ cycleMainLayouts)
     , ((modm .|. shft, xK_space),   addName "Reset to default layout"   $ setLayout $ XMonad.layoutHook conf)
     , ((modm .|. ctrl, xK_space),   addName "Refresh layout"            $ refresh)
     , ((modm, xK_f),                addName "Full Screen"               $ fullScreen)
@@ -353,10 +358,12 @@ nextTerminal        = raiseNextMaybe
                       (spawn $ myTerminal) (className =? "URxvt")
 
 showNotesDrawer     = raiseNextMaybe
-                      (spawn $ myTerminal ++ " -name notes") (resource =? "notes")
+                      (spawn $ myTerminal ++ " -name notes")
+                      (resource =? "notes")
 
 showChatDrawer      = raiseNextMaybe
-                      (spawn $ myTerminal ++ " -name drawer") (resource =? "drawer")
+                      (spawn $ myTerminal ++ " -name drawer")
+                      (resource =? "drawer")
 
 newVim :: X ()
 newVim              = runInTerm "" "vim"
@@ -629,8 +636,6 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 -- Note that order of "addTabs" and "addBars" prior to setting
 -- noBorders is intentional. Inverse causes problems.
 
-------------------------------------------------------------------------
---myLayoutHook = showWName' mySWNConfig $
 myLayoutHook = onWorkspaces ["exmaple","andanother"] 
                             (tabs ||| full ||| float)
                $ (tabs ||| tiledX ||| tiledXNude ||| full) where
@@ -642,14 +647,14 @@ myLayoutHook = onWorkspaces ["exmaple","andanother"]
                     leftDrawer = simpleDrawer 0.2 0.5 
                         (Resource "drawer" `Or` ClassName "Drawer")
 
-    tiledX      = renamed [Replace "Vert Tiled"] 
-                $ dragBars $ noBorders $ Tall nmaster delta thirds
+    tiledX      = renamed [Replace "Tiles"] 
+                $ spacing 1 $ dragBars $ noBorders $ Tall nmaster delta thirds
 
-    tiledXNude  = renamed [Replace "Vert Tiled Nude"] 
+    tiledXNude  = renamed [Replace "Tiles Trim"] 
                 $ smartBorders $ Tall nmaster delta thirds
 
-    tiledY      = renamed [Replace "Wide Tiled"] 
-                $ smartBorders $ Mirror $ Tall nmaster delta halfs
+    tiledY      = renamed [Replace "Tiles Wide"] 
+                $ dragBars $ noBorders $ Mirror $ Tall nmaster delta halfs
 
     full        = renamed [Replace "Fullscreen"]
                 $ noBorders $ Full
@@ -657,8 +662,8 @@ myLayoutHook = onWorkspaces ["exmaple","andanother"]
     float       = renamed [Replace "Floating"]
                 $ smartBorders $ simpleFloat
 
-    tabs        = renamed [Replace "Tabbed"] 
-                $ dragTabs $ noBorders $ Simplest
+    tabs        = renamed [Replace "Tabs"] 
+                $ spacing 1 $ dragTabs $ noBorders $ Simplest
 
     simpleTabs  = renamed [Replace "Simple Tabbed"] 
                 $ addTabs $ noBorders $ Simplest
@@ -683,11 +688,10 @@ myLayoutHook = onWorkspaces ["exmaple","andanother"]
     thirds      = 1/3
     delta       = 3/100
 
-cycleLayouts = sendMessage NextLayout
 cycleAllLayouts = sendMessage NextLayout
-cycleMainLayouts = cycleThroughLayouts ["Tabbed", "Vert Tiled" ]
-cycleTiledLayouts = cycleThroughLayouts ["Vert Tiled", "Vert Tiled Nude"]
-cycleAlternateLayouts = cycleThroughLayouts ["Tabbed", "Vert Tiled" ]
+cycleMainLayouts = cycleThroughLayouts ["Tabs", "Tiles" ]
+cycleTiledLayouts = cycleThroughLayouts ["Tiles", "Trim Tiles"]
+cycleAlternateLayouts = cycleThroughLayouts ["Tabs", "Tiles" ]
 myJumpToLayout l = cycleThroughLayouts [l]
 -- refresh layout to unfullscreen quickly and restore struts
 -- TODO: make this a toggle function
@@ -738,13 +742,13 @@ myFontExtraSmall            = myFontSize 10
 myTheme :: Theme
 myTheme = defaultTheme
     { activeColor           = base03
-    , inactiveColor         = base02
-    , urgentColor           = yellow
     , activeBorderColor     = base03
-    , inactiveBorderColor   = base03
-    , urgentBorderColor     = yellow
     , activeTextColor       = blue
+    , inactiveBorderColor   = base02
+    , inactiveColor         = base02
     , inactiveTextColor     = base01
+    , urgentColor           = yellow
+    , urgentBorderColor     = yellow
     , urgentTextColor       = base02
     , fontName              = myFont
     , decoHeight            = 22
@@ -754,6 +758,7 @@ myBarTheme :: Theme
 myBarTheme = myTheme
     { -- base00, base01, blue all good activeColors
       activeColor           = blue
+    , activeBorderColor     = blue
     , activeTextColor       = base03
     }
 
@@ -857,14 +862,6 @@ myPromptConfig = defaultXPConfig
     , promptBorderWidth     = 1
     , height                = 22
     , autoComplete          = Just 500000
-    }
-
-mySWNConfig :: SWNConfig 
-mySWNConfig = defaultSWNConfig 
-    { swn_font    = myFontExtraBig
-    , swn_bgcolor = base03
-    , swn_color   = base00
-    , swn_fade    = 1
     }
 
 

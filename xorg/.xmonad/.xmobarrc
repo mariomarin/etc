@@ -1,5 +1,5 @@
 Config  {
-          font     = "-*-terminus-medium-r-normal--12-*-*-*-*-*-*-*"
+          font     = "-*-terminus-medium-r-normal--14-*-*-*-*-*-*-*"
         , border        = NoBorder
         , bgColor       = "#073642"
         , borderColor   = "#073642"
@@ -26,5 +26,5 @@ Config  {
                           ]
         , sepChar       = "%"
         , alignSep      = "}{"
-        , template      = " %StdinReader% }{ %wlan0wi%  %battery%  %cpu% %cpufreq% %coretemp%  %memory%  %swap%  %disku%  %theDate%  %mail% %mailq%  %pwrmode%%tabmode% "
+        , template      = " %StdinReader% }{ %wlan0wi%  %battery%  %theDate%  %mail% %mailq%  %pwrmode%%tabmode% "
         }

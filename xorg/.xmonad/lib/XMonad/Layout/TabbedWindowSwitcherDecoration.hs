@@ -19,7 +19,6 @@
 module XMonad.Layout.TabbedWindowSwitcherDecoration
     ( -- * Usage:
       -- $usage
-      WindowSwitcherDecoration,
       windowSwitcherDecorationWithButtons,
       windowSwitcherDecorationWithImageButtons,
       tabbedWindowSwitcherDecorationWithImageButtons,
