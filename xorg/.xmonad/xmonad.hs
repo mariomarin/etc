@@ -12,16 +12,15 @@
 
 -- Imports
 ------------------------------------------------------------------------
-import Control.Arrow (second)
-import XMonad.Util.Font (fi)
-import XMonad.Layout.LayoutModifier
-import Graphics.X11 (Rectangle(..))
 
 import           Control.Monad
 import           Data.List
+import qualified Data.Map as M
 import           Graphics.X11.ExtraTypes.XF86
 import           System.Exit(ExitCode(ExitSuccess), exitWith)
 import           System.IO
+import qualified System.IO.UTF8
+
 import           XMonad hiding ((|||))
 import           XMonad.Actions.CopyWindow
 import           XMonad.Actions.CopyWindow(copy)
@@ -38,36 +37,36 @@ import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Layout.Decoration
-import           XMonad.Layout.Fullscreen
-import           XMonad.Layout.LayoutCombinators ((|||))
-import           XMonad.Layout.NoBorders
-import           XMonad.Layout.PerWorkspace
-import           XMonad.Layout.Renamed
-import           XMonad.Layout.SimpleFloat
-import           XMonad.Layout.Simplest
-import           XMonad.Layout.TabBarDecoration
-import           XMonad.ManageHook
-import           XMonad.Prompt
-import           XMonad.Prompt
-import           XMonad.Prompt.Workspace
-import           XMonad.Util.NamedActionsLocal
-import           XMonad.Util.NamedScratchpad
-import           XMonad.Util.Run
-import           XMonad.Util.WindowProperties
 import           XMonad.Layout.Decoration
 import           XMonad.Layout.DecorationAddons
 import           XMonad.Layout.DraggingVisualizer
 import           XMonad.Layout.Drawer
+import           XMonad.Layout.Fullscreen
 import           XMonad.Layout.ImageButtonDecoration 
+import           XMonad.Layout.LayoutCombinators ((|||))
+import           XMonad.Layout.NoBorders
+import           XMonad.Layout.PerWorkspace
+import           XMonad.Layout.Renamed
+import           XMonad.Layout.SideSpacing
+import           XMonad.Layout.SimpleFloat
+import           XMonad.Layout.Simplest
+import           XMonad.Layout.TabBarDecoration
 import           XMonad.Layout.TabbedWindowSwitcherDecoration
+import           XMonad.ManageHook
+import           XMonad.Prompt
+import           XMonad.Prompt
+import           XMonad.Prompt.Workspace
 import           XMonad.Util.Image
-import qualified Data.Map as M
-import qualified System.IO.UTF8
+import           XMonad.Util.NamedActionsLocal
+import           XMonad.Util.NamedScratchpad
+import           XMonad.Util.Run
+import           XMonad.Util.WindowProperties
 import qualified XMonad.Actions.DynamicWorkspaces as DW
 import qualified XMonad.Hooks.EwmhDesktops as E
 import qualified XMonad.StackSet as W
 
-import           XMonad.Layout.SideSpacing
+import           XMonad.Actions.Navigation2D
+import           XMonad.Actions.GroupNavigation
 
 -- Prompt(s)
 import XMonad.Prompt
@@ -161,6 +160,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((super, xK_m),               addName "Show mail"                 
     $ showMail)
 
+    , ((super, xK_y),               addName "Show web music player"                 
+    $ showWebMusicPlayer)
+
     , ((super, xK_p),               addName "Show web contacts"         
     $ showWebContacts)
 
@@ -218,13 +220,16 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((modm, xK_BackSpace),        addName "Close focused"             
     $ kill1)
 
+    , ((modm, xK_z),        addName "Close focused"             
+    $ unspawn "xmobar")
+
     , ((modm .|. shft, bkSpc),      addName "Close all on workspace"    
     $ killAll)
 
-    , ((modm, xK_q),                addName "Rebuild and restart XMonad"            
+    , ((modm, xK_q),                addName "Rebuild and restart XMonad"
     $ rebuildXMonad)
 
-    , ((modm .|. ctrl, xK_q),       addName "Restart XMonad, no rebuild"            
+    , ((modm .|. ctrl, xK_q),       addName "Restart XMonad, no rebuild"
     $ restartXMonad)
 
     , ((modm .|. shft, xK_q),       addName "Quit XMonad"               
@@ -255,6 +260,49 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     $ rotAllUp)
 
 
+------------------------------------------------------------------------
+-- Navigation2D experimental
+------------------------------------------------------------------------
+--  ] ^++^ [
+
+--  -- Switch between layers
+--   ((modm .|. super,       xK_Up), switchLayer)
+
+--  -- Directional navigation of windows
+--  , ((modm,                 xK_Right), windowGo R False)
+--  , ((modm,                 xK_Left ), windowGo L False)
+--  , ((modm,                 xK_Up   ), windowGo U False)
+--  , ((modm,                 xK_Down ), windowGo D False)
+
+--  -- Swap adjacent windows
+--  , ((modm .|. ctrl, xK_Right), windowSwap R False)
+--  , ((modm .|. ctrl, xK_Left ), windowSwap L False)
+--  , ((modm .|. ctrl, xK_Up   ), windowSwap U False)
+--  , ((modm .|. ctrl, xK_Down ), windowSwap D False)
+
+--  -- Directional navigation of screens
+--  , ((modm,                 xK_r    ), screenGo R False)
+--  , ((modm,                 xK_l    ), screenGo L False)
+--  , ((modm,                 xK_u    ), screenGo U False)
+--  , ((modm,                 xK_d    ), screenGo D False)
+
+--  -- Swap workspaces on adjacent screens
+--  , ((modm .|. super .|. ctrl, xK_Right ), screenSwap R False >> screenGo R False >> moveCursor)
+--  , ((modm .|. super .|. ctrl, xK_Left  ), screenSwap L False >> screenGo L False >> moveCursor)
+--  , ((modm .|. super .|. ctrl, xK_Up    ), screenSwap U False >> screenGo U False >> moveCursor)
+--  , ((modm .|. super .|. ctrl, xK_Down  ), screenSwap D False >> screenGo D False >> moveCursor)
+
+--  -- Send window to adjacent screen
+--  , ((modm .|. shft,    xK_Right   ), windowToScreen R False)
+--  , ((modm .|. shft,    xK_Left    ), windowToScreen L False)
+--  , ((modm .|. shft,    xK_Up      ), windowToScreen U False)
+--  , ((modm .|. shft,    xK_Down    ), windowToScreen D False)
+
+--  ] ^++^ [
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+
     , subtitle "WINDOW ACTIONS"
     ----------------------------
 
@@ -279,7 +327,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((modm, xK_p),                addName "Pin window"                
     $ windows copyToAll)
 
-    , ((modm .|. shft, xK_p),       addName "Unpin window"              
+    -- TODO: collision
+    , ((modm .|. shft .|. ctrl, xK_p),       addName "Unpin window"              
     $ killAllOtherCopies)
 
 
@@ -373,8 +422,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     , ((modm .|. ctrl, xK_space),   addName "Refresh layout"            
     $ refresh)
 
-    , ((modm, xK_f),                addName "Full Screen"               
+    , ((modm, xK_f),                addName "Full screen"               
     $ fullScreen)
+
+    , ((modm, xK_b),                addName "Toggle status bar"               
+    $ sendMessage ToggleStruts)
 
     , ((modm .|. shft, xK_9),       addName "Shrink the master area"    
     $ sendMessage Shrink)
@@ -404,16 +456,16 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
     -- $ spawn "sleep 0.1 && xdotool key shift+control+Tab")
 
 
-    , subtitle "test submap" 
-    ----------------------------
-    , ((modm, xK_z), submapName $ 
-
-    [ ((0, xK_o),                   addName "test submap"
-    $ sendMessage Shrink)
-
-    , ((0, xK_z),                   addName "test submap"
-    $ sendMessage Shrink)]
-    )
+--    , subtitle "test submap" 
+--    ----------------------------
+--    , ((modm, xK_z), submapName $ 
+--
+--    [ ((0, xK_o),                   addName "test submap"
+--    $ sendMessage Shrink)
+--
+--    , ((0, xK_z),                   addName "test submap"
+--    $ sendMessage Shrink)]
+--    )
 
 
     , subtitle "MEDIA KEYS"
@@ -597,18 +649,19 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) =
 ------------------------------------------------------------------------
 
 myShell             = "$SHELL"
+confTerminal        = terminalCmd
 
-cmdTerminal         = "urxvtc"
-confTerminal        = cmdTerminal
+terminalCmd         = "urxvtc"
+terminalClass       = "URxvt"
 
 initTerminal :: X ()
 initTerminal        = spawn "pgrep urxvtd || urxvtd -f -o -q"
 
 newTerminal :: X ()
-newTerminal         = spawn cmdTerminal
+newTerminal         = spawn terminalCmd
 
 newNamedTerminal :: String -> X ()
-newNamedTerminal n  = spawn $ cmdTerminal ++ " -name " ++ show n
+newNamedTerminal n  = spawn $ terminalCmd ++ " -name " ++ show n
 
 nextTerminal        = raiseNextMaybe
                       newTerminal (className =? "URxvt")
@@ -684,17 +737,20 @@ showWebNews         = showWebApp "https://reader.google.com"
 showWebTasks        = showWebApp "https://astrid.com"
                       "Astrid"
 
+showWebMusicPlayer  = showWebApp "https://play.google.com/music/listen"
+                      "Home - My Music"
+
 showWebVault        = showWebApp
                       ("chrome-extension://"
                       ++ "hdokiejnpimakedhajhdlcegeplioahd"
                       ++ "/homelocal2.html")
                       "My LastPass Vault"
 
-unspawn :: String -> X ()
+--unspawn :: String -> X ()
 unspawn p = spawn $ "for pid in `pgrep " 
-                  ++ p ++ "`; do kill -9 $pid; done && "
+                  ++ p ++ "`; do kill -9 $pid; echo $pid " ++ p ++ " killed >> ~/tmp/xmkilltest; done" -- && echo complete >> ~/tmp/xmkilltest || echo failed >> ~/tmp/xmkilltest"
 
-startCoreApps :: X ()
+--startCoreApps :: X ()
 startCoreApps       = do
                       showWebNews
                       showWebDrive
@@ -704,25 +760,25 @@ startCoreApps       = do
                       showMail
                       showWebVault
 
-initSystemTray      :: X ()
+--initSystemTray      :: X ()
 initSystemTray      = spawn   "systray &"
-killSystemTray      :: X ()
+--killSystemTray      :: X ()
 killSystemTray      = unspawn "trayer"
 
-initCompositor      :: X ()
+--initCompositor      :: X ()
 initCompositor      = spawn   "compton -f -D 6 -m 0.95 &"
-killCompositor      :: X ()
+--killCompositor      :: X ()
 killCompositor      = unspawn "compton"
 -- old xcompmgr command: "xcompmgr -f -D 6 &"
 
-initNotifier        :: X ()
+--initNotifier        :: X ()
 initNotifier        = spawn   "dunst &"
-killNotifier        :: X ()
+--killNotifier        :: X ()
 killNotifier        = unspawn "dunst"
 
-initStatusBar       :: X ()
-initStatusBar       = return ()
-killStatusBar       :: X ()
+--initStatusBar       :: X ()
+initStatusBar       = spawn   "bloop up && xmobar"
+--killStatusBar       :: X ()
 killStatusBar       = unspawn "xmobar"
 
 flash :: String -> X ()
@@ -753,6 +809,7 @@ confStartupHook = do
     initSystemTray
     initCompositor
     initNotifier
+    --initStatusBar
     initTerminal
     notify "XMonad started"
 
@@ -902,7 +959,7 @@ confManageHook = composeAll
 -- X.L.Fullscreen, hence the use of E.fullscreenEventHook and the 
 -- XMonad.Layout.fullscreenEventHook below
 
-myEventHook = E.ewmhDesktopsEventHook
+confEventHook = E.ewmhDesktopsEventHook
     <+> E.fullscreenEventHook
     <+> fullscreenEventHook
 
@@ -955,7 +1012,7 @@ confWorkspaces  = ["1","2","3","4","5","6","7","8","9"]
 -- Note that order of "addTabs" and "addBars" prior to setting
 -- noBorders is intentional. Inverse causes problems.
 
-confLayoutHook = onWorkspaces ["exmaple","andanother"] 
+confLayoutHook = avoidStruts $ onWorkspaces ["exmaple","andanother"] 
                             (tabs ||| full ||| float)
                $ (tabs ||| tiledX ||| tiledXNude ||| full) where
 
@@ -967,13 +1024,15 @@ confLayoutHook = onWorkspaces ["exmaple","andanother"]
                         (Resource "drawer" `Or` ClassName "Drawer")
 
     tiledX      = renamed [Replace "Tiles"] 
-                $ spacing 1 $ dragBars $ noBorders $ Tall nmaster delta thirds
+                $ spacing 1 $ dragBars $ noBorders
+                $ Tall nmaster delta thirds
 
     tiledXNude  = renamed [Replace "Tiles Trim"] 
                 $ smartBorders $ Tall nmaster delta thirds
 
     tiledY      = renamed [Replace "Tiles Wide"] 
-                $ dragBars $ noBorders $ Mirror $ Tall nmaster delta halfs
+                $ dragBars $ noBorders $ Mirror
+                $ Tall nmaster delta halfs
 
     full        = renamed [Replace "Fullscreen"]
                 $ noBorders $ Full
@@ -988,8 +1047,8 @@ confLayoutHook = onWorkspaces ["exmaple","andanother"]
                 $ addTabs $ noBorders $ Simplest
 
     -- addTabs uses the official X.L.TabBarDecoration
-    addTabs  l  = tabBar shrinkText myTheme Top 
-                $ resizeVertical (fi $ decoHeight myTheme) $ l
+    addTabs  l  = tabBar shrinkText tabTheme Top 
+                $ resizeVertical (fi $ decoHeight tabTheme) $ l
 
     -- dragTabs uses the my custom X.L.TabbedWindowSwitcherDecoration
     dragTabs l  = tabbedWindowSwitcherDecorationWithImageButtons 
@@ -1053,11 +1112,19 @@ myFont                      = myFontSize 14
 myFontSmall                 = myFontSize 12
 myFontExtraSmall            = myFontSize 10
 
-myTheme :: Theme
-myTheme = defaultTheme
+myFontBoldSize s            = "-*-terminus-bold-r-normal--" 
+                            ++ show s ++ "-*-*-*-*-*-*-*"
+myFontBoldExtraBig          = myFontBoldSize 24
+myFontBoldBig               = myFontBoldSize 16
+myFontBold                  = myFontBoldSize 14
+myFontBoldSmall             = myFontBoldSize 12
+myFontBoldExtraSmall        = myFontBoldSize 10
+
+baseTheme :: Theme
+baseTheme = defaultTheme
     { activeColor           = base03
     , activeBorderColor     = base03
-    , activeTextColor       = blue
+    , activeTextColor       = base01 -- blue also good
     , inactiveBorderColor   = base02
     , inactiveColor         = base02
     , inactiveTextColor     = base01
@@ -1068,24 +1135,24 @@ myTheme = defaultTheme
     , decoHeight            = 22
     }
 
-myTabbedTheme :: Theme
-myTabbedTheme = myTheme
+tabTheme :: Theme
+tabTheme = baseTheme
     { -- base00, base01, blue all good activeColors
       activeColor           = base03
     , activeBorderColor     = base03
     , activeTextColor       = base01
     }
 
-myTiledTheme :: Theme
-myTiledTheme = myTheme
+tileTheme :: Theme
+tileTheme = baseTheme
     { -- base00, base01, blue all good activeColors
       activeColor           = base01
     , activeBorderColor     = base01
     , activeTextColor       = base03
     }
 
-myBrightTiledTheme :: Theme
-myBrightTiledTheme = myTheme
+altTileTheme :: Theme
+altTileTheme = baseTheme
     { -- base00, base01, blue all good activeColors
       activeColor           = blue
     , activeBorderColor     = blue
@@ -1093,13 +1160,13 @@ myBrightTiledTheme = myTheme
     }
 
 myTabbedThemeWithImageButtons :: Theme
-myTabbedThemeWithImageButtons = myTabbedTheme {
+myTabbedThemeWithImageButtons = tabTheme {
       windowTitleIcons = [ (nullButton, CenterLeft 0),
       (closeButton, CenterRight 6)]
       }
 
 myTiledThemeWithImageButtons :: Theme
-myTiledThemeWithImageButtons = myTiledTheme {
+myTiledThemeWithImageButtons = tileTheme {
       windowTitleIcons = [ (nullButton, CenterLeft 0),
       (closeButton, CenterRight 6)]
       }
@@ -1198,8 +1265,6 @@ myPromptConfig = defaultXPConfig
 -- Status bars and logging
 ------------------------------------------------------------------------
 
-myXmobar conf = statusBar "xmobar" myPP toggleStrutsKey conf
-
 myPP = defaultPP
     { ppCurrent             = xmobarColor base02 blue . wrap " " " "
     , ppTitle               = xmobarColor blue "" . shorten 40
@@ -1218,37 +1283,49 @@ myPP = defaultPP
     , ppExtras              = []
     }
 
---myLogHook = dynamicLogWithPP $ myPP
+confLogHook = do
+    copies <- wsContainingCopies
+    --let check ws | ws `elem` copies = pad . xmobarColor yellow base02 $ ws
+    --             | otherwise = pad ws
+    let check ws | ws `elem` copies = xmobarColor yellow base02 $ ws
+                 | otherwise = ws
+    dynamicLogString myPP {ppHidden = check} >>= xmonadPropLog
 
 
 -- Main
 ------------------------------------------------------------------------
 
-toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
+--toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
+-- and add the configuration of the module to your main function:
 
-main = xmonad =<< myXmobar (E.ewmh 
-    $ withUrgencyHook NoUrgencyHook 
-    $ addDescrKeys' ((confModMask, xK_F1), showKeybindings) myKeys
-    $ defaultConfig 
-    { terminal              = confTerminal
-    , focusFollowsMouse     = confFocusFollowsMouse
-    , borderWidth           = confBorderWidth
-    , modMask               = confModMask
-    , workspaces            = confWorkspaces
-    , normalBorderColor     = confNormalBorderColor
-    , focusedBorderColor    = confFocusedBorderColor
-    , layoutHook            = confLayoutHook
-    , manageHook            = confManageHook
-    --, handleEventHook       = myEventHook
-    , startupHook           = confStartupHook
-    }) where
-
-    showKeybindings :: [((KeyMask, KeySym), NamedAction)] -> NamedAction
-    showKeybindings x = addName "Show Keybindings" $ io $ do
-        --h <- spawnPipe "zenity --text-info"
-        h <- spawnPipe $  "cat > ~/tmp/xmonadkeys.txt " 
-                       ++ " && urxvtc -e less ~/tmp/xmonadkeys.txt"
-        System.IO.UTF8.hPutStr h (unlines $ showKm x)
-        hClose h
-        return ()
+main = do
+    initStatusBar
+    xmonad
+        (E.ewmh
+        $ withUrgencyHook NoUrgencyHook 
+        -- $ withNavigation2DConfig myNavigation2DConfig
+        $ addDescrKeys' ((confModMask, xK_F1), showKeybindings) myKeys
+        $ defaultConfig 
+        { terminal              = confTerminal
+        , focusFollowsMouse     = confFocusFollowsMouse
+        , borderWidth           = confBorderWidth
+        , modMask               = confModMask
+        , workspaces            = confWorkspaces
+        , normalBorderColor     = confNormalBorderColor
+        , focusedBorderColor    = confFocusedBorderColor
+        , layoutHook            = confLayoutHook
+        , manageHook            = confManageHook
+        , handleEventHook       = confEventHook
+        , logHook               = confLogHook
+        , startupHook           = confStartupHook
+        }) where
+    
+        showKeybindings :: [((KeyMask, KeySym), NamedAction)] -> NamedAction
+        showKeybindings x = addName "Show Keybindings" $ io $ do
+            --h <- spawnPipe "zenity --text-info"
+            h <- spawnPipe $  "cat > ~/tmp/xmonadkeys.txt " 
+                           ++ " && urxvtc -e less ~/tmp/xmonadkeys.txt"
+            System.IO.UTF8.hPutStr h (unlines $ showKm x)
+            hClose h
+            return ()
 
