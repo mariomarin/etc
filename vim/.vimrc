@@ -791,5 +791,17 @@
         let g:timestamp_modelines=15
         let g:timestamp_rep='%Y %b %d'
         let g:timestamp_regexp='\c\%(\<\%(last \)\?\%(changed?\|modified\):\s\+\)\@<=\%(\d\{4}\D.\{-}\d\{2}\|TIMESTAMP\)'
+        " }}}
+        " ------------------------------------------------------------------
+        " Fugitive {{{
+        " ------------------------------------------------------------------
+        map <leader>gs :Gstatus<CR>
+        map <leader>gd :Gdiff<CR>
+        map <leader>g+ :Gwrite<CR>
+        map <leader>gc :Gcommit<CR>
+        map <leader>gp :Git push<CR>
+        map <leader>gl :Git pull<CR>
+        " }}}
+
     " }}}
     " }""
