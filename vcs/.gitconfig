@@ -1,6 +1,6 @@
 [user]
-	email = es@ethanschoonover.com
-	name = Ethan Schoonover
+	email = mmfmarin@gmail.com  
+	name = Mario Marín
 [color]
 	ui = auto
 [core]
@@ -8,3 +8,5 @@
 [alias]
         ci = commit
         st = status
+[push]
+	default = simple
