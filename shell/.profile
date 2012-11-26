@@ -149,7 +149,7 @@ case $SHELLMODE in
 
         # start x if we're not root and on tty1 (e.g. default boot condition)
         # who needs a display manager?
-        Keychain_Prompt
+        # Keychain_Prompt
         if [[ $USER != "root" ]] && [[ `tty` = /dev/tty1 ]] && [[ -z "$DISPLAY" ]]; then
             # .Xauthority causes X startup failure every other login. I know 
             # how that sounds. .Xauthority, I do not like you.
@@ -161,7 +161,7 @@ case $SHELLMODE in
     ;;
     nonlogin)
         # normal shell & shell script state
-        Keychain_Prompt
+        # Keychain_Prompt
         $DEBUG && logger ">>>>>>>>>> SHELL MODE: nonlogin ($SHELLTYPE)" || true
     ;;
     *)  $DEBUG && logger ">>>>>>>>>> SHELL MODE: NOT DETECTED ($SHELLTYPE)" || true ;;
@@ -181,29 +181,3 @@ case $SHELLSTATE in
     *)  $DEBUG && logger ">>>>>>>>>> SHELL STATE: NOT DETECTED" || true ;;
 esac
 
-
-
-# urxvt title
-#case $TERM in
-#        rxvt*)
-#            trap 'echo -ne "\e]0;$USER@$HOSTNAME: $BASH_COMMAND\007"' DEBUG
-#         ;;
-#    esac
-
-# Prompt
-BGREEN='\[\033[1;32m\]'
-GREEN='\[\033[0;32m\]'
-BRED='\[\033[1;31m\]'
-RED='\[\033[0;31m\]'
-BBLUE='\[\033[1;34m\]'
-BLUE='\[\033[0;34m\]'
-NORMAL='\[\033[00m\]'
-PS1="${BLUE}(${NORMAL}\w${BLUE})\n${NORMAL}\u${BLUE}@\h ${RED}\$ ${NORMAL}"
-# X Terminal titles
-case "$TERM" in
-xterm*|rxvt*)
-        PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
-        ;;
-*)
-        ;;
-esac
