@@ -180,4 +180,6 @@ case $SHELLSTATE in
     ;;
     *)  $DEBUG && logger ">>>>>>>>>> SHELL STATE: NOT DETECTED" || true ;;
 esac
-
+utoload -U promptinit
+promptinit
+prompt suse
