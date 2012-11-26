@@ -773,19 +773,21 @@
             let w:DebugThisB = &columns
         endfunction
     " }}}
-    " Toggle Background     {{{
-    " ------------------------------------------------------------------
     " }}}
     " Plugins               {{{
-    " ------------------------------------------------------------------
-    "nmap <unique> <F7> <Plug>ToggleBackground
-    "imap <unique> <F7> <Plug>ToggleBackground
-    "vmap <unique> <F7> <Plug>ToggleBackground
-    "if exists("*togglebg#map")
-        call togglebg#map("<F7>")
-    "endif
-        " timestamp.vim
-        let g:timestamp_username="Ethan Schoonover"
+        " ------------------------------------------------------------------
+        " Solarized     {{{
+        " ------------------------------------------------------------------
+        nmap <unique> <F7> <Plug>ToggleBackground
+        imap <unique> <F7> <Plug>ToggleBackground
+        vmap <unique> <F7> <Plug>ToggleBackground
+        if exists("*togglebg#map")
+            call togglebg#map("<F7>")
+        endif
+        " ------------------------------------------------------------------
+        " timestamp.vim {{{
+        " ------------------------------------------------------------------
+        let g:timestamp_username="Mario Marín"
         let g:timestamp_modelines=15
         let g:timestamp_rep='%Y %b %d'
         let g:timestamp_regexp='\c\%(\<\%(last \)\?\%(changed?\|modified\):\s\+\)\@<=\%(\d\{4}\D.\{-}\d\{2}\|TIMESTAMP\)'
