@@ -325,6 +325,66 @@
         set softtabstop=4       " tab conversion to number of spaces
         set shiftwidth=4        " auto-indent amount when using cindent, >>, <<
         set shiftround          " when at 3 spaces, and I hit > ... go to 4, not 5
+        " C/C++ {{{2
+        au FileType cc,cpp map <F8> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+
+        " js {{{2
+        au FileType js set foldmethod=indent
+        au FileType js set foldmarker={,} 
+        au FileType js set foldtext=substitute(getline(v:foldstart+1),'{.*','{...}',)
+        au FileType js set foldlevelstart=4
+        au FileType js setlocal noexpandtab noautoindent nocindent nosmartindent shiftwidth=4 softtabstop=4 tabstop=4
+
+        " C# {{{2
+        au FileType cs set foldmethod=indent
+        au FileType cs set foldmarker={,} 
+        au FileType cs set foldtext=substitute(getline(v:foldstart+1),'{.*','{...}',)
+        au FileType cs set foldlevelstart=4
+        au FileType cs map <F8> :!ctags --recurse --extra=+fq --fields=+ianmzS --c\#-kinds=cimnp .<CR>
+
+        " Mail {{{2
+        autocmd BufNewFile,BufRead /tmp/mutt-* set filetype=mail
+        au FileType mail setlocal spell spelllang=en_us
+        au FileType mail set tw=66 autoindent expandtab formatoptions=tcqn
+        au FileType mail set list listchars=tab:»·,trail:·
+        au FileType mail set comments=nb:>
+        au FileType mail vmap D dO[...]^[
+        " go to a good starting point
+        au FileType mail silent normal /--\s*$^MO^[gg/^$^Mj
+
+        " PHP {{{2
+        let php_sql_query=1         " highlight all sql queries
+        let php_htmlInStrings=1     " highlight html syntax within strings
+        let php_noShortTags=1       " disable short tags
+        let php_folding=1           " enable folding for classes and functions
+        au FileType php setlocal noexpandtab shiftwidth=4 softtabstop=4 tabstop=4
+        au BufRead,BufNewFile *.ps1 set ft=ps1
+
+        " Python {{{2
+        au FileType python set omnifunc=pythoncomplete#Complete
+        au FileType python setlocal et sw=4 sts=4 ts=4 ai foldmethod=indent foldlevel=99
+
+        " Markdown {{{2
+        " Don't insert linebreaks in documents, it screws up conversions
+        au FileType markdown setlocal tw=0 wrap linebreak nolist wrapmargin=0 ai formatoptions=tcroqn2 comments=n:>
+
+        " Text {{{2
+        "au BufRead,BufNewFile *.txt set filetype=txt
+        au FileType txt set tw=100 autoindent expandtab formatoptions=taqn
+
+        " VimWiki {{{2
+        au FileType vimwiki set foldlevel=2 foldlevelstart=2
+        au FileType vimwiki map <F8> :!ctags -R .<CR>
+        au FileType vimwiki let tlist_vimwiki_settings = 'wiki;h:Headers'
+
+        " XML {{{2
+        au FileType xml setlocal et sw=2 sts=2 ts=2 ai
+        " html {{{2
+        let g:html_indent_inctags = "html,body,head,tbody"
+        let g:html_indent_script1 = "inc"
+        let g:html_indent_style1 = "inc"
+
+
     " }}}
     " Format Options        {{{
     " ------------------------------------------------------------------
