@@ -461,6 +461,24 @@
         " turn off manual key
         nnoremap K <nop>
     " }}}
+    " ------------------------------------------------------------------
+    " Key mappings in general {{{
+    " ------------------------------------------------------------------
+     let mapleader=","
+     nnoremap <silent><S-Tab> :tabnext<CR>
+    " }}}
+    " ------------------------------------------------------------------
+    " Mappings: hard to type {{{
+    " ------------------------------------------------------------------
+        imap jj <Esc>
+        imap uu _
+        imap hh =>
+        imap aa @
+        imap ç `
+        imap ¡¡ ^^
+        " Map ++ to save current file
+        noremap ++ :w <cr>
+    " }}}
     " Autocommands          {{{
     " ------------------------------------------------------------------
         " au! BufRead,BufNewFile *.txt set filetype=markdown
