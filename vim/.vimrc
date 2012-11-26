@@ -3,7 +3,7 @@
 "   es@ethanschoonover.com
 "   vimrc
 "   last changed:
-"   Modified: 2011 May 31
+"   Modified: 2012 Nov 26
 " ----------------------------------------------------------------------
 " Environment               {{{
 " ----------------------------------------------------------------------
@@ -20,6 +20,7 @@
         " comment out the following to activate the haskell conceal plugin
         let g:no_haskell_conceal = 1
     " }}}
+    " ------------------------------------------------------------------
     " Filetype Settings     {{{
     " ------------------------------------------------------------------
     " }}}
@@ -306,6 +307,7 @@
             " Nongui opts   {{{
             " ----------------------------------------------------------
             " set nocursorline              " cursorline in console mode...
+            se t_Co=16
             " }}}
         endif
     " }}}
