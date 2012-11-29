@@ -1,6 +1,6 @@
 # vim: set ft=muttrc:
 # mutt configuration
-# ethan schoonover / es@ethanschoonover.com
+# Mario Marín / mmfmarin@gmail.com
 
 # ------------------------------------------------------------------------------
 # identity
@@ -14,9 +14,9 @@
 # identity
 # ------------------------------------------------------------------------------
 
-set realname    = "Ethan Schoonover"        # real name for From:
-set from        = "es@ethanschoonover.com"  # default show in other's mailboxes
-alternates      "^(e|es|ejas|ethan)(@ejas\.net|@ethanschoonover\.com)$"
+set realname    = "Mario Marín"        # real name for From:
+set from        = "mmfmarin@gmail.com"  # default show in other's mailboxes
+alternates      "^(mmfmarin)(@hotmail.com)$"
 
 # ------------------------------------------------------------------------------
 # source files
