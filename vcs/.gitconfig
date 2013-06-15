@@ -6,7 +6,12 @@
 [core]
 	excludesfile = ~/.gitignore
 [alias]
-        ci = commit
-        st = status
+	ci = commit
+	st = status
+	d = difftool
 [push]
 	default = simple
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
