@@ -3,7 +3,7 @@
 "   es@ethanschoonover.com
 "   vimrc
 "   last changed:
-"   Modified: 2012 Nov 26
+"   Modified: 2013 Jul 03
 " ----------------------------------------------------------------------
 " Environment               {{{
 " ----------------------------------------------------------------------
@@ -483,6 +483,8 @@
         imap ¡¡ ^^
         " Map ++ to save current file
         noremap ++ :w <cr>
+        noremap <Left> :bp<CR>
+        noremap <Right> :bn<CR>
     " }}}
     " Autocommands          {{{
     " ------------------------------------------------------------------
