@@ -97,12 +97,12 @@ function omz()
 export ZSH=$HOME/.oh-my-zsh
 
 # Set to the name theme to load.
-export ZSH_THEME="../../$CONF_DIR/shell/brute"
+export ZSH_THEME="agnoster"
 
 # export DISABLE_AUTO_UPDATE="true"
 
 # oh-my-zsh plugins
-plugins=(vi-mode)
+plugins=(vi-mode git github gnu-utils history-substring-search zsh-syntax-highlighting)
 
 # source oh-my-zsh
 source $ZSH/oh-my-zsh.sh
@@ -184,3 +184,4 @@ autoload -U compinit promptinit
 compinit
 promptinit
 prompt suse
+. /usr/share/zsh/site-contrib/powerline.zsh
