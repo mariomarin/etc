@@ -54,10 +54,10 @@ status_backend = sqlite
 # Local - es
 # ---------------------------------------------------------------------
 
-[Repository eslocal]
+[Repository local]
 
 type               = Maildir
-localfolders       = ~/var/mail/accounts/es
+localfolders       = ~/var/mail/accounts/mario
 sep                = /
 nametrans          = lambda foldername: \
                      re.sub('inbox',    'INBOX',
@@ -76,7 +76,7 @@ nametrans          = lambda foldername: \
 # Remote - es
 # ---------------------------------------------------------------------
 
-[Repository esremote]
+[Repository remote]
 
 type               = Gmail
 # when cert changes, offlineimap will error and report new fingerprint
