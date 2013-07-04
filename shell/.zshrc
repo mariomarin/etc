@@ -15,13 +15,11 @@ export ZSH=$HOME/.oh-my-zsh
 #export ZSH_THEME="wezm+" #pretty good for a single line layout, min, has error codes
 #export ZSH_THEME="gozilla"
 #export ZSH_THEME="../../conf/shell/brute"
-export ZSH_THEME="../../$CONF_DIR/shell/brute"
+export ZSH_THEME="agnoster"
 
 # export DISABLE_AUTO_UPDATE="true"
 
-#plugins=(git vi-mode)
-#plugins=(git)
-plugins=(vi-mode)
+plugins=(vi-mode git archlinux autojump composer)
 
 source $ZSH/oh-my-zsh.sh
 bindkey -v
