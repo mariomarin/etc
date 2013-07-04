@@ -336,6 +336,9 @@
         au FileType js set foldtext=substitute(getline(v:foldstart+1),'{.*','{...}',)
         au FileType js set foldlevelstart=4
         au FileType js setlocal noexpandtab noautoindent nocindent nosmartindent shiftwidth=4 softtabstop=4 tabstop=4
+        au Filetype js map <F3> :w<CR>:!nohup node % >> output.log &<CR>:!chromium-browser localhost:8080<CR><CR>
+
+        au Filetype js map <F4> :!killall -2 node<CR>
 
         " C# {{{2
         au FileType cs set foldmethod=indent
