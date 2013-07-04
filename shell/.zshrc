@@ -23,6 +23,7 @@ plugins=(vi-mode git archlinux autojump composer)
 
 source $ZSH/oh-my-zsh.sh
 bindkey -v
+eval `dircolors ~/projects/dircolors-solarized/dircolors.ansi-dark`
 
 # the following addresses problems with the oh-my-zsh vim plugin eating the
 # line above the prompt with resetting it. I've had no negative impact from
