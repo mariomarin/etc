@@ -19,3 +19,9 @@
 [submodule "vim/.vim/bundle/ack"]
 	path = vim/.vim/bundle/ack
 	url = https://github.com/mileszs/ack.vim
+[submodule "vim/.vim/bundle/vim-jsbeautify"]
+	path = vim/.vim/bundle/vim-jsbeautify
+	url = https://github.com/maksimr/vim-jsbeautify.git
+[submodule "vim/.vim/bundle/editorconfig-vim"]
+	path = vim/.vim/bundle/editorconfig-vim
+	url = https://github.com/editorconfig/editorconfig-vim.git
