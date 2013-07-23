@@ -338,6 +338,7 @@
         au FileType js setlocal tabstop=4 softtabstop=4 noexpandtab shiftwidth=4 shiftround autoindent copyindent nosmartindent
         au Filetype js map <F3> :w<CR>:!nohup node % >> output.log &<CR>:!chromium-browser localhost:8080<CR><CR>
         au Filetype js map <F4> :!killall -2 node<CR>
+		au FileType javascript call JavaScriptFold()
 
         autocmd FileType javascript noremap <buffer>  <F5> :call JsBeautify()<cr>
         autocmd FileType html noremap <buffer> <F5> :call HtmlBeautify()<cr>

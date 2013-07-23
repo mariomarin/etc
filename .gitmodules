@@ -37,3 +37,6 @@
 [submodule "vim/.vim/bundle/editorconfig-vim"]
 	path = vim/.vim/bundle/editorconfig-vim
 	url = https://github.com/editorconfig/editorconfig-vim.git
+[submodule "vim/.vim/bundle/vim-javascript-syntax"]
+	path = vim/.vim/bundle/vim-javascript-syntax
+	url = https://github.com/jelera/vim-javascript-syntax.git
