@@ -102,7 +102,7 @@ export ZSH_THEME="agnoster"
 # export DISABLE_AUTO_UPDATE="true"
 
 # oh-my-zsh plugins
-plugins=(vi-mode git github gnu-utils history-substring-search zsh-syntax-highlighting)
+plugins=(vi-mode git mercurial autojump command-not-found python pip github gnu-utils history-substring-search)
 
 # source oh-my-zsh
 source $ZSH/oh-my-zsh.sh

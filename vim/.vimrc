@@ -3,7 +3,7 @@
 "   es@ethanschoonover.com
 "   vimrc
 "   last changed:
-"   Modified: 2013 Jul 03
+"   Modified: 2013 Jul 23
 " ----------------------------------------------------------------------
 " Environment               {{{
 " ----------------------------------------------------------------------
@@ -322,8 +322,8 @@
     " }}}
     " Tabs                  {{{
     " ------------------------------------------------------------------
-        set expandtab           " convert tabs into spaces
-        set tabstop=8           " real tabs should be 8 (unix default)
+        set noexpandtab           " convert tabs into spaces
+        set tabstop=4           " real tabs should be 8 (unix default)
         set softtabstop=4       " tab conversion to number of spaces
         set shiftwidth=4        " auto-indent amount when using cindent, >>, <<
         set shiftround          " when at 3 spaces, and I hit > ... go to 4, not 5
@@ -335,10 +335,13 @@
         au FileType js set foldmarker={,} 
         au FileType js set foldtext=substitute(getline(v:foldstart+1),'{.*','{...}',)
         au FileType js set foldlevelstart=4
-        au FileType js setlocal noexpandtab noautoindent nocindent nosmartindent shiftwidth=4 softtabstop=4 tabstop=4
+        au FileType js setlocal tabstop=4 softtabstop=4 noexpandtab shiftwidth=4 shiftround autoindent copyindent nosmartindent
         au Filetype js map <F3> :w<CR>:!nohup node % >> output.log &<CR>:!chromium-browser localhost:8080<CR><CR>
-
         au Filetype js map <F4> :!killall -2 node<CR>
+
+        autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
+        autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
+        autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
 
         " C# {{{2
         au FileType cs set foldmethod=indent
@@ -388,6 +391,9 @@
         let g:html_indent_inctags = "html,body,head,tbody"
         let g:html_indent_script1 = "inc"
         let g:html_indent_style1 = "inc"
+        au FileType html setlocal et sw=2 sts=2 ts=2 ai
+        " html {{{2
+        au FileType css setlocal et sw=2 sts=2 ts=2 ai
 
 
     " }}}
