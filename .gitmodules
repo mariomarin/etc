@@ -40,3 +40,9 @@
 [submodule "vim/.vim/bundle/vim-javascript-syntax"]
 	path = vim/.vim/bundle/vim-javascript-syntax
 	url = https://github.com/jelera/vim-javascript-syntax.git
+[submodule "vim/.vim/bundle/jshint.vim"]
+	path = vim/.vim/bundle/jshint.vim
+	url = https://github.com/walm/jshint.vim.git
+[submodule "vim/.vim/bundle/vim-fugitive"]
+	path = vim/.vim/bundle/vim-fugitive
+	url = git://github.com/tpope/vim-fugitive.git
