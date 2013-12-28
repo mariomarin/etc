@@ -3,7 +3,7 @@
 "   es@ethanschoonover.com
 "   vimrc
 "   last changed:
-"   Modified: 2013 Jul 23
+"   Modified: 2013 Nov 17
 " ----------------------------------------------------------------------
 " Environment               {{{
 " ----------------------------------------------------------------------
@@ -339,9 +339,9 @@
         au Filetype js map <F3> :w<CR>:!nohup node % >> output.log &<CR>:!chromium-browser localhost:8080<CR><CR>
         au Filetype js map <F4> :!killall -2 node<CR>
 
-        autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
-        autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
-        autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+        autocmd FileType javascript noremap <buffer>  <F5> :call JsBeautify()<cr>
+        autocmd FileType html noremap <buffer> <F5> :call HtmlBeautify()<cr>
+        autocmd FileType css noremap <buffer> <F5> :call CSSBeautify()<cr>
 
         " C# {{{2
         au FileType cs set foldmethod=indent
@@ -815,6 +815,10 @@
         map <leader>gp :Git push<CR>
         map <leader>gl :Git pull<CR>
         " }}}
-
-    " }}}
+		" ------------------------------------------------------------------
+		" CtrlP {{{
+        " ------------------------------------------------------------------
+		let g:ctrlp_map = '<leader>t'
+		" }}}
+	" }}}
     " }""
