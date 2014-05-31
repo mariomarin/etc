@@ -67,7 +67,7 @@ export XENVIRONMENT="$HOME/.Xresources"
 # PATH
 # ---------------------------------------------------------------------
 # initial bin relative to current directory
-export PATH="bin:/usr/local/bin:/usr/local/sbin:$PATH:$BIN_PATH:$CONF_PATH/bin:$SEC_PATH/bin"
+export PATH="$HOME/.gem/ruby/2.1.0/bin:bin:/usr/local/bin:/usr/local/sbin:$PATH:$BIN_PATH:$CONF_PATH/bin:$SEC_PATH/bin"
 export PATH="$PATH:$HOME/.cabal/bin"
 
 # ---------------------------------------------------------------------
