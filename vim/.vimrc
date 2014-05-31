@@ -3,7 +3,7 @@
 "   es@ethanschoonover.com
 "   vimrc
 "   last changed:
-"   Modified: 2013 Nov 17
+"   Modified: 2013 Dec 14
 " ----------------------------------------------------------------------
 " Environment               {{{
 " ----------------------------------------------------------------------
@@ -269,20 +269,20 @@
                 if has("gui_gtk2")
                     "set guifont=Terminus\ 10 " default for gvim in arch/xmonad
                     "set guifont=DejaVu\ Sans\ Mono\ 10 " default for gvim in arch/xmonad
-                    set guifont=LetterGothicMono\ 12 " default for gvim in arch/xmonad
+                    set guifont=inconsolata\ 12 " default for gvim in arch/xmonad
                     set guifont=Terminus\ 10 " default for gvim in arch/xmonad
                     set guifont=DejaVu\ Sans\ Mono\ 10 " default for gvim in arch/xmonad
-                    set guifont=LetterGothicMono\ 12 " default for gvim in arch/xmonad
+                    set guifont=inconsolata\ 12 " default for gvim in arch/xmonad
                 elseif has("gui_photon")
                     set guifont=Terminus:s10
                 elseif has("gui_kde")
                     set guifont=Terminus/10/-1/5/50/0/0/0/1/0
                 elseif has("x11")
                     " set guifont=-*-terminus-medium-*-*-*-10-*-*-*-*-*-*-*
-                    set guifont=xft:LetterGothicMono-Light:pixelsize=16
+                    set guifont=xft:inconsolata-Light:pixelsize=16
                 elseif has("gui_macvim")
                     "set guifont=Terminus:h20
-                    set guifont=LetterGothicMono\ Light:h18
+                    set guifont=inconsolata\ Light:h18
                 else
                     set guifont=Terminus:h10:cDEFAULT
                 endif
@@ -335,10 +335,11 @@
         au FileType js set foldmarker={,} 
         au FileType js set foldtext=substitute(getline(v:foldstart+1),'{.*','{...}',)
         au FileType js set foldlevelstart=4
-        au FileType js setlocal tabstop=4 softtabstop=4 noexpandtab shiftwidth=4 shiftround autoindent copyindent nosmartindent
+        au FileType js setlocal cindent tabstop=4 shiftwidth=4 expandtab  
+        au FileType js set list listchars=tab:»·,trail:·
         au Filetype js map <F3> :w<CR>:!nohup node % >> output.log &<CR>:!chromium-browser localhost:8080<CR><CR>
         au Filetype js map <F4> :!killall -2 node<CR>
-		au FileType javascript call JavaScriptFold()
+		au FileType js call JavaScriptFold()
 
         autocmd FileType javascript noremap <buffer>  <F5> :call JsBeautify()<cr>
         autocmd FileType html noremap <buffer> <F5> :call HtmlBeautify()<cr>
@@ -572,8 +573,8 @@
         let g:fullscreen_minfontsize=20
         let g:fullscreen_maxfontsize=36
 
-        "set guifont=LetterGothicMono\ Light:h14
-        let s:guifontprefix="LetterGothicMono\ Light:h"
+        "set guifont=inconsolata\ Light:h14
+        let s:guifontprefix="inconsolata\ Light:h"
         let g:fullscreen_defaultfontsize=14
         let g:fullscreen_minfontsize=36     " 1.8 (for letterg, deja uses this
                                             " for max width
@@ -611,7 +612,7 @@
                 if exists("w:nonFullScreenFont")
                     exe "let &guifont=\"" . w:nonFullScreenFont . "\""
                 else
-                    let &guifont= "LetterGothicMono\ Light:h22"
+                    let &guifont= "inconsolata\ Light:h22"
                 endif
                 if exists("w:nonFullScreenTabline")
                     exe "set showtabline=" . w:nonFullScreenTabline
