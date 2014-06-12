@@ -69,6 +69,7 @@ export XENVIRONMENT="$HOME/.Xresources"
 # initial bin relative to current directory
 export PATH="$HOME/.gem/ruby/2.1.0/bin:bin:/usr/local/bin:/usr/local/sbin:$PATH:$BIN_PATH:$CONF_PATH/bin:$SEC_PATH/bin"
 export PATH="$PATH:$HOME/.cabal/bin"
+export PATH="$PATH:/opt/android-sdk/tools"
 
 # ---------------------------------------------------------------------
 # APPS
@@ -85,6 +86,7 @@ alias netcfg='sudo netcfg'
 alias shutdown='sudo pm-powersave false && sudo poweroff'
 alias reboot='sudo pm-powersave false && sudo reboot'
 alias weechat='weechat-curses'
+source ~/.aliases
 
 # ---------------------------------------------------------------------
 # SHELL TYPE SPECIFIC FUNCTIONS
