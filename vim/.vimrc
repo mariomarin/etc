@@ -4,7 +4,6 @@ let g:dotvim_settings.version = 1
 
 " here are some basic customizations, please refer to the top of the vimrc file 
 " for all possible options
-let g:dotvim_settings.default_indent = 2
 let g:dotvim_settings.max_column = 120
 
 " by default, language specific plugins are not loaded.  this can be changed with the following:
