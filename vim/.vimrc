@@ -11,11 +11,12 @@ let g:dotvim_settings.max_column = 120
 let g:dotvim_settings.plugin_groups_exclude = ['ruby','python','javascript']
 
 " alternatively, you can set this variable to load exactly what you want
-let g:dotvim_settings.plugin_groups = ['core','web']
+let g:dotvim_settings.plugin_groups = ['core','web','editing','navigation','unite','autocomplete','scm']
 
 " finally, load the distribution
 source ~/.vim/vimrc
 
+" anything defined here are simply overrides
 set wildignore+=\*/node_modules/\*
 set guifont=Wingdings:h10
 " Text Formatting/Layout    {{{
