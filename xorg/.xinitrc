@@ -1,60 +1,7 @@
-# xrdb and dbus need to be handled here since we're not using a
-# desktop environment
-
-sysmodmap=/etc/X11/xinit/Xmodmap
-if [ -f $sysmodmap ]; then xmodmap $sysmodmap; fi
-xset +fp /usr/share/fonts/local && xset fp rehash
-xrdb -merge $HOME/.Xresources
-xsetroot -cursor_name left_ptr
-xsetroot -solid "#002b36"
-hsetroot -solid "#002b36"
-unclutter -root -idle 1 &
-setxkbmap -option ctrl:nocaps
-xset -b # turn off pc-speaker
-
-# D-Bus
-dbuslaunch="`which dbus-launch 2>/dev/null`"
-if [ -n "$dbuslaunch" ] && [ -x "$dbuslaunch" ] && [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
-  eval `$dbuslaunch --sh-syntax --exit-with-session`
-  eval `$dbuslaunch --auto-syntax`
-fi
-
-# xsetwacom set "Wacom ISDv4 E6 Finger touch" Mode "Absolute"
-# Following are experimental values to improve two finger scroll response
-# taptime needs to be higher than 25, 250 worked to detect two finger press/tap 
-# for doubleclick
-#xsetwacom set "Wacom ISDv4 E6 Finger touch" TapTime 25
-_eraser_id="$(xsetwacom --list devices | grep ERASER | sed 's/^.*id:\s*\(\w*\)\W.*$/\1/')"
-_stylus_id="$(xsetwacom --list devices | grep STYLUS | sed 's/^.*id:\s*\(\w*\)\W.*$/\1/')"
-_touch_id="$(xsetwacom --list devices | grep TOUCH | sed 's/^.*id:\s*\(\w*\)\W.*$/\1/')"
-#xsetwacom set "Wacom ISDv4 E6 Finger touch" Suppress 1
-#xsetwacom set "Wacom ISDv4 E6 Finger touch" RawSample 20
-#xsetwacom set "Wacom ISDv4 E6 Finger touch" ScrollDistance 40
-
-# eraser needs a unique button for gromit-mpx until I sort it out in a better 
-# way (nuked this since it really does screw up mypaint)
-#xinput --set-button-map $_eraser_id "2 1 3 4 5 6 7"
-
-# see https://wiki.archlinux.org/index.php/ConsoleKit
-# and https://bbs.archlinux.org/viewtopic.php?pid=905725#p905725
-#/home/es/bin/xbindkeys-slowstart &
-
-# must source environment for xbindkeys mouse bindings to function
-# TODO: figure out why
-. $HOME/.profile
-#xbindkeys
-#xbindkeys -f /etc/X11/xinit/xbindkeysrc
-#xbindkeys -f $HOME/.xbindkeysrc -X :0
-
-_xmonad () {
-/usr/bin/xscreensaver -no-splash -no-capture-stderr &
-xmonad
-}
-
-_gnome () {
-exec ck-launch-session gnome-session
-}
-
-/usr/bin/system boot
-/usr/bin/xscreensaver -no-splash -no-capture-stderr &
 exec awesome
+# Start a D-Bus session
+source /etc/X11/xinit/xinitrc.d/30-dbus
+# Start GNOME Keyring
+eval $(/usr/bin/gnome-keyring-daemon --start --components=gpg,pkcs11,secrets,ssh)
+# You probably need to do this too:
+export GNOME_KEYRING_CONTROL GNOME_KEYRING_PID GPG_AGENT_INFO SSH_AUTH_SOCK
