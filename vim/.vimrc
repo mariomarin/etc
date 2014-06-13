@@ -18,6 +18,7 @@ source ~/.vim/vimrc
 " anything defined here are simply overrides
 set wildignore+=\*/node_modules/\*
 set guifont=Wingdings:h10
+let g:unite_prompt=''
 " Text Formatting/Layout    {{{
 " " ----------------------------------------------------------------------
 
