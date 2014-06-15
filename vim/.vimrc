@@ -72,15 +72,6 @@ let g:unite_prompt=''
 	au FileType tex set setlocal let g:Tex_IgnoredWarnings="Font""\n"
 " }}}
 
-" Directories           {{{
-" ------------------------------------------------------------------
-    " backup and swap directories rely on variable set in zshenv
-    set backup                  " enable backups
-    set backupdir=$DATA_PATH/vim/backup// " backups
-    set directory=$DATA_PATH/vim/swap//   " swap files
-    v:vimrc>702 ? set undofile  " use persistent undofile
-    v:vimrc>702 ? set autochdir " always switch to the current file's dir
-" }}}
 " ------------------------------------------------------------------
 " Mappings: hard to type {{{
 " ------------------------------------------------------------------
