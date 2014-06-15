@@ -1,3 +1,6 @@
 [submodule "vim/vim/.vim"]
 	path = vim/vim/.vim
 	url = https://github.com/bling/dotvim.git
+[submodule "vim/.vim"]
+	path = vim/.vim
+	url = https://github.com/bling/dotvim.git
